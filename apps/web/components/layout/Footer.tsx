@@ -1,24 +1,30 @@
-import Link from "next/link";
-import { Heart, Github, Twitter } from "lucide-react";
+"use client";
 
-const footerLinks = {
-  Platform: [
-    { label: "Events", href: "/events" },
-    { label: "Categories", href: "/categories" },
-    { label: "Organizers", href: "/organizers" },
-  ],
-  Community: [
-    { label: "Add Event", href: "/events/create" },
-    { label: "Register", href: "/register" },
-    { label: "Sign In", href: "/login" },
-  ],
-  Legal: [
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Terms of Service", href: "/terms" },
-  ],
-};
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import { Heart } from "lucide-react";
+import { LocationIndicator } from "@/components/layout/LocationIndicator";
 
 export function Footer() {
+  const { t } = useTranslation();
+
+  const footerLinks = {
+    [t("footer.platform")]: [
+      { label: t("footer.events"), href: "/events" },
+      { label: t("footer.categories"), href: "/categories" },
+      { label: t("footer.organizers"), href: "/organizers" },
+    ],
+    [t("footer.community")]: [
+      { label: t("footer.addEvent"), href: "/events/create" },
+      { label: t("footer.register"), href: "/register" },
+      { label: t("footer.signIn"), href: "/login" },
+    ],
+    [t("footer.legal")]: [
+      { label: t("footer.privacy"), href: "/privacy" },
+      { label: t("footer.terms"), href: "/terms" },
+    ],
+  };
+
   return (
     <footer className="bg-surface-50/30 border-t border-white/10 mt-16">
       <div className="container-page py-12">
@@ -32,7 +38,7 @@ export function Footer() {
               <span className="font-bold text-white text-sm">CommunityEvents</span>
             </div>
             <p className="text-white/50 text-xs leading-relaxed max-w-xs">
-              Connecting South Asian communities through religious and cultural events across the globe.
+              {t("footer.tagline")}
             </p>
             <p className="text-arabic text-white/40 text-sm mt-3">بسم اللہ الرحمن الرحیم</p>
           </div>
@@ -57,8 +63,12 @@ export function Footer() {
         <div className="divider" />
 
         <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/40">
-          <p>© {new Date().getFullYear()} CommunityEvents. Made with <Heart size={12} className="inline text-red-500" /> for the ummah.</p>
-          <p>Pakistan · India · UK · USA · Canada · UAE · Australia</p>
+          <p>© {new Date().getFullYear()} CommunityEvents. {t("footer.rights")} <Heart size={12} className="inline text-red-500" /> {t("footer.forUmmah")}</p>
+          <p>{t("footer.countries")}</p>
+        </div>
+
+        <div className="mt-3 flex justify-center sm:justify-start text-xs">
+          <LocationIndicator variant="full" />
         </div>
       </div>
     </footer>

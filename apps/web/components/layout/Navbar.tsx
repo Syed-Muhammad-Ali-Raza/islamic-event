@@ -2,21 +2,25 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Menu, X, Search, Bookmark, User, LogOut, PlusCircle, LayoutDashboard } from "lucide-react";
 import { useAuthStore } from "@/stores/auth.store";
 import { useLogout } from "@/hooks/useAuth";
 import { clsx } from "clsx";
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
+import { LocationIndicator } from "@/components/layout/LocationIndicator";
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { isAuthenticated, user } = useAuthStore();
   const logout = useLogout();
+  const { t } = useTranslation();
 
   const navLinks = [
-    { href: "/events", label: "Events" },
-    { href: "/categories", label: "Categories" },
-    { href: "/organizers", label: "Organizers" },
+    { href: "/events", label: t("nav.events") },
+    { href: "/categories", label: t("nav.categories") },
+    { href: "/organizers", label: t("nav.organizers") },
   ];
 
   return (
@@ -44,7 +48,12 @@ export function Navbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2">
-            <Link href="/events?search=" className="btn-ghost p-2" aria-label="Search">
+            <LocationIndicator variant="compact" />
+            <div className="hidden md:block">
+              <LanguageSwitcher />
+            </div>
+
+            <Link href="/events?search=" className="btn-ghost p-2" aria-label={t("nav.search")}>
               <Search size={18} />
             </Link>
 
@@ -52,7 +61,7 @@ export function Navbar() {
               <>
                 <Link href="/events/create" className="btn-primary hidden sm:inline-flex py-2 px-4 text-xs">
                   <PlusCircle size={15} />
-                  Add Event
+                  {t("nav.addEvent")}
                 </Link>
 
                 {/* User dropdown */}
@@ -74,20 +83,20 @@ export function Navbar() {
                       </div>
 
                       <Link href="/profile" className="flex items-center gap-2 px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setUserMenuOpen(false)}>
-                        <User size={15} /> Profile
+                        <User size={15} /> {t("nav.profile")}
                       </Link>
 
                       <Link href="/saved" className="flex items-center gap-2 px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setUserMenuOpen(false)}>
-                        <Bookmark size={15} /> Saved Events
+                        <Bookmark size={15} /> {t("nav.savedEvents")}
                       </Link>
 
                       <Link href="/profile/events" className="flex items-center gap-2 px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setUserMenuOpen(false)}>
-                        <LayoutDashboard size={15} /> My Events
+                        <LayoutDashboard size={15} /> {t("nav.myEvents")}
                       </Link>
 
                       {user?.role === "ADMIN" && (
                         <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-brand-300 hover:text-brand-200 hover:bg-white/5 transition-colors" onClick={() => setUserMenuOpen(false)}>
-                          <LayoutDashboard size={15} /> Admin Panel
+                          <LayoutDashboard size={15} /> {t("nav.adminPanel")}
                         </Link>
                       )}
 
@@ -97,7 +106,7 @@ export function Navbar() {
                           className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-white/5 transition-colors"
                           id="logout-button"
                         >
-                          <LogOut size={15} /> Sign out
+                          <LogOut size={15} /> {t("nav.signOut")}
                         </button>
                       </div>
                     </div>
@@ -106,8 +115,8 @@ export function Navbar() {
               </>
             ) : (
               <div className="flex items-center gap-2">
-                <Link href="/login" className="btn-ghost text-sm hidden sm:inline-flex">Sign in</Link>
-                <Link href="/register" className="btn-primary py-2 px-4 text-sm">Get Started</Link>
+                <Link href="/login" className="btn-ghost text-sm hidden sm:inline-flex">{t("nav.signIn")}</Link>
+                <Link href="/register" className="btn-primary py-2 px-4 text-sm">{t("nav.getStarted")}</Link>
               </div>
             )}
 
@@ -133,14 +142,20 @@ export function Navbar() {
             ))}
             {isAuthenticated && (
               <Link href="/events/create" className="block px-3 py-2 text-sm text-brand-400 font-medium hover:bg-white/5 rounded-lg transition-colors" onClick={() => setMobileOpen(false)}>
-                + Add Event
+                + {t("nav.addEvent")}
               </Link>
             )}
             {isAuthenticated && (
               <Link href="/saved" className="block px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition-colors" onClick={() => setMobileOpen(false)}>
-                Saved Events
+                {t("nav.savedEvents")}
               </Link>
             )}
+            <div className="pt-2 border-t border-white/10 mt-2 flex items-center justify-between gap-2">
+              <span className="text-xs">
+                <LocationIndicator variant="full" />
+              </span>
+              <LanguageSwitcher />
+            </div>
           </div>
         )}
       </div>

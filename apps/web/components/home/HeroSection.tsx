@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Search, MapPin, Star } from "lucide-react";
 
 const QUICK_SEARCHES = ["Milad", "Majlis", "Mehfil-e-Naat", "Dars", "Iftar", "Quran Khwani"];
@@ -9,6 +10,7 @@ const QUICK_SEARCHES = ["Milad", "Majlis", "Mehfil-e-Naat", "Dars", "Iftar", "Qu
 export function HeroSection() {
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const { t } = useTranslation();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,15 +40,16 @@ export function HeroSection() {
           <p className="text-arabic text-gold-400 text-lg mb-4 opacity-80">بسم اللہ الرحمن الرحیم</p>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight mb-4 text-balance">
-            Discover{" "}
-            <span className="gradient-text">Religious</span>
-            {" & "}
+            {t("hero.titleDiscover")}{" "}
+            <span className="gradient-text">{t("hero.titleReligious")}</span>
+            {" "}
+            {t("hero.titleAmp")}
             <br className="hidden sm:block" />
-            Community Events
+            {t("hero.titleCommunity")}
           </h1>
 
           <p className="text-white/60 text-lg mb-10 max-w-xl mx-auto text-balance">
-            Find Majlis, Milad, Mehfil-e-Naat, Dars and more — connecting communities across Pakistan, India, UK, USA and worldwide.
+            {t("hero.subtitle")}
           </p>
 
           {/* Search bar */}
@@ -59,7 +62,7 @@ export function HeroSection() {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search Milad, Majlis, Mehfil-e-Naat…"
+                  placeholder={t("hero.searchPlaceholder")}
                   className="flex-1 bg-transparent text-white placeholder-white/30 text-sm focus:outline-none"
                 />
               </div>
@@ -68,14 +71,14 @@ export function HeroSection() {
                 id="hero-search-button"
                 className="btn-primary rounded-xl shrink-0"
               >
-                Search Events
+                {t("hero.searchButton")}
               </button>
             </div>
           </form>
 
           {/* Quick searches */}
           <div className="flex flex-wrap items-center justify-center gap-2 mt-5">
-            <span className="text-white/30 text-xs">Quick:</span>
+            <span className="text-white/30 text-xs">{t("hero.quick")}</span>
             {QUICK_SEARCHES.map((term) => (
               <button
                 key={term}
@@ -91,9 +94,9 @@ export function HeroSection() {
           {/* Stats */}
           <div className="flex items-center justify-center gap-8 mt-12">
             {[
-              { icon: Star, label: "Events Listed", value: "1,200+" },
-              { icon: MapPin, label: "Cities", value: "50+" },
-              { icon: Search, label: "Organizers", value: "200+" },
+              { icon: Star, label: t("hero.eventsListed"), value: "1,200+" },
+              { icon: MapPin, label: t("hero.cities"), value: "50+" },
+              { icon: Search, label: t("hero.organizers"), value: "200+" },
             ].map(({ icon: Icon, label, value }) => (
               <div key={label} className="text-center">
                 <p className="text-2xl font-bold text-white">{value}</p>

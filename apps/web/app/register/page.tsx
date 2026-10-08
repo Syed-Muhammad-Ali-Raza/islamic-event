@@ -59,15 +59,15 @@ export default function RegisterPage() {
       <div className="w-full max-w-md relative">
         <div className="card-glass p-8 rounded-3xl shadow-2xl">
           <div className="text-center mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-500 to-purple-400 flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-500 to-gold-500 flex items-center justify-center mx-auto mb-4">
               <span className="text-white font-bold text-lg">CE</span>
             </div>
-            <h1 className="text-2xl font-bold text-white">Create your account</h1>
-            <p className="text-white/50 text-sm mt-1">Join the community platform</p>
+            <h1 className="text-2xl font-bold text-slate-900">Create your account</h1>
+            <p className="text-slate-500 text-sm mt-1">Join the community platform</p>
           </div>
 
           {register_.error && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 mb-5 text-red-400 text-sm">
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 mb-5 text-red-500 text-sm">
               {(register_.error as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Registration failed. Please try again."}
             </div>
           )}
@@ -116,7 +116,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-9 text-white/40 hover:text-white transition-colors"
+                className="absolute right-3 top-9 text-slate-500 hover:text-slate-900 transition-colors"
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -129,9 +129,9 @@ export default function RegisterPage() {
                   <div key={label} className="flex items-center gap-2">
                     <CheckCircle
                       size={13}
-                      className={check(password) ? "text-green-400" : "text-white/20"}
+                      className={check(password) ? "text-green-600" : "text-slate-400"}
                     />
-                    <span className={`text-xs ${check(password) ? "text-white/60" : "text-white/25"}`}>
+                    <span className={`text-xs ${check(password) ? "text-slate-500" : "text-slate-400"}`}>
                       {label}
                     </span>
                   </div>
@@ -159,9 +159,9 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <p className="text-center text-white/40 text-sm mt-6">
+          <p className="text-center text-slate-500 text-sm mt-6">
             Already have an account?{" "}
-            <Link href="/login" className="text-brand-400 hover:text-brand-300 font-medium transition-colors">
+            <Link href="/login" className="text-brand-600 hover:text-brand-700 font-medium transition-colors">
               Sign in
             </Link>
           </p>

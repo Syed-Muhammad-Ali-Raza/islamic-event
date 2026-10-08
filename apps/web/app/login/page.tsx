@@ -36,7 +36,7 @@ function LoginForm() {
       {/* Background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl" />
       </div>
 
       <div className="w-full max-w-md relative">
@@ -44,16 +44,16 @@ function LoginForm() {
         <div className="card-glass p-8 rounded-3xl shadow-2xl">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-500 to-purple-400 flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-500 to-gold-500 flex items-center justify-center mx-auto mb-4">
               <span className="text-white font-bold text-lg">CE</span>
             </div>
-            <h1 className="text-2xl font-bold text-white">Welcome back</h1>
-            <p className="text-white/50 text-sm mt-1">Sign in to your account</p>
+            <h1 className="text-2xl font-bold text-slate-900">Welcome back</h1>
+            <p className="text-slate-500 text-sm mt-1">Sign in to your account</p>
           </div>
 
           {/* Error */}
           {login.error && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 mb-5 text-red-400 text-sm">
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 mb-5 text-red-500 text-sm">
               {(login.error as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Login failed. Please try again."}
             </div>
           )}
@@ -82,7 +82,7 @@ function LoginForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-9 text-white/40 hover:text-white transition-colors"
+                className="absolute right-3 top-9 text-slate-500 hover:text-slate-900 transition-colors"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -92,7 +92,7 @@ function LoginForm() {
             <div className="text-right -mt-1">
               <Link
                 href="/forgot-password"
-                className="text-xs text-white/40 hover:text-brand-300 transition-colors"
+                className="text-xs text-slate-500 hover:text-brand-700 transition-colors"
                 id="forgot-password-link"
               >
                 Forgot password?
@@ -109,9 +109,9 @@ function LoginForm() {
             </button>
           </form>
 
-          <p className="text-center text-white/40 text-sm mt-6">
+          <p className="text-center text-slate-500 text-sm mt-6">
             Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-brand-400 hover:text-brand-300 font-medium transition-colors">
+            <Link href="/register" className="text-brand-600 hover:text-brand-700 font-medium transition-colors">
               Create one
             </Link>
           </p>

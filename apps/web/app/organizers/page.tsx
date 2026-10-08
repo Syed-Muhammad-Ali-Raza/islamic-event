@@ -21,8 +21,8 @@ export default function OrganizersPage() {
   return (
     <div className="container-page py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Organizers</h1>
-        <p className="text-white/50 text-sm">
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Organizers</h1>
+        <p className="text-slate-500 text-sm">
           Mosques, committees and community organizations publishing events
         </p>
       </div>
@@ -30,14 +30,14 @@ export default function OrganizersPage() {
       {/* Search */}
       <div className="flex gap-3 mb-8 max-w-lg">
         <div className="flex-1 flex items-center gap-3 input px-4 py-3">
-          <Search size={16} className="text-brand-400 shrink-0" />
+          <Search size={16} className="text-brand-600 shrink-0" />
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && applySearch()}
             placeholder="Search organizers…"
-            className="flex-1 bg-transparent text-white placeholder-white/30 text-sm focus:outline-none"
+            className="flex-1 bg-transparent text-slate-900 placeholder-slate-400 text-sm focus:outline-none"
             aria-label="Search organizers"
           />
         </div>
@@ -58,7 +58,7 @@ export default function OrganizersPage() {
           ))}
         </div>
       ) : !data || data.data.length === 0 ? (
-        <div className="text-center py-20 text-white/40">
+        <div className="text-center py-20 text-slate-500">
           <Building2 size={40} className="mx-auto mb-4 opacity-40" />
           <p className="text-lg font-medium">No organizers found</p>
           {search && (
@@ -91,14 +91,14 @@ export default function OrganizersPage() {
 
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <h3 className="text-white font-semibold truncate">{org.name}</h3>
+                    <h3 className="text-slate-900 font-semibold truncate">{org.name}</h3>
                     {org.isVerified && (
-                      <BadgeCheck size={15} className="text-brand-400 shrink-0" aria-label="Verified" />
+                      <BadgeCheck size={15} className="text-brand-600 shrink-0" aria-label="Verified" />
                     )}
                   </div>
 
                   {(org.city || org.country) && (
-                    <p className="text-white/40 text-xs mt-0.5 flex items-center gap-1">
+                    <p className="text-slate-500 text-xs mt-0.5 flex items-center gap-1">
                       <MapPin size={11} />
                       {[org.city?.name, org.country?.name].filter(Boolean).join(", ")}
                     </p>
@@ -107,18 +107,18 @@ export default function OrganizersPage() {
               </div>
 
               {org.description && (
-                <p className="text-white/60 text-sm mt-3 line-clamp-2 leading-relaxed">
+                <p className="text-slate-500 text-sm mt-3 line-clamp-2 leading-relaxed">
                   {org.description}
                 </p>
               )}
 
-              <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
-                <span className="text-white/40 text-xs">
+              <div className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between">
+                <span className="text-slate-500 text-xs">
                   {org.email ?? org.website ?? "Contact via events"}
                 </span>
                 <Link
                   href={`/events?search=${encodeURIComponent(org.name)}`}
-                  className="text-brand-400 hover:text-brand-300 text-xs font-medium transition-colors"
+                  className="text-brand-600 hover:text-brand-700 text-xs font-medium transition-colors"
                 >
                   View events →
                 </Link>
@@ -138,7 +138,7 @@ export default function OrganizersPage() {
           >
             ← Previous
           </button>
-          <span className="text-white/40 text-sm">
+          <span className="text-slate-500 text-sm">
             Page {data.pagination.page} of {data.pagination.totalPages}
           </span>
           <button

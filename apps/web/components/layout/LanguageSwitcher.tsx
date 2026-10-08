@@ -49,7 +49,7 @@ export function LanguageSwitcher() {
           className="absolute right-0 top-11 w-44 card-glass py-1.5 shadow-2xl animate-scale-in z-50"
           role="listbox"
         >
-          <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/40">
+          <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
             {t("nav.language")}
           </p>
           {LANGUAGES.map((lang) => {
@@ -62,14 +62,14 @@ export function LanguageSwitcher() {
                 aria-selected={active}
                 className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm transition-colors ${
                   active
-                    ? "text-brand-300 bg-brand-500/10"
-                    : "text-white/80 hover:text-white hover:bg-white/5"
+                    ? "text-brand-700 bg-brand-500/10"
+                    : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
                 }`}
                 id={`language-option-${lang.code}`}
               >
                 <span className="text-base leading-none">{lang.flag}</span>
                 <span className="flex-1 text-left">{lang.native}</span>
-                {active && <Check size={14} className="text-brand-400" />}
+                {active && <Check size={14} className="text-brand-600" />}
               </button>
             );
           })}

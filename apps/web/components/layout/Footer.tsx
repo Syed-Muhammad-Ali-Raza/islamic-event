@@ -26,31 +26,31 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-surface-50/30 border-t border-white/10 mt-16">
+    <footer className="bg-surface-50/30 border-t border-slate-200 mt-16">
       <div className="container-page py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-500 to-purple-400 flex items-center justify-center">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-500 to-gold-500 flex items-center justify-center">
                 <span className="text-white font-bold text-xs">CE</span>
               </div>
-              <span className="font-bold text-white text-sm">CommunityEvents</span>
+              <span className="font-bold text-slate-900 text-sm">CommunityEvents</span>
             </div>
-            <p className="text-white/50 text-xs leading-relaxed max-w-xs">
+            <p className="text-slate-500 text-xs leading-relaxed max-w-xs">
               {t("footer.tagline")}
             </p>
-            <p className="text-arabic text-white/40 text-sm mt-3">بسم اللہ الرحمن الرحیم</p>
+            <p className="text-arabic text-slate-500 text-sm mt-3">بسم اللہ الرحمن الرحیم</p>
           </div>
 
           {/* Links */}
           {Object.entries(footerLinks).map(([group, links]) => (
             <div key={group}>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-white/40 mb-3">{group}</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">{group}</h3>
               <ul className="space-y-2">
                 {links.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="text-white/60 hover:text-white text-sm transition-colors">
+                    <Link href={link.href} className="text-slate-500 hover:text-slate-900 text-sm transition-colors">
                       {link.label}
                     </Link>
                   </li>
@@ -62,7 +62,7 @@ export function Footer() {
 
         <div className="divider" />
 
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/40">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-500">
           <p>© {new Date().getFullYear()} CommunityEvents. {t("footer.rights")} <Heart size={12} className="inline text-red-500" /> {t("footer.forUmmah")}</p>
           <p>{t("footer.countries")}</p>
         </div>

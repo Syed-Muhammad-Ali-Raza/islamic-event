@@ -12,11 +12,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <AuthGuard requireAdmin>
       <div className="container-page py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-white mb-1">Admin Panel</h1>
-          <p className="text-white/50 text-sm">Moderate events, manage users and reports</p>
+          <h1 className="text-2xl font-bold text-slate-900 mb-1">Admin Panel</h1>
+          <p className="text-slate-500 text-sm">Moderate events, manage users and reports</p>
         </div>
 
-        <div className="mb-6 border-b border-white/10 pb-3">
+        <div className="mb-6 border-b border-slate-200 pb-3">
           <AdminTabs />
         </div>
 

@@ -22,15 +22,15 @@ export default function AdminUsersPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-lg font-semibold text-white">Users</h2>
-        {data && <span className="text-white/40 text-sm">{data.pagination.total} users</span>}
+        <h2 className="text-lg font-semibold text-slate-900">Users</h2>
+        {data && <span className="text-slate-500 text-sm">{data.pagination.total} users</span>}
       </div>
 
       <div className="card-glass overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-left text-white/40 text-xs uppercase tracking-wider">
+              <tr className="border-b border-slate-200 text-left text-slate-500 text-xs uppercase tracking-wider">
                 <th className="px-5 py-3 font-medium">User</th>
                 <th className="px-5 py-3 font-medium">Role</th>
                 <th className="px-5 py-3 font-medium">Joined</th>
@@ -41,7 +41,7 @@ export default function AdminUsersPage() {
             <tbody>
               {isLoading ? (
                 Array.from({ length: 6 }).map((_, i) => (
-                  <tr key={i} className="border-b border-white/5">
+                  <tr key={i} className="border-b border-slate-200">
                     <td colSpan={5} className="px-5 py-4">
                       <div className="skeleton h-5 w-full" />
                     </td>
@@ -49,21 +49,21 @@ export default function AdminUsersPage() {
                 ))
               ) : !data || data.data.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center text-white/40">
+                  <td colSpan={5} className="px-5 py-12 text-center text-slate-500">
                     No users found.
                   </td>
                 </tr>
               ) : (
                 data.data.map((user) => (
-                  <tr key={user.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                  <tr key={user.id} className="border-b border-slate-200 hover:bg-slate-50 transition-colors">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-brand-800 flex items-center justify-center text-brand-300 text-xs font-bold shrink-0">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-white font-medium truncate">{user.name}</p>
-                          <p className="text-white/40 text-xs truncate">{user.email}</p>
+                          <p className="text-slate-900 font-medium truncate">{user.name}</p>
+                          <p className="text-slate-500 text-xs truncate">{user.email}</p>
                         </div>
                       </div>
                     </td>
@@ -74,13 +74,13 @@ export default function AdminUsersPage() {
                             ? "badge-brand text-[11px]"
                             : user.role === "ORGANIZER"
                               ? "badge-gold text-[11px]"
-                              : "badge text-[11px] bg-white/10 text-white/60 border border-white/10"
+                              : "badge text-[11px] bg-slate-100 text-slate-500 border border-slate-200"
                         }
                       >
                         {user.role}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-white/60 whitespace-nowrap">
+                    <td className="px-5 py-4 text-slate-500 whitespace-nowrap">
                       {format(new Date(user.createdAt), "dd MMM yyyy")}
                     </td>
                     <td className="px-5 py-4">
@@ -100,8 +100,8 @@ export default function AdminUsersPage() {
                         disabled={togglingId === user.id}
                         className={
                           user.isActive
-                            ? "px-2.5 py-1.5 rounded-lg text-xs font-medium bg-red-900/40 text-red-400 border border-red-700/40 hover:bg-red-800/40 transition-colors disabled:opacity-40"
-                            : "px-2.5 py-1.5 rounded-lg text-xs font-medium bg-green-900/40 text-green-400 border border-green-700/40 hover:bg-green-800/40 transition-colors disabled:opacity-40"
+                            ? "px-2.5 py-1.5 rounded-lg text-xs font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-40"
+                            : "px-2.5 py-1.5 rounded-lg text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors disabled:opacity-40"
                         }
                       >
                         {togglingId === user.id ? "Saving…" : user.isActive ? "Disable" : "Enable"}
@@ -124,7 +124,7 @@ export default function AdminUsersPage() {
           >
             ← Previous
           </button>
-          <span className="text-white/40 text-sm">
+          <span className="text-slate-500 text-sm">
             Page {data.pagination.page} of {data.pagination.totalPages}
           </span>
           <button

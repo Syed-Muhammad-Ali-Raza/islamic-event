@@ -7,7 +7,7 @@
 /* ─── Base ────────────────────────────────────────────────────────────────── */
 @layer base {
   :root {
-    --brand-500: hsl(262, 67%, 55%);
+    --brand-500: hsl(157, 81%, 44%);
     --gold-400: hsl(42, 85%, 60%);
   }
 
@@ -21,7 +21,7 @@
   }
 
   body {
-    @apply bg-surface text-white antialiased;
+    @apply bg-surface-50 text-slate-800 antialiased;
     font-family: "Inter", system-ui, sans-serif;
   }
 
@@ -30,7 +30,7 @@
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-surface;
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-surface-50;
   }
 
   /* Scrollbar styling */
@@ -52,12 +52,12 @@
 @layer components {
   /* Glassmorphism card */
   .card-glass {
-    @apply bg-surface-50/60 backdrop-blur-md border border-white/10 rounded-2xl;
+    @apply bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl;
   }
 
   /* Gradient text */
   .gradient-text {
-    @apply bg-gradient-to-r from-brand-400 via-purple-300 to-gold-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-brand-500 via-teal-400 to-gold-500 bg-clip-text text-transparent;
   }
 
   /* Primary button */
@@ -66,15 +66,15 @@
            bg-brand-600 hover:bg-brand-500 active:bg-brand-700
            text-white font-semibold rounded-xl text-sm
            transition-all duration-200 
-           focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface
+           focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-50
            disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none;
   }
 
   /* Secondary button */
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3
-           bg-surface-100 hover:bg-surface-200 active:bg-surface-300
-           text-white/90 font-medium rounded-xl text-sm border border-white/10
+           bg-white hover:bg-surface-100 active:bg-surface-200
+           text-slate-700 font-medium rounded-xl text-sm border border-slate-200
            transition-all duration-200
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
@@ -82,7 +82,7 @@
   /* Ghost button */
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 px-4 py-2
-           text-white/70 hover:text-white hover:bg-white/5
+           text-slate-600 hover:text-slate-900 hover:bg-slate-100
            font-medium rounded-lg text-sm
            transition-all duration-150;
   }
@@ -90,8 +90,8 @@
   /* Input field */
   .input {
     @apply w-full px-4 py-3 
-           bg-surface-100 border border-white/10
-           text-white placeholder-white/30
+           bg-white border border-slate-300
+           text-slate-900 placeholder-slate-400
            rounded-xl text-sm
            transition-all duration-150
            focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500
@@ -100,12 +100,12 @@
 
   /* Label */
   .label {
-    @apply block text-sm font-medium text-white/70 mb-1.5;
+    @apply block text-sm font-medium text-slate-600 mb-1.5;
   }
 
   /* Form error */
   .form-error {
-    @apply text-red-400 text-xs mt-1;
+    @apply text-red-500 text-xs mt-1;
   }
 
   /* Badge */
@@ -114,19 +114,19 @@
   }
 
   .badge-brand {
-    @apply badge bg-brand-900/60 text-brand-300 border border-brand-700/50;
+    @apply badge bg-brand-50 text-brand-700 border border-brand-200;
   }
 
   .badge-gold {
-    @apply badge bg-yellow-900/40 text-gold-400 border border-yellow-700/40;
+    @apply badge bg-amber-50 text-amber-700 border border-amber-200;
   }
 
   .badge-green {
-    @apply badge bg-green-900/40 text-green-400 border border-green-700/40;
+    @apply badge bg-emerald-50 text-emerald-700 border border-emerald-200;
   }
 
   .badge-red {
-    @apply badge bg-red-900/40 text-red-400 border border-red-700/40;
+    @apply badge bg-red-50 text-red-600 border border-red-200;
   }
 
   /* Skeleton shimmer */
@@ -147,7 +147,7 @@
 
   /* Divider */
   .divider {
-    @apply border-t border-white/10 my-6;
+    @apply border-t border-slate-200 my-6;
   }
 
   /* Arabic text */

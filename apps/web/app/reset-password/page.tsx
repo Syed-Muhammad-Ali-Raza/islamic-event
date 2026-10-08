@@ -51,9 +51,9 @@ function ResetPasswordContent() {
   if (!token) {
     return (
       <div className="text-center py-6">
-        <AlertTriangle size={40} className="mx-auto text-yellow-400 mb-4" />
-        <h1 className="text-xl font-bold text-white mb-2">Missing reset link</h1>
-        <p className="text-white/60 text-sm mb-6">
+        <AlertTriangle size={40} className="mx-auto text-yellow-600 mb-4" />
+        <h1 className="text-xl font-bold text-slate-900 mb-2">Missing reset link</h1>
+        <p className="text-slate-500 text-sm mb-6">
           This page needs a valid reset token. Request a new link below.
         </p>
         <Link href="/forgot-password" className="btn-primary inline-flex text-sm">
@@ -66,9 +66,9 @@ function ResetPasswordContent() {
   if (done) {
     return (
       <div className="text-center py-6">
-        <CheckCircle2 size={40} className="mx-auto text-green-400 mb-4" />
-        <h1 className="text-xl font-bold text-white mb-2">Password updated</h1>
-        <p className="text-white/60 text-sm">Redirecting you to sign in…</p>
+        <CheckCircle2 size={40} className="mx-auto text-green-600 mb-4" />
+        <h1 className="text-xl font-bold text-slate-900 mb-2">Password updated</h1>
+        <p className="text-slate-500 text-sm">Redirecting you to sign in…</p>
         <Link href="/login" className="btn-primary mt-6 inline-flex text-sm">
           Sign In Now
         </Link>
@@ -78,8 +78,8 @@ function ResetPasswordContent() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold text-white mb-2">Set a new password</h1>
-      <p className="text-white/50 text-sm mb-6">Choose a strong password for your account.</p>
+      <h1 className="text-2xl font-bold text-slate-900 mb-2">Set a new password</h1>
+      <p className="text-slate-500 text-sm mb-6">Choose a strong password for your account.</p>
 
       <form
         onSubmit={handleSubmit((data) => mutation.mutate(data))}

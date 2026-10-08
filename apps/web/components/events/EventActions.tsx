@@ -78,7 +78,7 @@ export function EventActions({ eventId }: Props) {
         title={isAuthenticated ? (isSaved ? "Remove from saved" : "Save event") : "Sign in to save events"}
         className={
           isSaved
-            ? "btn-secondary py-2.5 px-4 border-brand-600/50 text-brand-300"
+            ? "btn-secondary py-2.5 px-4 border-brand-600/50 text-brand-700"
             : "btn-secondary py-2.5 px-4"
         }
       >
@@ -87,14 +87,14 @@ export function EventActions({ eventId }: Props) {
       </button>
 
       <button onClick={share} className="btn-secondary py-2.5 px-4">
-        {copied ? <Check size={16} className="text-green-400" /> : <Share2 size={16} />}
+        {copied ? <Check size={16} className="text-green-600" /> : <Share2 size={16} />}
         {copied ? "Copied!" : "Share"}
       </button>
 
       {isAuthenticated && (
         <button
           onClick={() => { setReportOpen(true); setReportStatus("idle"); }}
-          className="btn-ghost py-2.5 px-4 text-white/40 hover:text-red-400"
+          className="btn-ghost py-2.5 px-4 text-slate-500 hover:text-red-600"
         >
           <Flag size={15} /> Report
         </button>
@@ -107,17 +107,17 @@ export function EventActions({ eventId }: Props) {
             {reportStatus === "done" ? (
               <div className="text-center py-4">
                 <div className="w-12 h-12 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center mx-auto mb-4">
-                  <Check size={24} className="text-green-400" />
+                  <Check size={24} className="text-green-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-1">Report submitted</h3>
-                <p className="text-white/50 text-sm">Our team will review it shortly. Thank you.</p>
+                <h3 className="text-lg font-semibold text-slate-900 mb-1">Report submitted</h3>
+                <p className="text-slate-500 text-sm">Our team will review it shortly. Thank you.</p>
                 <button onClick={() => setReportOpen(false)} className="btn-secondary mt-5">
                   Close
                 </button>
               </div>
             ) : (
               <>
-                <h3 className="text-lg font-semibold text-white mb-4">Report this event</h3>
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">Report this event</h3>
 
                 <label className="label" htmlFor="report-reason">Reason</label>
                 <select

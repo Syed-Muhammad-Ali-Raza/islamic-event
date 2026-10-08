@@ -79,12 +79,12 @@ export function NotificationBell() {
 
       {open && (
         <div className="absolute right-0 top-11 w-80 card-glass shadow-2xl animate-scale-in z-50 overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-            <p className="text-sm font-semibold text-white">Notifications</p>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
+            <p className="text-sm font-semibold text-slate-900">Notifications</p>
             {notifications.some((n) => !n.readAt) && (
               <button
                 onClick={() => markAllRead.mutate()}
-                className="flex items-center gap-1 text-xs text-brand-300 hover:text-brand-200 transition-colors"
+                className="flex items-center gap-1 text-xs text-brand-700 hover:text-brand-800 transition-colors"
                 id="notifications-mark-all"
               >
                 <CheckCheck size={13} /> Mark all read
@@ -94,7 +94,7 @@ export function NotificationBell() {
 
           <div className="max-h-96 overflow-y-auto">
             {notifications.length === 0 ? (
-              <div className="px-4 py-10 text-center text-white/40 text-sm">
+              <div className="px-4 py-10 text-center text-slate-500 text-sm">
                 <Bell size={24} className="mx-auto mb-2 opacity-40" />
                 No notifications yet
               </div>
@@ -103,7 +103,7 @@ export function NotificationBell() {
                 <button
                   key={n.id}
                   onClick={() => handleOpenNotification(n.id, n.link)}
-                  className={`flex items-start gap-3 w-full px-4 py-3 text-left transition-colors hover:bg-white/5 ${
+                  className={`flex items-start gap-3 w-full px-4 py-3 text-left transition-colors hover:bg-slate-100 ${
                     n.readAt ? "opacity-60" : ""
                   }`}
                   id={`notification-${n.id}`}
@@ -112,13 +112,13 @@ export function NotificationBell() {
                     {TYPE_ICONS[n.type] ?? "🔔"}
                   </span>
                   <span className="flex-1 min-w-0">
-                    <span className={`block text-sm truncate ${n.readAt ? "text-white/70" : "text-white font-medium"}`}>
+                    <span className={`block text-sm truncate ${n.readAt ? "text-slate-600" : "text-slate-900 font-medium"}`}>
                       {n.title}
                     </span>
                     {n.body && (
-                      <span className="block text-xs text-white/50 truncate">{n.body}</span>
+                      <span className="block text-xs text-slate-500 truncate">{n.body}</span>
                     )}
-                    <span className="block text-[10px] text-white/30 mt-0.5">{timeAgo(n.createdAt)}</span>
+                    <span className="block text-[10px] text-slate-400 mt-0.5">{timeAgo(n.createdAt)}</span>
                   </span>
                   {!n.readAt && <span className="w-2 h-2 rounded-full bg-brand-400 shrink-0 mt-1.5" />}
                 </button>
@@ -126,11 +126,11 @@ export function NotificationBell() {
             )}
           </div>
 
-          <div className="border-t border-white/10 px-4 py-2.5 flex justify-center">
+          <div className="border-t border-slate-200 px-4 py-2.5 flex justify-center">
             <Link
               href="/profile"
               onClick={() => setOpen(false)}
-              className="text-xs text-white/50 hover:text-white transition-colors"
+              className="text-xs text-slate-500 hover:text-slate-900 transition-colors"
             >
               View profile
             </Link>

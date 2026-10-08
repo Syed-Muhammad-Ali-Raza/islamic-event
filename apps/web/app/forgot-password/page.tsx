@@ -35,16 +35,16 @@ export default function ForgotPasswordPage() {
       <div className="card-glass p-8">
         <Link
           href="/login"
-          className="inline-flex items-center gap-1.5 text-xs text-white/50 hover:text-white transition-colors mb-6"
+          className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 transition-colors mb-6"
         >
           <ArrowLeft size={14} /> Back to sign in
         </Link>
 
         {sent ? (
           <div className="text-center py-4">
-            <CheckCircle2 size={40} className="mx-auto text-green-400 mb-4" />
-            <h1 className="text-xl font-bold text-white mb-2">Check your inbox</h1>
-            <p className="text-white/60 text-sm">
+            <CheckCircle2 size={40} className="mx-auto text-green-600 mb-4" />
+            <h1 className="text-xl font-bold text-slate-900 mb-2">Check your inbox</h1>
+            <p className="text-slate-500 text-sm">
               If an account exists for that email, a password reset link has been sent. The link
               expires in 1 hour.
             </p>
@@ -54,8 +54,8 @@ export default function ForgotPasswordPage() {
           </div>
         ) : (
           <>
-            <h1 className="text-2xl font-bold text-white mb-2">Forgot password?</h1>
-            <p className="text-white/50 text-sm mb-6">
+            <h1 className="text-2xl font-bold text-slate-900 mb-2">Forgot password?</h1>
+            <p className="text-slate-500 text-sm mb-6">
               Enter your email and we&apos;ll send you a link to reset it.
             </p>
 

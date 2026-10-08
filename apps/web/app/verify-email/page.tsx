@@ -38,8 +38,8 @@ function VerifyEmailContent() {
   if (result === "verifying") {
     return (
       <div className="text-center py-8">
-        <Loader2 size={40} className="mx-auto text-brand-400 animate-spin mb-4" />
-        <h1 className="text-xl font-bold text-white">Verifying your email…</h1>
+        <Loader2 size={40} className="mx-auto text-brand-600 animate-spin mb-4" />
+        <h1 className="text-xl font-bold text-slate-900">Verifying your email…</h1>
       </div>
     );
   }
@@ -47,9 +47,9 @@ function VerifyEmailContent() {
   if (result === "verified") {
     return (
       <div className="text-center py-8">
-        <BadgeCheck size={44} className="mx-auto text-green-400 mb-4" />
-        <h1 className="text-2xl font-bold text-white mb-2">Email verified! ✅</h1>
-        <p className="text-white/60 text-sm mb-6">
+        <BadgeCheck size={44} className="mx-auto text-green-600 mb-4" />
+        <h1 className="text-2xl font-bold text-slate-900 mb-2">Email verified! ✅</h1>
+        <p className="text-slate-500 text-sm mb-6">
           Your email address has been confirmed. You&apos;re all set.
         </p>
         <Link href="/" className="btn-primary inline-flex text-sm">
@@ -60,15 +60,15 @@ function VerifyEmailContent() {
   }
 
   const resendSection = (
-    <div className="mt-8 pt-6 border-t border-white/10">
-      <p className="text-white/50 text-sm mb-3">
+    <div className="mt-8 pt-6 border-t border-slate-200">
+      <p className="text-slate-500 text-sm mb-3">
         {result === "missing"
           ? "This page expects a verification token."
           : "The link is invalid or has expired."}{" "}
         Need a new one?
       </p>
       {resend.isSuccess ? (
-        <p className="text-green-400 text-sm">{resend.data.data.message}</p>
+        <p className="text-green-600 text-sm">{resend.data.data.message}</p>
       ) : (
         <form
           onSubmit={(e) => {
@@ -97,11 +97,11 @@ function VerifyEmailContent() {
 
   return (
     <div className="text-center py-8">
-      <AlertTriangle size={40} className="mx-auto text-yellow-400 mb-4" />
-      <h1 className="text-2xl font-bold text-white mb-2">
+      <AlertTriangle size={40} className="mx-auto text-yellow-600 mb-4" />
+      <h1 className="text-2xl font-bold text-slate-900 mb-2">
         {result === "missing" ? "Verification link missing" : "Verification failed"}
       </h1>
-      <p className="text-white/60 text-sm mb-4">
+      <p className="text-slate-500 text-sm mb-4">
         {result === "missing"
           ? "Open the link from your email to verify your address."
           : "We couldn't verify this email address."}

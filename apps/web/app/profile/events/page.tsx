@@ -17,8 +17,8 @@ function MyEventsContent() {
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-white">My Events</h1>
-          <p className="text-white/50 text-sm mt-1">
+          <h1 className="text-3xl font-bold text-slate-900">My Events</h1>
+          <p className="text-slate-500 text-sm mt-1">
             {data?.pagination.total
               ? `${data.pagination.total} event${data.pagination.total === 1 ? "" : "s"} you created`
               : "Events you have submitted"}
@@ -38,8 +38,8 @@ function MyEventsContent() {
       ) : !data || data.data.length === 0 ? (
         <div className="card-glass text-center py-16 px-6">
           <p className="text-5xl mb-4">📅</p>
-          <p className="text-lg font-medium text-white">No events yet</p>
-          <p className="text-white/50 text-sm mt-1">
+          <p className="text-lg font-medium text-slate-900">No events yet</p>
+          <p className="text-slate-500 text-sm mt-1">
             Create your first event and it will be reviewed before going live.
           </p>
           <Link href="/events/create" className="btn-primary mt-5 inline-flex">
@@ -72,20 +72,20 @@ function MyEventsContent() {
               {/* Info */}
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-white font-semibold line-clamp-1 group-hover:text-brand-300 transition-colors">
+                  <h3 className="text-slate-900 font-semibold line-clamp-1 group-hover:text-brand-700 transition-colors">
                     {event.title}
                   </h3>
                   <StatusBadge status={event.status} />
                 </div>
 
-                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-white/50 text-xs">
+                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-slate-500 text-xs">
                   <span className="inline-flex items-center gap-1.5">
-                    <Calendar size={12} className="text-brand-400" />
+                    <Calendar size={12} className="text-brand-600" />
                     {format(new Date(event.date), "dd MMM yyyy")}
                   </span>
                   {(event.venue || event.city) && (
                     <span className="inline-flex items-center gap-1.5 truncate">
-                      <MapPin size={12} className="text-brand-400" />
+                      <MapPin size={12} className="text-brand-600" />
                       {event.venue ?? event.city?.name}
                     </span>
                   )}
@@ -93,12 +93,12 @@ function MyEventsContent() {
                 </div>
 
                 {event.status === "PENDING_REVIEW" && (
-                  <p className="text-yellow-400/80 text-xs mt-2">
+                  <p className="text-yellow-700 text-xs mt-2">
                     Awaiting admin approval — this event is not publicly visible yet.
                   </p>
                 )}
                 {event.status === "REJECTED" && (
-                  <p className="text-red-400/80 text-xs mt-2">
+                  <p className="text-red-600 text-xs mt-2">
                     This event was rejected by a moderator. Please review the guidelines and create a new one.
                   </p>
                 )}
@@ -117,7 +117,7 @@ function MyEventsContent() {
           >
             ← Previous
           </button>
-          <span className="text-white/40 text-sm">
+          <span className="text-slate-500 text-sm">
             Page {data.pagination.page} of {data.pagination.totalPages}
           </span>
           <button

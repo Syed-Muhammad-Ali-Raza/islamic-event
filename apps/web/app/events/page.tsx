@@ -47,8 +47,8 @@ function EventsContent() {
     <div className="container-page py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Events</h1>
-        <p className="text-white/50 text-sm">
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Events</h1>
+        <p className="text-slate-500 text-sm">
           {data?.pagination.total
             ? `${data.pagination.total} events found`
             : "Discover religious and community events"}
@@ -58,7 +58,7 @@ function EventsContent() {
       {/* Search & filter bar */}
       <div className="flex gap-3 mb-6">
         <div className="flex-1 flex items-center gap-3 input px-4 py-3">
-          <Search size={16} className="text-brand-400 shrink-0" />
+          <Search size={16} className="text-brand-600 shrink-0" />
           <input
             id="events-search"
             type="text"
@@ -66,10 +66,10 @@ function EventsContent() {
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && applyFilters()}
             placeholder="Search events…"
-            className="flex-1 bg-transparent text-white placeholder-white/30 text-sm focus:outline-none"
+            className="flex-1 bg-transparent text-slate-900 placeholder-slate-400 text-sm focus:outline-none"
           />
           {search && (
-            <button onClick={() => { setSearch(""); applyFilters(); }} className="text-white/40 hover:text-white transition-colors">
+            <button onClick={() => { setSearch(""); applyFilters(); }} className="text-slate-500 hover:text-slate-900 transition-colors">
               <X size={14} />
             </button>
           )}
@@ -113,7 +113,7 @@ function EventsContent() {
           <div className="flex gap-3 mt-4">
             <button onClick={applyFilters} className="btn-primary text-sm py-2">Apply Filters</button>
             {hasFilters && (
-              <button onClick={clearFilters} className="btn-ghost text-sm text-white/50">Clear All</button>
+              <button onClick={clearFilters} className="btn-ghost text-sm text-slate-500">Clear All</button>
             )}
           </div>
         </div>
@@ -125,7 +125,7 @@ function EventsContent() {
           ? Array.from({ length: 12 }).map((_, i) => <EventCardSkeleton key={i} />)
           : data?.data.length === 0
             ? (
-                <div className="col-span-full text-center py-20 text-white/40">
+                <div className="col-span-full text-center py-20 text-slate-500">
                   <p className="text-5xl mb-4">🔍</p>
                   <p className="text-lg font-medium">No events found</p>
                   <p className="text-sm mt-1">Try different search terms or clear your filters.</p>
@@ -150,7 +150,7 @@ function EventsContent() {
           >
             ← Previous
           </button>
-          <span className="text-white/40 text-sm">
+          <span className="text-slate-500 text-sm">
             Page {data.pagination.page} of {data.pagination.totalPages}
           </span>
           <button

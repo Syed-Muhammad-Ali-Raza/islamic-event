@@ -17,17 +17,17 @@ function ProfileContent() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold text-white mb-6">Profile</h1>
+      <h1 className="text-3xl font-bold text-slate-900 mb-6">Profile</h1>
 
       {/* Identity card */}
       <div className="card-glass p-6 sm:p-8">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-600 to-purple-500 flex items-center justify-center text-white text-2xl font-bold shrink-0">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-600 to-brand-400 flex items-center justify-center text-white text-2xl font-bold shrink-0">
             {user?.name?.charAt(0).toUpperCase() ?? "U"}
           </div>
           <div className="min-w-0">
-            <h2 className="text-xl font-semibold text-white truncate">{user?.name}</h2>
-            <p className="text-white/50 text-sm truncate">{user?.email}</p>
+            <h2 className="text-xl font-semibold text-slate-900 truncate">{user?.name}</h2>
+            <p className="text-slate-500 text-sm truncate">{user?.email}</p>
             <div className="mt-1.5">
               <span
                 className={
@@ -35,7 +35,7 @@ function ProfileContent() {
                     ? "badge-brand text-[11px]"
                     : user?.role === "ORGANIZER"
                       ? "badge-gold text-[11px]"
-                      : "badge text-[11px] bg-white/10 text-white/60 border border-white/10"
+                      : "badge text-[11px] bg-slate-100 text-slate-500 border border-slate-200"
                 }
               >
                 {user?.role}
@@ -48,12 +48,12 @@ function ProfileContent() {
 
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
-            <dt className="text-white/40 text-xs uppercase tracking-wider mb-1">Phone</dt>
-            <dd className="text-white/90">{user?.phone ?? "Not provided"}</dd>
+            <dt className="text-slate-500 text-xs uppercase tracking-wider mb-1">Phone</dt>
+            <dd className="text-slate-800">{user?.phone ?? "Not provided"}</dd>
           </div>
           <div>
-            <dt className="text-white/40 text-xs uppercase tracking-wider mb-1">Member Since</dt>
-            <dd className="text-white/90">
+            <dt className="text-slate-500 text-xs uppercase tracking-wider mb-1">Member Since</dt>
+            <dd className="text-slate-800">
               {user?.createdAt ? format(new Date(user.createdAt), "MMMM yyyy") : "—"}
             </dd>
           </div>
@@ -70,8 +70,8 @@ function ProfileContent() {
               href={stat.href}
               className="card-glass p-5 hover:border-brand-600/40 transition-all group text-center"
             >
-              <Icon size={20} className="mx-auto text-brand-400 mb-2 group-hover:scale-110 transition-transform" />
-              <p className="text-white text-sm font-medium">{stat.label}</p>
+              <Icon size={20} className="mx-auto text-brand-600 mb-2 group-hover:scale-110 transition-transform" />
+              <p className="text-slate-900 text-sm font-medium">{stat.label}</p>
             </Link>
           );
         })}

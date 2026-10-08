@@ -15,7 +15,7 @@ export function Input({ label, error, hint, className, id, ...props }: InputProp
       {label && (
         <label htmlFor={id} className="label">
           {label}
-          {props.required && <span className="text-red-400 ml-0.5">*</span>}
+          {props.required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
       )}
       <input
@@ -31,7 +31,7 @@ export function Input({ label, error, hint, className, id, ...props }: InputProp
         </p>
       )}
       {hint && !error && (
-        <p className="text-white/40 text-xs mt-1">{hint}</p>
+        <p className="text-slate-500 text-xs mt-1">{hint}</p>
       )}
     </div>
   );
@@ -51,7 +51,7 @@ export function Textarea({ label, error, hint, className, id, ...props }: Textar
       {label && (
         <label htmlFor={id} className="label">
           {label}
-          {props.required && <span className="text-red-400 ml-0.5">*</span>}
+          {props.required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
       )}
       <textarea
@@ -63,7 +63,7 @@ export function Textarea({ label, error, hint, className, id, ...props }: Textar
       />
       {error && <p className="form-error">{error}</p>}
       {hint && !error && (
-        <p className="text-white/40 text-xs mt-1">{hint}</p>
+        <p className="text-slate-500 text-xs mt-1">{hint}</p>
       )}
     </div>
   );
@@ -84,7 +84,7 @@ export function Select({ label, error, options, placeholder, className, id, ...p
       {label && (
         <label htmlFor={id} className="label">
           {label}
-          {props.required && <span className="text-red-400 ml-0.5">*</span>}
+          {props.required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
       )}
       <select

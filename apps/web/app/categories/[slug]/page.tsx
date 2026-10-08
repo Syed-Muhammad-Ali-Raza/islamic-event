@@ -45,13 +45,13 @@ export default async function CategoryDetailPage({ params }: Props) {
       {/* Header */}
       <div className="card-glass p-6 sm:p-8 mb-8 text-center">
         <div className="text-5xl mb-3">{CATEGORY_ICONS[category.slug] ?? "📅"}</div>
-        <h1 className="text-3xl font-bold text-white">{category.name}</h1>
+        <h1 className="text-3xl font-bold text-slate-900">{category.name}</h1>
         {category.description && (
-          <p className="text-white/50 text-sm mt-2 max-w-xl mx-auto leading-relaxed">
+          <p className="text-slate-500 text-sm mt-2 max-w-xl mx-auto leading-relaxed">
             {category.description}
           </p>
         )}
-        <p className="text-brand-300 text-sm mt-3">
+        <p className="text-brand-700 text-sm mt-3">
           {events?.pagination?.total ?? eventList.length} event
           {(events?.pagination?.total ?? eventList.length) === 1 ? "" : "s"} found
         </p>
@@ -59,7 +59,7 @@ export default async function CategoryDetailPage({ params }: Props) {
 
       {/* Events */}
       {eventList.length === 0 ? (
-        <div className="text-center py-16 text-white/40">
+        <div className="text-center py-16 text-slate-500">
           <p className="text-4xl mb-3">🌙</p>
           <p className="text-lg font-medium">No {category.name} events right now</p>
           <p className="text-sm mt-1">Check back soon — or be the first to publish one.</p>

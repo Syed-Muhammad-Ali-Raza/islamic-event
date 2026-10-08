@@ -60,7 +60,7 @@ export function EventCard({ event, className }: Props) {
         {/* Past event overlay */}
         {isPast && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span className="text-white/60 text-xs font-medium bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm">
+            <span className="text-white/70 text-xs font-medium bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm">
               Event Ended
             </span>
           </div>
@@ -69,25 +69,25 @@ export function EventCard({ event, className }: Props) {
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="font-semibold text-white text-sm leading-snug line-clamp-2 group-hover:text-brand-300 transition-colors">
+        <h3 className="font-semibold text-slate-900 text-sm leading-snug line-clamp-2 group-hover:text-brand-600 transition-colors">
           {event.title}
         </h3>
 
         <div className="mt-3 space-y-1.5">
-          <div className="flex items-center gap-1.5 text-white/50 text-xs">
-            <Calendar size={12} className="shrink-0 text-brand-400" />
+          <div className="flex items-center gap-1.5 text-slate-500 text-xs">
+            <Calendar size={12} className="shrink-0 text-brand-600" />
             <span>{formattedDate}</span>
             {event.startTime && (
               <>
-                <Clock size={12} className="shrink-0 text-brand-400 ml-1" />
+                <Clock size={12} className="shrink-0 text-brand-600 ml-1" />
                 <span>{event.startTime}</span>
               </>
             )}
           </div>
 
           {(event.venue ?? event.city) && (
-            <div className="flex items-center gap-1.5 text-white/50 text-xs">
-              <MapPin size={12} className="shrink-0 text-brand-400" />
+            <div className="flex items-center gap-1.5 text-slate-500 text-xs">
+              <MapPin size={12} className="shrink-0 text-brand-600" />
               <span className="line-clamp-1">
                 {event.venue ?? event.city?.name}
               </span>
@@ -97,7 +97,7 @@ export function EventCard({ event, className }: Props) {
 
         {/* Organizer */}
         {event.organizer && (
-          <div className="mt-3 pt-3 border-t border-white/5 flex items-center gap-2">
+          <div className="mt-3 pt-3 border-t border-slate-200 flex items-center gap-2">
             {event.organizer.logoUrl ? (
               <Image
                 src={event.organizer.logoUrl}
@@ -111,7 +111,7 @@ export function EventCard({ event, className }: Props) {
                 {event.organizer.name.charAt(0)}
               </div>
             )}
-            <span className="text-white/40 text-xs truncate">{event.organizer.name}</span>
+            <span className="text-slate-500 text-xs truncate">{event.organizer.name}</span>
           </div>
         )}
       </div>

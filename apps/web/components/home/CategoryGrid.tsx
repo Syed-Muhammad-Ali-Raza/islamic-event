@@ -10,10 +10,10 @@ export function CategoryGrid() {
   return (
     <section aria-labelledby="categories-heading">
       <div className="flex items-center justify-between mb-8">
-        <h2 id="categories-heading" className="text-2xl font-bold text-white">
+        <h2 id="categories-heading" className="text-2xl font-bold text-slate-900">
           Browse by Category
         </h2>
-        <Link href="/categories" className="text-brand-400 hover:text-brand-300 text-sm transition-colors">
+        <Link href="/categories" className="text-brand-600 hover:text-brand-700 text-sm transition-colors">
           View all →
         </Link>
       </div>
@@ -36,7 +36,7 @@ export function CategoryGrid() {
                 <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-200">
                   {CATEGORY_ICONS[cat.slug] ?? "📅"}
                 </div>
-                <p className="text-white/70 group-hover:text-white text-xs font-medium leading-tight transition-colors">
+                <p className="text-slate-600 group-hover:text-slate-900 text-xs font-medium leading-tight transition-colors">
                   {cat.name}
                 </p>
               </Link>

@@ -11,10 +11,10 @@ export function FeaturedEvents() {
   return (
     <section aria-labelledby="upcoming-events-heading">
       <div className="flex items-center justify-between mb-8">
-        <h2 id="upcoming-events-heading" className="text-2xl font-bold text-white">
+        <h2 id="upcoming-events-heading" className="text-2xl font-bold text-slate-900">
           Upcoming Events
         </h2>
-        <Link href="/events" className="text-brand-400 hover:text-brand-300 text-sm transition-colors">
+        <Link href="/events" className="text-brand-600 hover:text-brand-700 text-sm transition-colors">
           View all →
         </Link>
       </div>
@@ -24,7 +24,7 @@ export function FeaturedEvents() {
           ? Array.from({ length: 6 }).map((_, i) => <EventCardSkeleton key={i} />)
           : data?.data.length === 0
             ? (
-                <div className="col-span-full text-center py-16 text-white/40">
+                <div className="col-span-full text-center py-16 text-slate-500">
                   <p className="text-4xl mb-3">📅</p>
                   <p>No upcoming events. Be the first to add one!</p>
                   <Link href="/events/create" className="btn-primary mt-4 inline-flex">

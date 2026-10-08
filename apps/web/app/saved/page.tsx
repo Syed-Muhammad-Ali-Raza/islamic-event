@@ -18,11 +18,11 @@ function SavedEventsList() {
   return (
     <div className="container-page py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-          <Bookmark size={26} className="text-brand-400" />
+        <h1 className="text-3xl font-bold text-slate-900 mb-2 flex items-center gap-3">
+          <Bookmark size={26} className="text-brand-600" />
           Saved Events
         </h1>
-        <p className="text-white/50 text-sm">
+        <p className="text-slate-500 text-sm">
           {data?.pagination.total
             ? `${data.pagination.total} saved event${data.pagination.total === 1 ? "" : "s"}`
             : "Events you bookmark for later"}
@@ -36,7 +36,7 @@ function SavedEventsList() {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="text-center py-20 text-white/40">
+        <div className="text-center py-20 text-slate-500">
           <p className="text-5xl mb-4">🔖</p>
           <p className="text-lg font-medium">No saved events yet</p>
           <p className="text-sm mt-1">
@@ -59,7 +59,7 @@ function SavedEventsList() {
                 }}
                 disabled={unsave.isPending}
                 aria-label={`Remove ${event.title} from saved`}
-                className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white/70 hover:text-red-400 hover:border-red-500/40 transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100 disabled:opacity-40"
+                className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white/80 hover:text-red-600 hover:border-red-500/40 transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100 disabled:opacity-40"
               >
                 <Trash2 size={14} />
               </button>
@@ -77,7 +77,7 @@ function SavedEventsList() {
           >
             ← Previous
           </button>
-          <span className="text-white/40 text-sm">
+          <span className="text-slate-500 text-sm">
             Page {data.pagination.page} of {data.pagination.totalPages}
           </span>
           <button

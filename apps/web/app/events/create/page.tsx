@@ -151,16 +151,16 @@ function CreateEventContent() {
     return (
       <div className="max-w-xl mx-auto text-center py-10">
         <div className="w-16 h-16 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center mx-auto mb-5">
-          <Check size={30} className="text-green-400" />
+          <Check size={30} className="text-green-600" />
         </div>
-        <h1 className="text-2xl font-bold text-white mb-2">Event submitted! 🎉</h1>
-        <p className="text-white/60 text-sm leading-relaxed">
-          Your event <span className="text-white font-medium">“{getValues("title")}”</span> is now pending
+        <h1 className="text-2xl font-bold text-slate-900 mb-2">Event submitted! 🎉</h1>
+        <p className="text-slate-500 text-sm leading-relaxed">
+          Your event <span className="text-slate-900 font-medium">“{getValues("title")}”</span> is now pending
           review. An admin will approve it shortly, and it will appear on the public events feed.
         </p>
 
         {done.posterFailed && (
-          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mt-5 text-yellow-400 text-sm">
+          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mt-5 text-yellow-600 text-sm">
             The event was created, but the poster upload failed. You can edit the event later to add it.
           </div>
         )}
@@ -189,8 +189,8 @@ function CreateEventContent() {
     <div className="max-w-3xl mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Create Event</h1>
-        <p className="text-white/50 text-sm">
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Create Event</h1>
+        <p className="text-slate-500 text-sm">
           Share your religious or community event with the world
         </p>
       </div>
@@ -217,8 +217,8 @@ function CreateEventContent() {
                   className={clsx(
                     "w-10 h-10 rounded-full flex items-center justify-center border transition-all duration-200",
                     isDone && "bg-brand-600 border-brand-500 text-white",
-                    isCurrent && "border-brand-500 bg-brand-600/20 text-brand-300 ring-2 ring-brand-500/40",
-                    i > step && "border-white/15 text-white/30"
+                    isCurrent && "border-brand-500 bg-brand-600/20 text-brand-700 ring-2 ring-brand-500/40",
+                    i > step && "border-slate-200 text-slate-400"
                   )}
                 >
                   {isDone ? <Check size={16} /> : <Icon size={16} />}
@@ -226,7 +226,7 @@ function CreateEventContent() {
                 <span
                   className={clsx(
                     "text-[11px] font-medium hidden sm:block",
-                    isCurrent ? "text-brand-300" : isDone ? "text-white/60" : "text-white/30"
+                    isCurrent ? "text-brand-700" : isDone ? "text-slate-500" : "text-slate-400"
                   )}
                 >
                   {s.label}
@@ -237,7 +237,7 @@ function CreateEventContent() {
                 <div
                   className={clsx(
                     "flex-1 h-px mx-2 sm:mx-4 mb-6 sm:mb-0 transition-colors",
-                    i < step ? "bg-brand-500" : "bg-white/10"
+                    i < step ? "bg-brand-500" : "bg-slate-100"
                   )}
                 />
               )}
@@ -248,7 +248,7 @@ function CreateEventContent() {
 
       {/* Error banner */}
       {submitError && (
-        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 mb-5 text-red-400 text-sm">
+        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 mb-5 text-red-500 text-sm">
           {submitError}
         </div>
       )}
@@ -342,7 +342,7 @@ function CreateEventContent() {
           <div className="animate-slide-up">
             <label className="label">Event Poster</label>
             {posterPreview ? (
-              <div className="relative rounded-2xl overflow-hidden border border-white/10 group">
+              <div className="relative rounded-2xl overflow-hidden border border-slate-200 group">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={posterPreview}
@@ -352,7 +352,7 @@ function CreateEventContent() {
                 <button
                   type="button"
                   onClick={() => onFileChange(null)}
-                  className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white/80 hover:text-red-400 transition-colors"
+                  className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white/80 hover:text-red-600 transition-colors"
                   aria-label="Remove poster"
                 >
                   <X size={15} />
@@ -362,7 +362,7 @@ function CreateEventContent() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full border-2 border-dashed border-white/15 hover:border-brand-500/60 rounded-2xl py-12 flex flex-col items-center gap-3 text-white/40 hover:text-brand-300 transition-colors"
+                className="w-full border-2 border-dashed border-slate-200 hover:border-brand-500/60 rounded-2xl py-12 flex flex-col items-center gap-3 text-slate-500 hover:text-brand-700 transition-colors"
               >
                 <ImagePlus size={32} />
                 <span className="text-sm font-medium">Click to upload a poster</span>
@@ -379,7 +379,7 @@ function CreateEventContent() {
             />
 
             {posterError && <p className="form-error">{posterError}</p>}
-            <p className="text-white/40 text-xs mt-3">
+            <p className="text-slate-500 text-xs mt-3">
               Tip: a 4:3 landscape image with the event name, date and venue works best.
             </p>
           </div>
@@ -388,7 +388,7 @@ function CreateEventContent() {
         {/* ── Step 4: Review ── */}
         {step === 3 && (
           <div className="animate-slide-up">
-            <h2 className="text-lg font-semibold text-white mb-4">Review your event</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">Review your event</h2>
 
             <div className="space-y-3 text-sm">
               <ReviewRow label="Title" value={watchedValues.title} />
@@ -426,7 +426,7 @@ function CreateEventContent() {
         )}
 
         {/* ── Navigation ── */}
-        <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/10">
+        <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-200">
           <button
             type="button"
             onClick={goBack}
@@ -464,8 +464,8 @@ function CreateEventContent() {
 function ReviewRow({ label, value, multiline }: { label: string; value?: string; multiline?: boolean }) {
   return (
     <div className={clsx("flex gap-3", multiline && "flex-col")}>
-      <span className="text-white/40 w-28 shrink-0">{label}</span>
-      <span className={clsx("text-white/90", multiline && "whitespace-pre-line")}>{value || "—"}</span>
+      <span className="text-slate-500 w-28 shrink-0">{label}</span>
+      <span className={clsx("text-slate-800", multiline && "whitespace-pre-line")}>{value || "—"}</span>
     </div>
   );
 }

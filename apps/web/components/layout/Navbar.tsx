@@ -25,16 +25,16 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-white/10">
+    <header className="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-slate-200">
       <div className="container-page">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-purple-400 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">CE</span>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-gold-500 flex items-center justify-center">
+              <span className="text-slate-900 font-bold text-sm">CE</span>
             </div>
-            <span className="font-bold text-white hidden sm:block">
-              Community<span className="text-brand-400">Events</span>
+            <span className="font-bold text-slate-900 hidden sm:block">
+              Community<span className="text-brand-600">Events</span>
             </span>
           </Link>
 
@@ -80,33 +80,33 @@ export function Navbar() {
 
                   {userMenuOpen && (
                     <div className="absolute right-0 top-11 w-52 card-glass py-2 shadow-2xl animate-scale-in">
-                      <div className="px-4 py-2 border-b border-white/10">
-                        <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
-                        <p className="text-xs text-white/50 truncate">{user?.email}</p>
+                      <div className="px-4 py-2 border-b border-slate-200">
+                        <p className="text-sm font-semibold text-slate-900 truncate">{user?.name}</p>
+                        <p className="text-xs text-slate-500 truncate">{user?.email}</p>
                       </div>
 
-                      <Link href="/profile" className="flex items-center gap-2 px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setUserMenuOpen(false)}>
+                      <Link href="/profile" className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors" onClick={() => setUserMenuOpen(false)}>
                         <User size={15} /> {t("nav.profile")}
                       </Link>
 
-                      <Link href="/saved" className="flex items-center gap-2 px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setUserMenuOpen(false)}>
+                      <Link href="/saved" className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors" onClick={() => setUserMenuOpen(false)}>
                         <Bookmark size={15} /> {t("nav.savedEvents")}
                       </Link>
 
-                      <Link href="/profile/events" className="flex items-center gap-2 px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors" onClick={() => setUserMenuOpen(false)}>
+                      <Link href="/profile/events" className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors" onClick={() => setUserMenuOpen(false)}>
                         <LayoutDashboard size={15} /> {t("nav.myEvents")}
                       </Link>
 
                       {user?.role === "ADMIN" && (
-                        <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-brand-300 hover:text-brand-200 hover:bg-white/5 transition-colors" onClick={() => setUserMenuOpen(false)}>
+                        <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-brand-700 hover:text-brand-800 hover:bg-slate-100 transition-colors" onClick={() => setUserMenuOpen(false)}>
                           <LayoutDashboard size={15} /> {t("nav.adminPanel")}
                         </Link>
                       )}
 
-                      <div className="border-t border-white/10 mt-1 pt-1">
+                      <div className="border-t border-slate-200 mt-1 pt-1">
                         <button
                           onClick={() => { logout.mutate(); setUserMenuOpen(false); }}
-                          className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-white/5 transition-colors"
+                          className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-500 hover:text-red-700 hover:bg-slate-100 transition-colors"
                           id="logout-button"
                         >
                           <LogOut size={15} /> {t("nav.signOut")}
@@ -137,23 +137,23 @@ export function Navbar() {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="md:hidden border-t border-white/10 py-3 space-y-1 animate-slide-up">
+          <div className="md:hidden border-t border-slate-200 py-3 space-y-1 animate-slide-up">
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="block px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition-colors" onClick={() => setMobileOpen(false)}>
+              <Link key={link.href} href={link.href} className="block px-3 py-2 text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors" onClick={() => setMobileOpen(false)}>
                 {link.label}
               </Link>
             ))}
             {isAuthenticated && (
-              <Link href="/events/create" className="block px-3 py-2 text-sm text-brand-400 font-medium hover:bg-white/5 rounded-lg transition-colors" onClick={() => setMobileOpen(false)}>
+              <Link href="/events/create" className="block px-3 py-2 text-sm text-brand-600 font-medium hover:bg-slate-100 rounded-lg transition-colors" onClick={() => setMobileOpen(false)}>
                 + {t("nav.addEvent")}
               </Link>
             )}
             {isAuthenticated && (
-              <Link href="/saved" className="block px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition-colors" onClick={() => setMobileOpen(false)}>
+              <Link href="/saved" className="block px-3 py-2 text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors" onClick={() => setMobileOpen(false)}>
                 {t("nav.savedEvents")}
               </Link>
             )}
-            <div className="pt-2 border-t border-white/10 mt-2 flex items-center justify-between gap-2">
+            <div className="pt-2 border-t border-slate-200 mt-2 flex items-center justify-between gap-2">
               <span className="text-xs">
                 <LocationIndicator variant="full" />
               </span>

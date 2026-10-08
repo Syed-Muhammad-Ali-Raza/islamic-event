@@ -55,6 +55,26 @@ export async function me(req: Request, res: Response, next: NextFunction): Promi
   }
 }
 
+// ─── Profile settings ─────────────────────────────────────────────────────────
+
+export async function updateProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const user = await AuthService.updateProfile(req.user!.id, req.body);
+    sendSuccess({ res, data: user, message: "Profile updated successfully." });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function changePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await AuthService.changePassword(req.user!.id, req.body);
+    sendSuccess({ res, data: result, message: "Password changed successfully." });
+  } catch (err) {
+    next(err);
+  }
+}
+
 // ─── Email verification ───────────────────────────────────────────────────────
 
 export async function verifyEmail(req: Request, res: Response, next: NextFunction): Promise<void> {

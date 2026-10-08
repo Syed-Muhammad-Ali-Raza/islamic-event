@@ -2,12 +2,75 @@
 
 import Link from "next/link";
 import { format } from "date-fns";
-import { Bookmark, CalendarClock, PlusCircle, Settings, ShieldCheck } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Bookmark, CalendarClock, CheckCircle2, KeyRound, PlusCircle, Settings, ShieldCheck, UserRound } from "lucide-react";
 import { useAuthStore } from "@/stores/auth.store";
 import { AuthGuard } from "@/components/auth/AuthGuard";
+import { Input } from "@/components/ui/FormField";
+import { useUpdateProfile, useChangePassword } from "@/hooks/useAuth";
+
+const ProfileSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name must be under 100 characters"),
+  phone: z
+    .string()
+    .refine((v) => v === "" || /^\+?[0-9\s\-()]{7,20}$/.test(v), "Please enter a valid phone number"),
+});
+
+type ProfileForm = z.infer<typeof ProfileSchema>;
+
+const PasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(72, "Password must be under 72 characters"),
+    confirmPassword: z.string().min(1, "Confirm your new password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+type PasswordForm = z.infer<typeof PasswordSchema>;
+
+function apiErrorMessage(error: unknown, fallback: string): string {
+  return (
+    (error as { response?: { data?: { message?: string } } })?.response?.data?.message ?? fallback
+  );
+}
 
 function ProfileContent() {
   const { user } = useAuthStore();
+  const update = useUpdateProfile();
+  const passwordMutation = useChangePassword();
+
+  const profile = useForm<ProfileForm>({
+    resolver: zodResolver(ProfileSchema),
+    defaultValues: { name: user?.name ?? "", phone: user?.phone ?? "" },
+  });
+
+  const password = useForm<PasswordForm>({
+    resolver: zodResolver(PasswordSchema),
+    defaultValues: { currentPassword: "", password: "", confirmPassword: "" },
+  });
+
+  const onProfileSubmit = async (data: ProfileForm) => {
+    await update.mutateAsync({ name: data.name, phone: data.phone || undefined });
+  };
+
+  const onPasswordSubmit = async (data: PasswordForm) => {
+    await passwordMutation.mutateAsync({
+      currentPassword: data.currentPassword,
+      password: data.password,
+    });
+    password.reset();
+  };
 
   const stats = [
     { label: "My Events", icon: CalendarClock, href: "/profile/events" },
@@ -58,6 +121,128 @@ function ProfileContent() {
             </dd>
           </div>
         </dl>
+      </div>
+
+      {/* Edit profile */}
+      <div className="card-glass p-6 sm:p-8 mt-6">
+        <div className="flex items-center gap-2 mb-5">
+          <UserRound size={18} className="text-brand-600" />
+          <h2 className="text-lg font-semibold text-slate-900">Edit Profile</h2>
+        </div>
+
+        {update.isSuccess && (
+          <div
+            id="profile-update-success"
+            className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3 mb-5 text-emerald-700 text-sm"
+          >
+            <CheckCircle2 size={15} className="shrink-0" /> Profile updated successfully.
+          </div>
+        )}
+        {update.isError && (
+          <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 mb-5 text-red-500 text-sm">
+            {apiErrorMessage(update.error, "Could not update profile. Please try again.")}
+          </div>
+        )}
+
+        <form
+          id="profile-form"
+          onSubmit={profile.handleSubmit(onProfileSubmit)}
+          className="space-y-4"
+          noValidate
+        >
+          <Input
+            id="profile-name"
+            label="Display name"
+            placeholder="Your name"
+            error={profile.formState.errors.name?.message}
+            {...profile.register("name")}
+          />
+          <Input
+            id="profile-phone"
+            label="Phone (optional)"
+            type="tel"
+            placeholder="+92 300 1234567"
+            error={profile.formState.errors.phone?.message}
+            {...profile.register("phone")}
+          />
+          <div className="flex justify-end">
+            <button
+              id="profile-save"
+              type="submit"
+              disabled={profile.formState.isSubmitting || update.isPending}
+              className="btn-primary text-sm py-2.5"
+            >
+              {update.isPending ? "Saving…" : "Save Changes"}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Change password */}
+      <div className="card-glass p-6 sm:p-8 mt-6">
+        <div className="flex items-center gap-2 mb-5">
+          <KeyRound size={18} className="text-brand-600" />
+          <h2 className="text-lg font-semibold text-slate-900">Change Password</h2>
+        </div>
+
+        {passwordMutation.isSuccess && (
+          <div
+            id="password-change-success"
+            className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3 mb-5 text-emerald-700 text-sm"
+          >
+            <CheckCircle2 size={15} className="shrink-0" /> Password changed successfully.
+          </div>
+        )}
+        {passwordMutation.isError && (
+          <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 mb-5 text-red-500 text-sm">
+            {apiErrorMessage(passwordMutation.error, "Could not change password. Please try again.")}
+          </div>
+        )}
+
+        <form
+          id="password-form"
+          onSubmit={password.handleSubmit(onPasswordSubmit)}
+          className="space-y-4"
+          noValidate
+        >
+          <Input
+            id="password-current"
+            label="Current password"
+            type="password"
+            autoComplete="current-password"
+            placeholder="••••••••"
+            error={password.formState.errors.currentPassword?.message}
+            {...password.register("currentPassword")}
+          />
+          <Input
+            id="password-new"
+            label="New password"
+            type="password"
+            autoComplete="new-password"
+            placeholder="••••••••"
+            error={password.formState.errors.password?.message}
+            {...password.register("password")}
+          />
+          <Input
+            id="password-confirm"
+            label="Confirm new password"
+            type="password"
+            autoComplete="new-password"
+            placeholder="••••••••"
+            error={password.formState.errors.confirmPassword?.message}
+            {...password.register("confirmPassword")}
+          />
+          <div className="flex justify-end">
+            <button
+              id="password-save"
+              type="submit"
+              disabled={password.formState.isSubmitting || passwordMutation.isPending}
+              className="btn-primary text-sm py-2.5"
+            >
+              {passwordMutation.isPending ? "Updating…" : "Update Password"}
+            </button>
+          </div>
+        </form>
       </div>
 
       {/* Quick links */}

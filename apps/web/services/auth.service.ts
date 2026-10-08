@@ -40,4 +40,14 @@ export const authService = {
     const res = await apiClient.post<ApiSuccess<{ message: string }>>("/auth/resend-verification", data);
     return res.data;
   },
+
+  async updateProfile(data: { name: string; phone?: string }) {
+    const res = await apiClient.patch<ApiSuccess<User>>("/auth/me", data);
+    return res.data.data;
+  },
+
+  async changePassword(data: { currentPassword: string; password: string }) {
+    const res = await apiClient.post<ApiSuccess<{ success: boolean }>>("/auth/change-password", data);
+    return res.data.data;
+  },
 };

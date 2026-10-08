@@ -47,3 +47,28 @@ export function useLogout() {
     },
   });
 }
+
+export function useUpdateProfile() {
+  const { setUser, user } = useAuthStore();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { name: string; phone?: string }) => authService.updateProfile(data),
+    onSuccess: (updated) => {
+      setUser({ ...user!, ...updated });
+      queryClient.invalidateQueries();
+    },
+  });
+}
+
+export function useChangePassword() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { currentPassword: string; password: string }) =>
+      authService.changePassword(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+  });
+}

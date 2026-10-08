@@ -198,6 +198,108 @@ describe("Password reset flow", () => {
   });
 });
 
+describe("PATCH /api/v1/auth/me (profile settings)", () => {
+  it("updates name and phone", async () => {
+    const user = await registerUser("update");
+    const res = await api()
+      .patch("/api/v1/auth/me")
+      .set(authHeader(user.token))
+      .send({ name: "Updated Name", phone: "+92 300 1234567" });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.name).toBe("Updated Name");
+    expect(res.body.data.phone).toBe("+92 300 1234567");
+    expect(res.body.data.passwordHash).toBeUndefined();
+
+    const me = await api().get("/api/v1/auth/me").set(authHeader(user.token));
+    expect(me.body.data.name).toBe("Updated Name");
+  });
+
+  it("clears the phone when an empty string is sent", async () => {
+    const user = await registerUser("clearphone");
+    await api()
+      .patch("/api/v1/auth/me")
+      .set(authHeader(user.token))
+      .send({ name: user.name, phone: "+92 300 1234567" });
+
+    const res = await api()
+      .patch("/api/v1/auth/me")
+      .set(authHeader(user.token))
+      .send({ name: user.name, phone: "" });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.phone).toBeNull();
+  });
+
+  it("rejects an invalid payload with 422", async () => {
+    const user = await registerUser("update422");
+    const res = await api()
+      .patch("/api/v1/auth/me")
+      .set(authHeader(user.token))
+      .send({ name: "X", phone: "not-a-phone" });
+    expect(res.status).toBe(422);
+  });
+
+  it("rejects a missing token with 401", async () => {
+    const res = await api().patch("/api/v1/auth/me").send({ name: "No Token" });
+    expect(res.status).toBe(401);
+  });
+});
+
+describe("POST /api/v1/auth/change-password", () => {
+  it("changes the password and notifies the user", async () => {
+    const user = await registerUser("changepw");
+    const res = await api()
+      .post("/api/v1/auth/change-password")
+      .set(authHeader(user.token))
+      .send({ currentPassword: user.password, password: "BrandNewPass123!" });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.success).toBe(true);
+
+    const oldLogin = await api()
+      .post("/api/v1/auth/login")
+      .send({ email: user.email, password: user.password });
+    expect(oldLogin.status).toBe(401);
+
+    const newLogin = await api()
+      .post("/api/v1/auth/login")
+      .send({ email: user.email, password: "BrandNewPass123!" });
+    expect(newLogin.status).toBe(200);
+
+    const notifications = await api()
+      .get("/api/v1/notifications")
+      .set(authHeader(user.token));
+    const titles = notifications.body.data.map((n: { title: string }) => n.title);
+    expect(titles).toContain("Your password was changed");
+  });
+
+  it("rejects a wrong current password with 401", async () => {
+    const user = await registerUser("wrongcurrent");
+    const res = await api()
+      .post("/api/v1/auth/change-password")
+      .set(authHeader(user.token))
+      .send({ currentPassword: "NotTheRealOne1!", password: "BrandNewPass123!" });
+    expect(res.status).toBe(401);
+  });
+
+  it("rejects a weak new password with 422", async () => {
+    const user = await registerUser("weakpw");
+    const res = await api()
+      .post("/api/v1/auth/change-password")
+      .set(authHeader(user.token))
+      .send({ currentPassword: user.password, password: "short" });
+    expect(res.status).toBe(422);
+  });
+
+  it("rejects a missing token with 401", async () => {
+    const res = await api()
+      .post("/api/v1/auth/change-password")
+      .send({ currentPassword: "x", password: "BrandNewPass123!" });
+    expect(res.status).toBe(401);
+  });
+});
+
 describe("Database hygiene", () => {
   it("stores only hashed passwords", async () => {
     const user = await registerUser("hash");

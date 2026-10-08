@@ -136,6 +136,7 @@ See `.env.example` for all required variables.
 - [x] Phase 10: SEO + Performance
 - [x] Phase 11: Testing & CI (Jest API suites, Vitest i18n tests, GitHub Actions)
 - [x] Phase 12: Email & Notifications (verification, password reset, moderation emails, in-app notifications)
+- [x] Phase 13: Profile & Account Settings (edit name/phone, change password with notification)
 
 ---
 

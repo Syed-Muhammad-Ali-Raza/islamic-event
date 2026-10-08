@@ -13,6 +13,8 @@ import type {
   ResendVerificationInput,
   ForgotPasswordInput,
   ResetPasswordInput,
+  UpdateProfileInput,
+  ChangePasswordInput,
 } from "./auth.validation";
 
 // ─── Token helpers ────────────────────────────────────────────────────────────
@@ -195,6 +197,69 @@ export async function getMe(userId: string): Promise<SafeUser> {
   if (!user) throw Errors.notFound("User");
 
   return user;
+}
+
+export async function updateProfile(userId: string, input: UpdateProfileInput): Promise<SafeUser> {
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true } });
+  if (!user) throw Errors.notFound("User");
+
+  const updated = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      name: input.name,
+      phone: input.phone ?? null,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      profileImage: true,
+      role: true,
+      emailVerifiedAt: true,
+      createdAt: true,
+    },
+  });
+
+  return updated;
+}
+
+export async function changePassword(
+  userId: string,
+  input: ChangePasswordInput
+): Promise<{ success: boolean }> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, passwordHash: true, isActive: true },
+  });
+
+  if (!user || !user.isActive) throw Errors.notFound("User");
+
+  const isValid = await bcrypt.compare(input.currentPassword, user.passwordHash);
+  if (!isValid) {
+    throw Errors.unauthorized("Current password is incorrect.");
+  }
+
+  const passwordHash = await bcrypt.hash(input.password, 12);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      passwordHash,
+      resetToken: null,
+      resetExpires: null,
+    },
+  });
+
+  await notify({
+    userId: user.id,
+    type: "SYSTEM",
+    title: "Your password was changed",
+    body: "If this wasn't you, reset your password immediately.",
+    link: "/forgot-password",
+  });
+
+  return { success: true };
 }
 
 // ─── Email verification ───────────────────────────────────────────────────────

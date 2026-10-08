@@ -10,6 +10,8 @@ import {
   ResendVerificationSchema,
   ForgotPasswordSchema,
   ResetPasswordSchema,
+  UpdateProfileSchema,
+  ChangePasswordSchema,
 } from "./auth.validation";
 
 const router = Router();
@@ -28,6 +30,17 @@ router.post("/logout", AuthController.logout);
 
 // GET /api/v1/auth/me
 router.get("/me", requireAuth, AuthController.me);
+
+// PATCH /api/v1/auth/me
+router.patch("/me", requireAuth, validateBody(UpdateProfileSchema), AuthController.updateProfile);
+
+// POST /api/v1/auth/change-password
+router.post(
+  "/change-password",
+  requireAuth,
+  validateBody(ChangePasswordSchema),
+  AuthController.changePassword
+);
 
 // POST /api/v1/auth/verify-email
 router.post("/verify-email", validateBody(VerifyEmailSchema), AuthController.verifyEmail);

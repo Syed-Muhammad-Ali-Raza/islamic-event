@@ -1,6 +1,9 @@
 import { prisma } from "../../config/prisma";
+import { config } from "../../config";
 import { Errors } from "../../utils/AppError";
 import { parsePagination } from "../../utils/helpers";
+import { sendEventStatusEmail } from "../../services/email.service";
+import { notify } from "../../services/notification.service";
 
 // ─── Dashboard stats ──────────────────────────────────────────────────────────
 
@@ -27,6 +30,58 @@ export async function getDashboardStats() {
 }
 
 // ─── Event moderation ─────────────────────────────────────────────────────────
+
+type ModerationEvent = {
+  id: string;
+  slug: string;
+  title: string;
+  createdById: string;
+  createdBy: { id: string; name: string; email: string };
+};
+
+async function loadModerationEvent(id: string): Promise<ModerationEvent> {
+  const event = await prisma.event.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      createdById: true,
+      createdBy: { select: { id: true, name: true, email: true } },
+    },
+  });
+  if (!event) throw Errors.notFound("Event");
+  return event;
+}
+
+async function notifyCreatorOfStatus(
+  event: ModerationEvent,
+  status: "APPROVED" | "REJECTED" | "CANCELLED",
+  reason?: string
+): Promise<void> {
+  const titles: Record<string, string> = {
+    APPROVED: "Your event has been approved ✅",
+    REJECTED: "Your event needs changes ❌",
+    CANCELLED: "Your event was cancelled ⚠️",
+  };
+
+  await notify({
+    userId: event.createdById,
+    type: `EVENT_${status}` as "EVENT_APPROVED" | "EVENT_REJECTED" | "EVENT_CANCELLED",
+    title: titles[status],
+    body: reason ? `"${event.title}" — ${reason}` : `"${event.title}"`,
+    link: `/events/${event.slug}`,
+  });
+
+  await sendEventStatusEmail({
+    to: event.createdBy.email,
+    name: event.createdBy.name,
+    eventTitle: event.title,
+    status,
+    eventUrl: `${config.app.url}/events/${event.slug}`,
+    reason,
+  });
+}
 
 export async function adminListEvents(page: number, limit: number, status?: string) {
   const skip = (page - 1) * limit;
@@ -68,27 +123,39 @@ export async function adminListEvents(page: number, limit: number, status?: stri
 }
 
 export async function approveEvent(id: string) {
-  const event = await prisma.event.findUnique({ where: { id } });
-  if (!event) throw Errors.notFound("Event");
+  const event = await loadModerationEvent(id);
 
-  return prisma.event.update({
+  const updated = await prisma.event.update({
     where: { id },
-    data: { status: "APPROVED", publishedAt: new Date() },
+    data: { status: "APPROVED", publishedAt: new Date(), rejectionReason: null },
   });
+
+  await notifyCreatorOfStatus(event, "APPROVED");
+  return updated;
 }
 
 export async function rejectEvent(id: string, reason?: string) {
-  const event = await prisma.event.findUnique({ where: { id } });
-  if (!event) throw Errors.notFound("Event");
+  const event = await loadModerationEvent(id);
 
-  return prisma.event.update({ where: { id }, data: { status: "REJECTED" } });
+  const updated = await prisma.event.update({
+    where: { id },
+    data: { status: "REJECTED", rejectionReason: reason ?? null },
+  });
+
+  await notifyCreatorOfStatus(event, "REJECTED", reason);
+  return updated;
 }
 
 export async function cancelEvent(id: string) {
-  const event = await prisma.event.findUnique({ where: { id } });
-  if (!event) throw Errors.notFound("Event");
+  const event = await loadModerationEvent(id);
 
-  return prisma.event.update({ where: { id }, data: { status: "CANCELLED" } });
+  const updated = await prisma.event.update({
+    where: { id },
+    data: { status: "CANCELLED" },
+  });
+
+  await notifyCreatorOfStatus(event, "CANCELLED");
+  return updated;
 }
 
 // ─── User management ──────────────────────────────────────────────────────────

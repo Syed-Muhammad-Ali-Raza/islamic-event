@@ -64,21 +64,27 @@ enum ReportStatus {
 // ─── User ─────────────────────────────────────────────────────────────────────
 
 model User {
-  id           String    @id @default(cuid())
-  name         String
-  email        String    @unique
-  passwordHash String
-  phone        String?
-  profileImage String?
-  role         UserRole  @default(USER)
-  isActive     Boolean   @default(true)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id                  String    @id @default(cuid())
+  name                String
+  email               String    @unique
+  passwordHash        String
+  phone               String?
+  profileImage        String?
+  role                UserRole  @default(USER)
+  isActive            Boolean   @default(true)
+  emailVerifiedAt     DateTime?
+  verificationToken   String?   @unique
+  verificationExpires DateTime?
+  resetToken          String?   @unique
+  resetExpires        DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
-  events         Event[]       @relation("EventCreator")
-  organizers     Organizer[]   @relation("OrganizerCreator")
+  events         Event[]         @relation("EventCreator")
+  organizers     Organizer[]     @relation("OrganizerCreator")
   savedEvents    SavedEvent[]
   reports        EventReport[]
+  notifications  Notification[]
 
   @@map("users")
 }
@@ -236,6 +242,7 @@ model Event {
   posterUrl       String?
   posterPublicId  String?
   status          EventStatus @default(PENDING_REVIEW)
+  rejectionReason String?
   isFeatured      Boolean     @default(false)
   viewCount       Int         @default(0)
   createdAt       DateTime    @default(now())
@@ -316,4 +323,23 @@ model EventReport {
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("event_reports")
+}
+
+// ─── Notification ─────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String // EVENT_APPROVED | EVENT_REJECTED | EVENT_CANCELLED | NEW_EVENT | SYSTEM
+  title     String
+  body      String?
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@index([userId, createdAt])
+  @@map("notifications")
 }

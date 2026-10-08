@@ -54,3 +54,43 @@ export async function me(req: Request, res: Response, next: NextFunction): Promi
     next(err);
   }
 }
+
+// ─── Email verification ───────────────────────────────────────────────────────
+
+export async function verifyEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await AuthService.verifyEmail(req.body);
+    sendSuccess({ res, data: result, message: "Email verified successfully." });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function resendVerification(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await AuthService.resendVerification(req.body);
+    sendSuccess({ res, data: result, message: result.message });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// ─── Password reset ───────────────────────────────────────────────────────────
+
+export async function forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await AuthService.forgotPassword(req.body);
+    sendSuccess({ res, data: result, message: result.message });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function resetPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await AuthService.resetPassword(req.body);
+    sendSuccess({ res, data: result, message: "Password updated successfully." });
+  } catch (err) {
+    next(err);
+  }
+}

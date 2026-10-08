@@ -1,7 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../config/prisma";
+import { config } from "../../config";
 import { Errors } from "../../utils/AppError";
 import { generateSlug, parsePagination } from "../../utils/helpers";
+import { sendNewEventAdminEmail } from "../../services/email.service";
+import { notify } from "../../services/notification.service";
 import type { CreateEventInput, UpdateEventInput, EventQueryInput } from "./event.validation";
 
 // ─── Select shape used on public event listing ────────────────────────────────
@@ -172,6 +175,43 @@ export async function createEvent(input: CreateEventInput, createdById: string) 
     },
     select: eventDetailSelect,
   });
+
+  // Phase 12: confirm submission to the creator + alert admins for moderation
+  const [creator, admins] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: createdById },
+      select: { name: true },
+    }),
+    prisma.user.findMany({
+      where: { role: "ADMIN", isActive: true },
+      select: { id: true, name: true, email: true },
+    }),
+  ]);
+
+  await notify({
+    userId: createdById,
+    type: "SYSTEM",
+    title: "Event submitted for review",
+    body: `"${event.title}" will be visible publicly once approved.`,
+    link: "/profile/events",
+  });
+
+  for (const admin of admins) {
+    await notify({
+      userId: admin.id,
+      type: "NEW_EVENT",
+      title: "New event awaiting review",
+      body: `"${event.title}" by ${creator?.name ?? "a community member"}`,
+      link: "/admin/events",
+    });
+    await sendNewEventAdminEmail({
+      to: admin.email,
+      adminName: admin.name,
+      eventTitle: event.title,
+      eventUrl: `${config.app.url}/admin/events`,
+      creatorName: creator?.name ?? "A community member",
+    });
+  }
 
   return { event, possibleDuplicate };
 }

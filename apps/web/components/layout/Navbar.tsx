@@ -9,6 +9,7 @@ import { useLogout } from "@/hooks/useAuth";
 import { clsx } from "clsx";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { LocationIndicator } from "@/components/layout/LocationIndicator";
+import { NotificationBell } from "@/components/layout/NotificationBell";
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -56,6 +57,8 @@ export function Navbar() {
             <Link href="/events?search=" className="btn-ghost p-2" aria-label={t("nav.search")}>
               <Search size={18} />
             </Link>
+
+            <NotificationBell />
 
             {isAuthenticated ? (
               <>

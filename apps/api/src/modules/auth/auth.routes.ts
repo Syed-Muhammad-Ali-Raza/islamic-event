@@ -2,7 +2,15 @@ import { Router } from "express";
 import * as AuthController from "./auth.controller";
 import { requireAuth } from "../../middleware/auth.middleware";
 import { validateBody } from "../../middleware/validate.middleware";
-import { RegisterSchema, LoginSchema, RefreshTokenSchema } from "./auth.validation";
+import {
+  RegisterSchema,
+  LoginSchema,
+  RefreshTokenSchema,
+  VerifyEmailSchema,
+  ResendVerificationSchema,
+  ForgotPasswordSchema,
+  ResetPasswordSchema,
+} from "./auth.validation";
 
 const router = Router();
 
@@ -20,5 +28,17 @@ router.post("/logout", AuthController.logout);
 
 // GET /api/v1/auth/me
 router.get("/me", requireAuth, AuthController.me);
+
+// POST /api/v1/auth/verify-email
+router.post("/verify-email", validateBody(VerifyEmailSchema), AuthController.verifyEmail);
+
+// POST /api/v1/auth/resend-verification
+router.post("/resend-verification", validateBody(ResendVerificationSchema), AuthController.resendVerification);
+
+// POST /api/v1/auth/forgot-password
+router.post("/forgot-password", validateBody(ForgotPasswordSchema), AuthController.forgotPassword);
+
+// POST /api/v1/auth/reset-password
+router.post("/reset-password", validateBody(ResetPasswordSchema), AuthController.resetPassword);
 
 export default router;

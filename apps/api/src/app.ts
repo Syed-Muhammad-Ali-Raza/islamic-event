@@ -20,6 +20,7 @@ import savedEventRoutes from "./modules/saved-events/savedEvents.routes";
 import { listSavedEvents } from "./modules/saved-events/savedEvents.routes";
 import uploadRoutes from "./modules/upload/upload.routes";
 import adminRoutes from "./modules/admin/admin.routes";
+import notificationRoutes from "./modules/notifications/notification.routes";
 
 const app = express();
 
@@ -52,7 +53,9 @@ const authLimiter = rateLimit({
   message: { success: false, message: "Too many authentication attempts.", code: "RATE_LIMITED" },
 });
 
-app.use(limiter);
+if (config.nodeEnv !== "test") {
+  app.use(limiter);
+}
 
 // ─── Body & misc ─────────────────────────────────────────────────────────────
 app.use(express.json({ limit: "10mb" }));
@@ -72,7 +75,11 @@ app.get("/health", (_req, res) => {
 // ─── API Routes ───────────────────────────────────────────────────────────────
 const api = config.apiPrefix;
 
-app.use(`${api}/auth`, authLimiter, authRoutes);
+if (config.nodeEnv !== "test") {
+  app.use(`${api}/auth`, authLimiter, authRoutes);
+} else {
+  app.use(`${api}/auth`, authRoutes);
+}
 app.use(`${api}/events`, eventRoutes);
 app.use(`${api}/events`, savedEventRoutes);        // Save/unsave nested under events
 app.use(`${api}/categories`, categoryRoutes);
@@ -80,6 +87,7 @@ app.use(`${api}/organizers`, organizerRoutes);
 app.use(`${api}/people`, peopleRoutes);
 app.use(`${api}/upload`, uploadRoutes);
 app.use(`${api}/admin`, adminRoutes);
+app.use(`${api}/notifications`, notificationRoutes);
 
 // Profile / user routes
 app.get(`${api}/users/me/saved-events`, requireAuth, listSavedEvents);

@@ -1,0 +1,319 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Prisma Schema — Community Events Platform
+// ─────────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  USER
+  ORGANIZER
+  ADMIN
+}
+
+enum EventStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum ParticipantRole {
+  KHATEEB
+  ZAKIR
+  SPEAKER
+  NAAT_KHAWAN
+  QARI
+  RECITER
+  HOST
+  GUEST
+  SCHOLAR
+  ORGANIZER
+  MUAZZIN
+  OTHER
+}
+
+enum ReportReason {
+  FAKE_INFORMATION
+  WRONG_LOCATION
+  WRONG_DATE
+  DUPLICATE
+  SPAM
+  OFFENSIVE_CONTENT
+  EVENT_CANCELLED
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  DISMISSED
+  ACTION_TAKEN
+}
+
+// ─── User ─────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  phone        String?
+  profileImage String?
+  role         UserRole  @default(USER)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  events         Event[]       @relation("EventCreator")
+  organizers     Organizer[]   @relation("OrganizerCreator")
+  savedEvents    SavedEvent[]
+  reports        EventReport[]
+
+  @@map("users")
+}
+
+// ─── Category ─────────────────────────────────────────────────────────────────
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events Event[]
+
+  @@map("categories")
+}
+
+// ─── Location ─────────────────────────────────────────────────────────────────
+
+model Country {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  code      String   @unique  // ISO 3166-1 alpha-2
+  dialCode  String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  states     State[]
+  events     Event[]
+  organizers Organizer[]
+
+  @@map("countries")
+}
+
+model State {
+  id        String   @id @default(cuid())
+  name      String
+  code      String?
+  countryId String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  country Country @relation(fields: [countryId], references: [id])
+  cities  City[]
+  events  Event[]
+
+  @@unique([name, countryId])
+  @@map("states")
+}
+
+model City {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String
+  stateId   String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  state      State      @relation(fields: [stateId], references: [id])
+  areas      Area[]
+  events     Event[]
+  organizers Organizer[]
+
+  @@unique([slug, stateId])
+  @@map("cities")
+}
+
+model Area {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String
+  cityId    String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  city   City    @relation(fields: [cityId], references: [id])
+  events Event[]
+
+  @@unique([slug, cityId])
+  @@map("areas")
+}
+
+// ─── Organizer ────────────────────────────────────────────────────────────────
+
+model Organizer {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  description    String?
+  logoUrl        String?
+  logoPublicId   String?
+  address        String?
+  phone          String?
+  email          String?
+  website        String?
+  isVerified     Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  createdById    String
+  countryId      String?
+  cityId         String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  createdBy User     @relation("OrganizerCreator", fields: [createdById], references: [id])
+  country   Country? @relation(fields: [countryId], references: [id])
+  city      City?    @relation(fields: [cityId], references: [id])
+  events    Event[]
+
+  @@map("organizers")
+}
+
+// ─── Person (Participant profile) ─────────────────────────────────────────────
+
+model Person {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  profileImage String?
+  description  String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  eventParticipants EventParticipant[]
+
+  @@map("people")
+}
+
+// ─── Event ────────────────────────────────────────────────────────────────────
+
+model Event {
+  id              String      @id @default(cuid())
+  slug            String      @unique
+  title           String
+  description     String?
+  categoryId      String
+  createdById     String
+  organizerId     String?
+  date            DateTime    @db.Date
+  startTime       String?
+  endTime         String?
+  countryId       String?
+  stateId         String?
+  cityId          String?
+  areaId          String?
+  venue           String?
+  address         String?
+  latitude        Float?
+  longitude       Float?
+  posterUrl       String?
+  posterPublicId  String?
+  status          EventStatus @default(PENDING_REVIEW)
+  isFeatured      Boolean     @default(false)
+  viewCount       Int         @default(0)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  publishedAt     DateTime?
+
+  // Relations
+  category     Category           @relation(fields: [categoryId], references: [id])
+  createdBy    User               @relation("EventCreator", fields: [createdById], references: [id])
+  organizer    Organizer?         @relation(fields: [organizerId], references: [id])
+  country      Country?           @relation(fields: [countryId], references: [id])
+  state        State?             @relation(fields: [stateId], references: [id])
+  city         City?              @relation(fields: [cityId], references: [id])
+  area         Area?              @relation(fields: [areaId], references: [id])
+  participants EventParticipant[]
+  savedBy      SavedEvent[]
+  reports      EventReport[]
+
+  // Indexes
+  @@index([status])
+  @@index([date])
+  @@index([cityId])
+  @@index([categoryId])
+  @@index([organizerId])
+  @@index([createdAt])
+  @@index([slug])
+  @@index([status, date])
+  @@index([cityId, date])
+  @@index([categoryId, date])
+  @@map("events")
+}
+
+// ─── Event Participant ────────────────────────────────────────────────────────
+
+model EventParticipant {
+  id           String          @id @default(cuid())
+  eventId      String
+  personId     String
+  role         ParticipantRole @default(OTHER)
+  displayOrder Int             @default(0)
+  createdAt    DateTime        @default(now())
+
+  event  Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  person Person @relation(fields: [personId], references: [id])
+
+  @@unique([eventId, personId, role])
+  @@map("event_participants")
+}
+
+// ─── Saved Event ──────────────────────────────────────────────────────────────
+
+model SavedEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  eventId   String
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@map("saved_events")
+}
+
+// ─── Event Report ─────────────────────────────────────────────────────────────
+
+model EventReport {
+  id          String       @id @default(cuid())
+  eventId     String
+  userId      String
+  reason      ReportReason
+  description String?
+  status      ReportStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+  resolvedAt  DateTime?
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("event_reports")
+}

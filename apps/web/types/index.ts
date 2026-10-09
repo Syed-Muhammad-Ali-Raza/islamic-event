@@ -106,6 +106,8 @@ export interface EventSummary {
   startTime: string | null;
   endTime: string | null;
   venue: string | null;
+  latitude: number | null;
+  longitude: number | null;
   posterUrl: string | null;
   status: EventStatus;
   isFeatured: boolean;

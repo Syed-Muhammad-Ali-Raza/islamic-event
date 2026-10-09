@@ -2,13 +2,22 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useCallback, Suspense } from "react";
-import { Search, Filter, X, LayoutGrid, CalendarDays } from "lucide-react";
+import dynamic from "next/dynamic";
+import { Search, Filter, X, LayoutGrid, CalendarDays, MapPinned } from "lucide-react";
 import { clsx } from "clsx";
 import { useEvents } from "@/hooks/useEvents";
 import { useCategories } from "@/hooks/useCategories";
 import { EventCard } from "@/components/events/EventCard";
 import { EventCalendar } from "@/components/events/EventCalendar";
 import { EventCardSkeleton } from "@/components/ui/Skeleton";
+
+const EventMap = dynamic(
+  () => import("@/components/events/EventMap").then((m) => m.EventMap),
+  {
+    ssr: false,
+    loading: () => <div className="skeleton h-[480px] sm:h-[560px] w-full rounded-2xl" />,
+  }
+);
 
 function EventsContent() {
   const searchParams = useSearchParams();
@@ -18,13 +27,13 @@ function EventsContent() {
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") ?? "");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const [view, setView] = useState<"list" | "calendar">("list");
+  const [view, setView] = useState<"list" | "calendar" | "map">("list");
 
   const { data, isLoading } = useEvents({
     search: searchParams.get("search") ?? undefined,
     category: searchParams.get("category") ?? undefined,
-    page,
-    limit: 12,
+    page: view === "map" ? 1 : page,
+    limit: view === "map" ? 100 : 12,
   });
 
   const { data: categories } = useCategories();
@@ -84,6 +93,18 @@ function EventsContent() {
             )}
           >
             <CalendarDays size={14} /> Calendar
+          </button>
+          <button
+            id="events-view-map"
+            onClick={() => setView("map")}
+            className={clsx(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
+              view === "map"
+                ? "bg-brand-600 text-white"
+                : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+            )}
+          >
+            <MapPinned size={14} /> Map
           </button>
         </div>
       </div>
@@ -158,6 +179,12 @@ function EventsContent() {
           search={searchParams.get("search") ?? undefined}
           category={searchParams.get("category") ?? undefined}
         />
+      ) : view === "map" ? (
+        isLoading ? (
+          <div className="skeleton h-[480px] sm:h-[560px] w-full rounded-2xl" />
+        ) : (
+          <EventMap events={data?.data ?? []} />
+        )
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">

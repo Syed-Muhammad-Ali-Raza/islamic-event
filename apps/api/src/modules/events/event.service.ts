@@ -16,6 +16,8 @@ const eventListSelect = {
   startTime: true,
   endTime: true,
   venue: true,
+  latitude: true,
+  longitude: true,
   posterUrl: true,
   status: true,
   isFeatured: true,

@@ -6,6 +6,7 @@ import { format, isPast } from "date-fns";
 import { Calendar, Clock, MapPin, Eye, Users, Building2 } from "lucide-react";
 import { EventActions } from "@/components/events/EventActions";
 import { EventRsvp } from "@/components/events/EventRsvp";
+import { ShareButtons } from "@/components/events/ShareButtons";
 import type { Event } from "@/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
@@ -155,6 +156,10 @@ export default async function EventDetailPage({ params }: Props) {
 
             <div className="mt-5">
               <EventActions eventId={event.id} />
+            </div>
+
+            <div className="mt-5 pt-5 border-t border-white/10">
+              <ShareButtons title={event.title} path={`/events/${event.slug}`} />
             </div>
           </div>
 

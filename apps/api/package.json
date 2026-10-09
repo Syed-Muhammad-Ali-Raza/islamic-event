@@ -52,5 +52,8 @@
     "ts-jest": "^29.4.14",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3"
+  },
+  "optionalDependencies": {
+    "@esbuild/win32-x64": "^0.28.2"
   }
 }

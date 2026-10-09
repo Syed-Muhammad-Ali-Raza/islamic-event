@@ -76,3 +76,16 @@ export async function reportEvent(req: Request, res: Response, next: NextFunctio
     sendSuccess({ res, data: report, statusCode: 201, message: "Report submitted. Thank you." });
   } catch (err) { next(err); }
 }
+
+export async function getEventRsvps(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { page, limit } = parsePagination(req.query.page, req.query.limit);
+    const result = await EventService.getEventRsvps(
+      req.params.id,
+      { id: req.user!.id, role: req.user!.role },
+      page,
+      limit
+    );
+    sendPaginated({ res, data: result.rsvps, page, limit, total: result.total });
+  } catch (err) { next(err); }
+}

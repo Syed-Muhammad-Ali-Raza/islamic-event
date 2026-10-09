@@ -86,6 +86,14 @@ export function useEventRsvp() {
   });
 }
 
+export function useEventRsvps(eventId: string, page = 1, enabled = true) {
+  return useQuery({
+    queryKey: [...eventKeys.all, "rsvps", eventId, page] as const,
+    queryFn: () => eventService.getEventRsvps(eventId, page, 20),
+    enabled: enabled && !!eventId,
+  });
+}
+
 // ─── Saved events list ────────────────────────────────────────────────────────
 export function useSavedEvents(page = 1, limit = 12, enabled = true) {
   return useQuery({

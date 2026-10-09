@@ -21,6 +21,9 @@ router.post("/", requireAuth, validateBody(CreateEventSchema), EventController.c
 // POST /api/v1/events/:id/reports
 router.post("/:id/reports", requireAuth, validateBody(ReportEventSchema), EventController.reportEvent);
 
+// GET /api/v1/events/:id/rsvps  (organizer/admin only)
+router.get("/:id/rsvps", requireAuth, EventController.getEventRsvps);
+
 // PUT /api/v1/events/:id/rsvps
 router.put("/:id/rsvps", requireAuth, validateBody(RsvpSchema), EventController.setRsvp);
 

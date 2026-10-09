@@ -143,6 +143,7 @@ See `.env.example` for all required variables.
 - [x] Phase 17: Event RSVPs (Interested/Attending toggles, counts on event detail, upsert API)
 - [x] Phase 18: Events Map View (Leaflet/OSM markers from list coordinates, list/calendar/map toggle)
 - [x] Phase 19: Event Sharing (WhatsApp/X/Facebook, copy link, QR code on event detail)
+- [x] Phase 20: Organizer RSVP Dashboard (RSVP list per event for organizer/admin, attendees panel on My Events)
 
 ---
 

@@ -114,4 +114,36 @@ describe("Event RSVPs", () => {
       .send({ type: "INTERESTED" });
     expect(res.status).toBe(404);
   });
+
+  it("lets only the organizer or admin list RSVPs", async () => {
+    const { event, admin, user } = await createApprovedEvent();
+
+    await api()
+      .put(`/api/v1/events/${event.id}/rsvps`)
+      .set(authHeader(user.token))
+      .send({ type: "ATTENDING" });
+
+    const stranger = await registerUser("rsvp-stranger");
+    const denied = await api()
+      .get(`/api/v1/events/${event.id}/rsvps`)
+      .set(authHeader(stranger.token));
+    expect(denied.status).toBe(403);
+
+    const anon = await api().get(`/api/v1/events/${event.id}/rsvps`);
+    expect(anon.status).toBe(401);
+
+    const organizer = await api()
+      .get(`/api/v1/events/${event.id}/rsvps`)
+      .set(authHeader(user.token));
+    expect(organizer.status).toBe(200);
+    expect(organizer.body.pagination.total).toBe(1);
+    expect(organizer.body.data[0].user.name).toBe(user.name);
+    expect(organizer.body.data[0].type).toBe("ATTENDING");
+
+    const asAdmin = await api()
+      .get(`/api/v1/events/${event.id}/rsvps`)
+      .set(authHeader(admin.token));
+    expect(asAdmin.status).toBe(200);
+    expect(asAdmin.body.pagination.total).toBe(1);
+  });
 });

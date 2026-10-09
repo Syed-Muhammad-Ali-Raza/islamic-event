@@ -379,3 +379,51 @@ export async function getRsvpState(eventId: string, userId?: string): Promise<Rs
   });
   return { ...counts, myRsvp: mine?.type ?? null };
 }
+
+export type RsvpListEntry = {
+  id: string;
+  type: "INTERESTED" | "ATTENDING";
+  createdAt: string;
+  user: { id: string; name: string; email: string };
+};
+
+export async function getEventRsvps(
+  eventId: string,
+  requester: { id: string; role: string },
+  page: number,
+  limit: number
+): Promise<{ rsvps: RsvpListEntry[]; counts: { interested: number; attending: number }; total: number }> {
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+    select: { createdById: true },
+  });
+  if (!event) throw Errors.notFound("Event");
+  if (event.createdById !== requester.id && requester.role !== "ADMIN") throw Errors.forbidden();
+
+  const skip = (page - 1) * limit;
+  const where = { eventId };
+
+  const [rows, total, interested, attending] = await prisma.$transaction([
+    prisma.eventRsvp.findMany({
+      where,
+      select: {
+        id: true,
+        type: true,
+        createdAt: true,
+        user: { select: { id: true, name: true, email: true } },
+      },
+      orderBy: [{ type: "asc" }, { createdAt: "asc" }],
+      skip,
+      take: limit,
+    }),
+    prisma.eventRsvp.count({ where }),
+    prisma.eventRsvp.count({ where: { eventId, type: "INTERESTED" } }),
+    prisma.eventRsvp.count({ where: { eventId, type: "ATTENDING" } }),
+  ]);
+
+  return {
+    rsvps: rows.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() })),
+    counts: { interested, attending },
+    total,
+  };
+}

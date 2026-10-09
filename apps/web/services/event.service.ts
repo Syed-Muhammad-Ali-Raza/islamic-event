@@ -93,4 +93,11 @@ export const eventService = {
     const res = await apiClient.delete<ApiSuccess<EventRsvpState>>(`/events/${eventId}/rsvps`);
     return res.data.data;
   },
+
+  async getEventRsvps(eventId: string, page = 1, limit = 20) {
+    const res = await apiClient.get<
+      PaginatedResponse<{ id: string; type: "INTERESTED" | "ATTENDING"; createdAt: string; user: { id: string; name: string; email: string } }>
+    >(`/events/${eventId}/rsvps`, { params: { page, limit } });
+    return res.data;
+  },
 };

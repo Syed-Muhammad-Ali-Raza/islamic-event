@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client";
-import type { ApiSuccess, PaginatedResponse, Event, EventSummary } from "@/types";
+import type { ApiSuccess, PaginatedResponse, Event, EventSummary, EventRsvpState } from "@/types";
 
 export interface EventFilters {
   page?: number;
@@ -82,5 +82,15 @@ export const eventService = {
       PaginatedResponse<{ id: string; createdAt: string; event: EventSummary }>
     >("/users/me/saved-events", { params: { page, limit } });
     return res.data;
+  },
+
+  async setRsvp(eventId: string, type: "INTERESTED" | "ATTENDING") {
+    const res = await apiClient.put<ApiSuccess<EventRsvpState>>(`/events/${eventId}/rsvps`, { type });
+    return res.data.data;
+  },
+
+  async removeRsvp(eventId: string) {
+    const res = await apiClient.delete<ApiSuccess<EventRsvpState>>(`/events/${eventId}/rsvps`);
+    return res.data.data;
   },
 };

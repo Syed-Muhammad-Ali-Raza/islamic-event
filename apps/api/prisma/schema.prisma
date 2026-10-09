@@ -85,6 +85,7 @@ model User {
   savedEvents    SavedEvent[]
   reports        EventReport[]
   notifications  Notification[]
+  eventRsvps     EventRsvp[]
 
   @@map("users")
 }
@@ -260,6 +261,7 @@ model Event {
   participants EventParticipant[]
   savedBy      SavedEvent[]
   reports      EventReport[]
+  rsvps        EventRsvp[]
 
   // Indexes
   @@index([status])
@@ -290,6 +292,27 @@ model EventParticipant {
 
   @@unique([eventId, personId, role])
   @@map("event_participants")
+}
+
+// ─── Event RSVP (attendance interest) ─────────────────────────────────────────
+
+enum RsvpType {
+  INTERESTED
+  ATTENDING
+}
+
+model EventRsvp {
+  id        String    @id @default(cuid())
+  userId    String
+  eventId   String
+  type      RsvpType
+  createdAt DateTime  @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@map("event_rsvps")
 }
 
 // ─── Saved Event ──────────────────────────────────────────────────────────────

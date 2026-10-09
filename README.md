@@ -140,6 +140,7 @@ See `.env.example` for all required variables.
 - [x] Phase 14: Organizer Detail Pages (`/organizers/[slug]`, SEO metadata, sitemap, create validation)
 - [x] Phase 15: Admin Categories UI (create/edit/activate-deactivate, admin list API, validation)
 - [x] Phase 16: Events Calendar View (month grid with date-range API filters, list/calendar toggle)
+- [x] Phase 17: Event RSVPs (Interested/Attending toggles, counts on event detail, upsert API)
 
 ---
 

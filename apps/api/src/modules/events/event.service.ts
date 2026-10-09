@@ -323,3 +323,57 @@ export async function reportEvent(
     },
   });
 }
+
+// ─── RSVPs (attendance interest) ──────────────────────────────────────────────
+
+export type RsvpState = {
+  interested: number;
+  attending: number;
+  myRsvp: "INTERESTED" | "ATTENDING" | null;
+};
+
+async function rsvpCounts(eventId: string): Promise<{ interested: number; attending: number }> {
+  const [interested, attending] = await prisma.$transaction([
+    prisma.eventRsvp.count({ where: { eventId, type: "INTERESTED" } }),
+    prisma.eventRsvp.count({ where: { eventId, type: "ATTENDING" } }),
+  ]);
+  return { interested, attending };
+}
+
+export async function setRsvp(
+  eventId: string,
+  userId: string,
+  type: "INTERESTED" | "ATTENDING"
+): Promise<RsvpState> {
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+    select: { status: true },
+  });
+  if (!event || event.status !== "APPROVED") throw Errors.notFound("Event");
+
+  await prisma.eventRsvp.upsert({
+    where: { userId_eventId: { userId, eventId } },
+    create: { userId, eventId, type },
+    update: { type },
+  });
+
+  const counts = await rsvpCounts(eventId);
+  return { ...counts, myRsvp: type };
+}
+
+export async function removeRsvp(eventId: string, userId: string): Promise<RsvpState> {
+  await prisma.eventRsvp.deleteMany({ where: { userId, eventId } });
+  const counts = await rsvpCounts(eventId);
+  return { ...counts, myRsvp: null };
+}
+
+export async function getRsvpState(eventId: string, userId?: string): Promise<RsvpState> {
+  const counts = await rsvpCounts(eventId);
+  if (!userId) return { ...counts, myRsvp: null };
+
+  const mine = await prisma.eventRsvp.findUnique({
+    where: { userId_eventId: { userId, eventId } },
+    select: { type: true },
+  });
+  return { ...counts, myRsvp: mine?.type ?? null };
+}

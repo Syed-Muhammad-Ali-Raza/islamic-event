@@ -2,7 +2,7 @@ import { Router } from "express";
 import * as EventController from "./event.controller";
 import { requireAuth, optionalAuth } from "../../middleware/auth.middleware";
 import { validateBody, validateQuery } from "../../middleware/validate.middleware";
-import { CreateEventSchema, UpdateEventSchema, EventQuerySchema, ReportEventSchema } from "./event.validation";
+import { CreateEventSchema, UpdateEventSchema, EventQuerySchema, ReportEventSchema, RsvpSchema } from "./event.validation";
 
 const router = Router();
 
@@ -20,6 +20,12 @@ router.post("/", requireAuth, validateBody(CreateEventSchema), EventController.c
 
 // POST /api/v1/events/:id/reports
 router.post("/:id/reports", requireAuth, validateBody(ReportEventSchema), EventController.reportEvent);
+
+// PUT /api/v1/events/:id/rsvps
+router.put("/:id/rsvps", requireAuth, validateBody(RsvpSchema), EventController.setRsvp);
+
+// DELETE /api/v1/events/:id/rsvps
+router.delete("/:id/rsvps", requireAuth, EventController.removeRsvp);
 
 // PATCH /api/v1/events/:id
 router.patch("/:id", requireAuth, validateBody(UpdateEventSchema), EventController.updateEvent);

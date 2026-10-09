@@ -117,6 +117,12 @@ export interface EventSummary {
   createdAt: string;
 }
 
+export interface EventRsvpState {
+  interested: number;
+  attending: number;
+  myRsvp: "INTERESTED" | "ATTENDING" | null;
+}
+
 export interface Event extends EventSummary {
   description: string | null;
   address: string | null;
@@ -127,6 +133,7 @@ export interface Event extends EventSummary {
   state: { id: string; name: string } | null;
   participants: EventParticipant[];
   createdBy: { id: string; name: string };
+  rsvps?: EventRsvpState;
 }
 
 export interface AuthTokens {

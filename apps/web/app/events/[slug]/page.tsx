@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { format, isPast } from "date-fns";
 import { Calendar, Clock, MapPin, Eye, Users, Building2 } from "lucide-react";
 import { EventActions } from "@/components/events/EventActions";
+import { EventRsvp } from "@/components/events/EventRsvp";
 import type { Event } from "@/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
@@ -147,6 +148,10 @@ export default async function EventDetailPage({ params }: Props) {
             <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 leading-tight text-balance">
               {event.title}
             </h1>
+
+            <div className="mt-5">
+              <EventRsvp eventId={event.id} slug={event.slug} initial={event.rsvps} />
+            </div>
 
             <div className="mt-5">
               <EventActions eventId={event.id} />

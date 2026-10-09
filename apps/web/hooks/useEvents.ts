@@ -66,6 +66,26 @@ export function useUnsaveEvent() {
   });
 }
 
+// ─── RSVPs ────────────────────────────────────────────────────────────────────
+export function useEventRsvp() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      eventId,
+      type,
+    }: {
+      eventId: string;
+      type: "INTERESTED" | "ATTENDING" | null;
+    }) =>
+      type === null
+        ? eventService.removeRsvp(eventId)
+        : eventService.setRsvp(eventId, type),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: eventKeys.all });
+    },
+  });
+}
+
 // ─── Saved events list ────────────────────────────────────────────────────────
 export function useSavedEvents(page = 1, limit = 12, enabled = true) {
   return useQuery({

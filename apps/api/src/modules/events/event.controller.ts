@@ -13,7 +13,26 @@ export async function listEvents(req: Request, res: Response, next: NextFunction
 export async function getEvent(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const event = await EventService.getEventBySlug(req.params.slug);
-    sendSuccess({ res, data: event });
+    const rsvps = await EventService.getRsvpState(event.id, req.user?.id);
+    sendSuccess({ res, data: { ...event, rsvps } });
+  } catch (err) { next(err); }
+}
+
+export async function setRsvp(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await EventService.setRsvp(
+      req.params.id,
+      req.user!.id,
+      req.body.type as "INTERESTED" | "ATTENDING"
+    );
+    sendSuccess({ res, data: result, message: "RSVP saved." });
+  } catch (err) { next(err); }
+}
+
+export async function removeRsvp(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await EventService.removeRsvp(req.params.id, req.user!.id);
+    sendSuccess({ res, data: result, message: "RSVP removed." });
   } catch (err) { next(err); }
 }
 

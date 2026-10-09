@@ -83,3 +83,12 @@ export const ReportEventSchema = z.object({
 });
 
 export type ReportEventInput = z.infer<typeof ReportEventSchema>;
+
+export const RsvpSchema = z.object({
+  type: z.enum(["INTERESTED", "ATTENDING"], {
+    required_error: "RSVP type is required",
+    invalid_type_error: "RSVP type must be INTERESTED or ATTENDING",
+  }),
+});
+
+export type RsvpInput = z.infer<typeof RsvpSchema>;

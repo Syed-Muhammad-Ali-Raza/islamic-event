@@ -16,13 +16,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const [eventsRes, categoriesRes] = await Promise.all([
+    const [eventsRes, categoriesRes, organizersRes] = await Promise.all([
       fetch(`${API_URL}/events?limit=100`, { next: { revalidate: 3600 } }),
       fetch(`${API_URL}/categories`, { next: { revalidate: 86400 } }),
+      fetch(`${API_URL}/organizers?limit=100`, { next: { revalidate: 86400 } }),
     ]);
 
     const eventsJson = eventsRes.ok ? await eventsRes.json() : null;
     const categoriesJson = categoriesRes.ok ? await categoriesRes.json() : null;
+    const organizersJson = organizersRes.ok ? await organizersRes.json() : null;
 
     const eventRoutes: MetadataRoute.Sitemap = (eventsJson?.data ?? []).map(
       (event: { slug: string; updatedAt?: string; createdAt: string }) => ({
@@ -41,7 +43,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
     );
 
-    return [...staticRoutes, ...eventRoutes, ...categoryRoutes];
+    const organizerRoutes: MetadataRoute.Sitemap = (organizersJson?.data ?? []).map(
+      (org: { slug: string }) => ({
+        url: `${APP_URL}/organizers/${org.slug}`,
+        changeFrequency: "weekly",
+        priority: 0.6,
+      })
+    );
+
+    return [...staticRoutes, ...eventRoutes, ...categoryRoutes, ...organizerRoutes];
   } catch {
     return staticRoutes;
   }

@@ -91,7 +91,14 @@ export default function OrganizersPage() {
 
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <h3 className="text-slate-900 font-semibold truncate">{org.name}</h3>
+                    <h3 className="text-slate-900 font-semibold truncate">
+                      <Link
+                        href={`/organizers/${org.slug}`}
+                        className="hover:text-brand-700 transition-colors"
+                      >
+                        {org.name}
+                      </Link>
+                    </h3>
                     {org.isVerified && (
                       <BadgeCheck size={15} className="text-brand-600 shrink-0" aria-label="Verified" />
                     )}
@@ -117,10 +124,10 @@ export default function OrganizersPage() {
                   {org.email ?? org.website ?? "Contact via events"}
                 </span>
                 <Link
-                  href={`/events?search=${encodeURIComponent(org.name)}`}
+                  href={`/organizers/${org.slug}`}
                   className="text-brand-600 hover:text-brand-700 text-xs font-medium transition-colors"
                 >
-                  View events →
+                  View profile →
                 </Link>
               </div>
             </div>

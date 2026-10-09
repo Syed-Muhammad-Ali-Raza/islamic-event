@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { format, isPast } from "date-fns";
-import { Calendar, Clock, MapPin, Eye, Users, Building2, ExternalLink } from "lucide-react";
+import { Calendar, Clock, MapPin, Eye, Users, Building2 } from "lucide-react";
 import { EventActions } from "@/components/events/EventActions";
 import type { Event } from "@/types";
 
@@ -260,10 +260,10 @@ export default async function EventDetailPage({ params }: Props) {
                 <div>
                   <p className="text-slate-900 text-sm font-medium">{event.organizer.name}</p>
                   <Link
-                    href={`/organizers?search=${encodeURIComponent(event.organizer.name)}`}
+                    href={`/organizers/${event.organizer.slug}`}
                     className="text-brand-600 text-xs hover:text-brand-700 inline-flex items-center gap-1"
                   >
-                    More events <ExternalLink size={10} />
+                    More events →
                   </Link>
                 </div>
               </div>

@@ -100,4 +100,16 @@ export const eventService = {
     >(`/events/${eventId}/rsvps`, { params: { page, limit } });
     return res.data;
   },
+
+  async downloadRsvpsCsv(eventId: string, eventTitle: string) {
+    const res = await apiClient.get<Blob>(`/events/${eventId}/rsvps/export`, { responseType: "blob" });
+    const url = URL.createObjectURL(res.data);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${eventTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "event"}-rsvps.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
 };

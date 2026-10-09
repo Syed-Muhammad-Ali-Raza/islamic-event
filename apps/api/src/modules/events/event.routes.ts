@@ -24,6 +24,9 @@ router.post("/:id/reports", requireAuth, validateBody(ReportEventSchema), EventC
 // GET /api/v1/events/:id/rsvps  (organizer/admin only)
 router.get("/:id/rsvps", requireAuth, EventController.getEventRsvps);
 
+// GET /api/v1/events/:id/rsvps/export  (organizer/admin only)
+router.get("/:id/rsvps/export", requireAuth, EventController.exportEventRsvps);
+
 // PUT /api/v1/events/:id/rsvps
 router.put("/:id/rsvps", requireAuth, validateBody(RsvpSchema), EventController.setRsvp);
 

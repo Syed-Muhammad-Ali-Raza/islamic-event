@@ -427,3 +427,38 @@ export async function getEventRsvps(
     total,
   };
 }
+
+export async function getEventRsvpsCsv(
+  eventId: string,
+  requester: { id: string; role: string }
+): Promise<{ csv: string; eventTitle: string }> {
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+    select: { createdById: true, title: true },
+  });
+  if (!event) throw Errors.notFound("Event");
+  if (event.createdById !== requester.id && requester.role !== "ADMIN") throw Errors.forbidden();
+
+  const rows = await prisma.eventRsvp.findMany({
+    where: { eventId },
+    select: {
+      type: true,
+      createdAt: true,
+      user: { select: { name: true, email: true } },
+    },
+    orderBy: [{ type: "asc" }, { createdAt: "asc" }],
+  });
+
+  const escape = (v: string) => `"${v.replace(/"/g, '""')}"`;
+  const header = "Name,Email,Type,RSVP Date";
+  const lines = rows.map((r) =>
+    [
+      escape(r.user.name),
+      escape(r.user.email),
+      r.type,
+      r.createdAt.toISOString().slice(0, 10),
+    ].join(",")
+  );
+
+  return { csv: [header, ...lines].join("\r\n"), eventTitle: event.title };
+}

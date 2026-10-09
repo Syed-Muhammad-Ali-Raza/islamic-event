@@ -4,15 +4,26 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import { PlusCircle, Calendar, MapPin, Users, ChevronDown, ChevronUp } from "lucide-react";
+import { PlusCircle, Calendar, MapPin, Users, ChevronDown, ChevronUp, Download } from "lucide-react";
 import { useMyEvents, useEventRsvps } from "@/hooks/useEvents";
+import { eventService } from "@/services/event.service";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { AuthGuard } from "@/components/auth/AuthGuard";
 import { clsx } from "clsx";
 
-function RsvpPanel({ eventId }: { eventId: string }) {
+function RsvpPanel({ eventId, eventTitle }: { eventId: string; eventTitle: string }) {
   const [page, setPage] = useState(1);
+  const [exporting, setExporting] = useState(false);
   const { data, isLoading } = useEventRsvps(eventId, page);
+
+  const exportCsv = async () => {
+    setExporting(true);
+    try {
+      await eventService.downloadRsvpsCsv(eventId, eventTitle);
+    } finally {
+      setExporting(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -27,12 +38,24 @@ function RsvpPanel({ eventId }: { eventId: string }) {
 
   return (
     <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
-      <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600 font-medium">
-        <span className="inline-flex items-center gap-1 text-emerald-700">
-          <Users size={12} /> {data?.pagination.total ?? 0} total
-        </span>
-        <span>Interested: {rsvps.filter((r) => r.type === "INTERESTED").length}</span>
-        <span>Attending: {rsvps.filter((r) => r.type === "ATTENDING").length}</span>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600 font-medium">
+          <span className="inline-flex items-center gap-1 text-emerald-700">
+            <Users size={12} /> {data?.pagination.total ?? 0} total
+          </span>
+          <span>Interested: {rsvps.filter((r) => r.type === "INTERESTED").length}</span>
+          <span>Attending: {rsvps.filter((r) => r.type === "ATTENDING").length}</span>
+        </div>
+        {(data?.pagination.total ?? 0) > 0 && (
+          <button
+            id={`rsvp-export-${eventId}`}
+            onClick={exportCsv}
+            disabled={exporting}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:border-brand-300 hover:text-brand-700 transition-colors disabled:opacity-50"
+          >
+            <Download size={12} /> {exporting ? "Preparing…" : "Export CSV"}
+          </button>
+        )}
       </div>
       {rsvps.length === 0 ? (
         <p className="text-slate-500 text-xs mt-2">No RSVPs yet — share this event to spread the word.</p>
@@ -188,7 +211,7 @@ function MyEventsContent() {
                     {expandedId === event.id ? "Hide RSVPs" : "View RSVPs"}
                     {expandedId === event.id ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                   </button>
-                  {expandedId === event.id && <RsvpPanel eventId={event.id} />}
+                  {expandedId === event.id && <RsvpPanel eventId={event.id} eventTitle={event.title} />}
                 </div>
               )}
             </div>

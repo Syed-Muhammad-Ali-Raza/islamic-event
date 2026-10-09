@@ -89,3 +89,16 @@ export async function getEventRsvps(req: Request, res: Response, next: NextFunct
     sendPaginated({ res, data: result.rsvps, page, limit, total: result.total });
   } catch (err) { next(err); }
 }
+
+export async function exportEventRsvps(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { csv, eventTitle } = await EventService.getEventRsvpsCsv(req.params.id, {
+      id: req.user!.id,
+      role: req.user!.role,
+    });
+    const filename = `${eventTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "event"}-rsvps.csv`;
+    res.setHeader("Content-Type", "text/csv; charset=utf-8");
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.status(200).send(csv);
+  } catch (err) { next(err); }
+}

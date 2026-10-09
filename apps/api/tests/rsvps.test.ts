@@ -146,4 +146,30 @@ describe("Event RSVPs", () => {
     expect(asAdmin.status).toBe(200);
     expect(asAdmin.body.pagination.total).toBe(1);
   });
+
+  it("exports the organizer's RSVP list as CSV", async () => {
+    const { event, admin, user } = await createApprovedEvent();
+
+    await api()
+      .put(`/api/v1/events/${event.id}/rsvps`)
+      .set(authHeader(user.token))
+      .send({ type: "ATTENDING" });
+
+    const stranger = await registerUser("rsvp-csv-stranger");
+    const denied = await api()
+      .get(`/api/v1/events/${event.id}/rsvps/export`)
+      .set(authHeader(stranger.token));
+    expect(denied.status).toBe(403);
+
+    const res = await api()
+      .get(`/api/v1/events/${event.id}/rsvps/export`)
+      .set(authHeader(user.token));
+    expect(res.status).toBe(200);
+    expect(res.headers["content-type"]).toContain("text/csv");
+    expect(res.headers["content-disposition"]).toContain("attachment");
+    const body = res.text;
+    expect(body.split("\r\n")[0]).toBe("Name,Email,Type,RSVP Date");
+    expect(body).toContain(user.email);
+    expect(body).toContain("ATTENDING");
+  });
 });

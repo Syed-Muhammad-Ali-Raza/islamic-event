@@ -62,5 +62,59 @@ describe("Categories", () => {
     const list = await api().get("/api/v1/categories");
     const ids = list.body.data.map((c: { id: string }) => c.id);
     expect(ids).not.toContain(created.body.data.id);
+
+    const all = await api().get("/api/v1/categories/admin").set(authHeader(admin.token));
+    expect(all.status).toBe(200);
+    const allIds = all.body.data.map((c: { id: string }) => c.id);
+    expect(allIds).toContain(created.body.data.id);
+  });
+
+  it("requires admin for the full list", async () => {
+    expect((await api().get("/api/v1/categories/admin")).status).toBe(401);
+
+    const user = await api()
+      .post("/api/v1/auth/register")
+      .send({ name: "Regular2", email: `${unique("reg")}@test.dev`, password: "Password123!" });
+    const forbidden = await api()
+      .get("/api/v1/categories/admin")
+      .set(authHeader(user.body.data.accessToken));
+    expect(forbidden.status).toBe(403);
+  });
+
+  it("updates a category (rename, toggle status, regenerate slug)", async () => {
+    const created = await api()
+      .post("/api/v1/categories")
+      .set(authHeader(admin.token))
+      .send({ name: `Before ${unique("cat")}` });
+
+    const res = await api()
+      .patch(`/api/v1/categories/${created.body.data.id}`)
+      .set(authHeader(admin.token))
+      .send({ name: `After ${unique("cat")}`, isActive: false, sortOrder: 5 });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.name).toMatch(/^After/);
+    expect(res.body.data.slug).not.toBe(created.body.data.slug);
+    expect(res.body.data.isActive).toBe(false);
+    expect(res.body.data.sortOrder).toBe(5);
+  });
+
+  it("rejects an invalid payload with 422", async () => {
+    const user = await createAdmin();
+    const empty = await api()
+      .post("/api/v1/categories")
+      .set(authHeader(user.token))
+      .send({});
+    expect(empty.status).toBe(422);
+
+    const created = await api()
+      .post("/api/v1/categories")
+      .set(authHeader(user.token))
+      .send({ name: `Valid ${unique("cat")}` });
+    const bad = await api()
+      .patch(`/api/v1/categories/${created.body.data.id}`)
+      .set(authHeader(user.token))
+      .send({ name: "X" });
+    expect(bad.status).toBe(422);
   });
 });

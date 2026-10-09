@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, CalendarClock, Users, Flag } from "lucide-react";
+import { LayoutDashboard, CalendarClock, Users, Flag, Tags } from "lucide-react";
 import { clsx } from "clsx";
 
 const tabs = [
@@ -10,6 +10,7 @@ const tabs = [
   { href: "/admin/events", label: "Events", icon: CalendarClock },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/reports", label: "Reports", icon: Flag },
+  { href: "/admin/categories", label: "Categories", icon: Tags },
 ];
 
 export function AdminTabs() {

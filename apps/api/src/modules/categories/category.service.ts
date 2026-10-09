@@ -11,6 +11,15 @@ export async function listCategories() {
   });
 }
 
+export async function listAllCategories() {
+  return prisma.category.findMany({
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    include: {
+      _count: { select: { events: { where: { status: "APPROVED" } } } },
+    },
+  });
+}
+
 // ─── Get single category by slug ─────────────────────────────────────────────
 
 export async function getCategoryBySlug(slug: string) {

@@ -9,6 +9,13 @@ export async function listCategories(req: Request, res: Response, next: NextFunc
   } catch (err) { next(err); }
 }
 
+export async function listAllCategoriesAdmin(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const categories = await CategoryService.listAllCategories();
+    sendSuccess({ res, data: categories });
+  } catch (err) { next(err); }
+}
+
 export async function getCategory(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const category = await CategoryService.getCategoryBySlug(req.params.slug);

@@ -32,6 +32,18 @@ export interface AdminUser {
 
 export type ReportStatus = "PENDING" | "REVIEWED" | "DISMISSED" | "ACTION_TAKEN";
 
+export interface AdminCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  icon: string | null;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+  _count?: { events: number };
+}
+
 export interface AdminReport {
   id: string;
   reason: string;
@@ -94,5 +106,28 @@ export const adminService = {
   async resolveReport(id: string, status: Exclude<ReportStatus, "PENDING">) {
     const res = await apiClient.patch<ApiSuccess<AdminReport>>(`/admin/reports/${id}`, { status });
     return res.data;
+  },
+
+  async listCategoriesAdmin() {
+    const res = await apiClient.get<ApiSuccess<AdminCategory[]>>("/categories/admin");
+    return res.data.data;
+  },
+
+  async createCategory(data: { name: string; description?: string; icon?: string; sortOrder?: number }) {
+    const res = await apiClient.post<ApiSuccess<AdminCategory>>("/categories", data);
+    return res.data.data;
+  },
+
+  async updateCategory(
+    id: string,
+    data: { name?: string; description?: string; icon?: string; isActive?: boolean; sortOrder?: number }
+  ) {
+    const res = await apiClient.patch<ApiSuccess<AdminCategory>>(`/categories/${id}`, data);
+    return res.data.data;
+  },
+
+  async deleteCategory(id: string) {
+    const res = await apiClient.delete<ApiSuccess<null>>(`/categories/${id}`);
+    return res.data.data;
   },
 };

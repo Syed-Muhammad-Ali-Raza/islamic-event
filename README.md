@@ -138,6 +138,7 @@ See `.env.example` for all required variables.
 - [x] Phase 12: Email & Notifications (verification, password reset, moderation emails, in-app notifications)
 - [x] Phase 13: Profile & Account Settings (edit name/phone, change password with notification)
 - [x] Phase 14: Organizer Detail Pages (`/organizers/[slug]`, SEO metadata, sitemap, create validation)
+- [x] Phase 15: Admin Categories UI (create/edit/activate-deactivate, admin list API, validation)
 
 ---
 

@@ -2,10 +2,12 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useCallback, Suspense } from "react";
-import { Search, Filter, X } from "lucide-react";
+import { Search, Filter, X, LayoutGrid, CalendarDays } from "lucide-react";
+import { clsx } from "clsx";
 import { useEvents } from "@/hooks/useEvents";
 import { useCategories } from "@/hooks/useCategories";
 import { EventCard } from "@/components/events/EventCard";
+import { EventCalendar } from "@/components/events/EventCalendar";
 import { EventCardSkeleton } from "@/components/ui/Skeleton";
 
 function EventsContent() {
@@ -16,6 +18,7 @@ function EventsContent() {
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") ?? "");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [view, setView] = useState<"list" | "calendar">("list");
 
   const { data, isLoading } = useEvents({
     search: searchParams.get("search") ?? undefined,
@@ -46,13 +49,43 @@ function EventsContent() {
   return (
     <div className="container-page py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Events</h1>
-        <p className="text-slate-500 text-sm">
-          {data?.pagination.total
-            ? `${data.pagination.total} events found`
-            : "Discover religious and community events"}
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Events</h1>
+          <p className="text-slate-500 text-sm">
+            {data?.pagination.total
+              ? `${data.pagination.total} events found`
+              : "Discover religious and community events"}
+          </p>
+        </div>
+
+        {/* View toggle */}
+        <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1">
+          <button
+            id="events-view-list"
+            onClick={() => setView("list")}
+            className={clsx(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
+              view === "list"
+                ? "bg-brand-600 text-white"
+                : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+            )}
+          >
+            <LayoutGrid size={14} /> List
+          </button>
+          <button
+            id="events-view-calendar"
+            onClick={() => setView("calendar")}
+            className={clsx(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
+              view === "calendar"
+                ? "bg-brand-600 text-white"
+                : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+            )}
+          >
+            <CalendarDays size={14} /> Calendar
+          </button>
+        </div>
       </div>
 
       {/* Search & filter bar */}
@@ -119,49 +152,58 @@ function EventsContent() {
         </div>
       )}
 
-      {/* Results grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        {isLoading
-          ? Array.from({ length: 12 }).map((_, i) => <EventCardSkeleton key={i} />)
-          : data?.data.length === 0
-            ? (
-                <div className="col-span-full text-center py-20 text-slate-500">
-                  <p className="text-5xl mb-4">🔍</p>
-                  <p className="text-lg font-medium">No events found</p>
-                  <p className="text-sm mt-1">Try different search terms or clear your filters.</p>
-                  {hasFilters && (
-                    <button onClick={clearFilters} className="btn-secondary mt-4 text-sm">Clear Filters</button>
-                  )}
-                </div>
-              )
-            : data?.data.map((event) => (
-                <EventCard key={event.id} event={event} />
-              ))}
-      </div>
+      {/* Results */}
+      {view === "calendar" ? (
+        <EventCalendar
+          search={searchParams.get("search") ?? undefined}
+          category={searchParams.get("category") ?? undefined}
+        />
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {isLoading
+              ? Array.from({ length: 12 }).map((_, i) => <EventCardSkeleton key={i} />)
+              : data?.data.length === 0
+                ? (
+                    <div className="col-span-full text-center py-20 text-slate-500">
+                      <p className="text-5xl mb-4">🔍</p>
+                      <p className="text-lg font-medium">No events found</p>
+                      <p className="text-sm mt-1">Try different search terms or clear your filters.</p>
+                      {hasFilters && (
+                        <button onClick={clearFilters} className="btn-secondary mt-4 text-sm">Clear Filters</button>
+                      )}
+                    </div>
+                  )
+                : data?.data.map((event) => (
+                    <EventCard key={event.id} event={event} />
+                  ))}
+          </div>
 
-      {/* Pagination */}
-      {data && data.pagination.totalPages > 1 && (
-        <div className="flex items-center justify-center gap-3 mt-10">
-          <button
-            id="events-prev-page"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
-          >
-            ← Previous
-          </button>
-          <span className="text-slate-500 text-sm">
-            Page {data.pagination.page} of {data.pagination.totalPages}
-          </span>
-          <button
-            id="events-next-page"
-            disabled={page === data.pagination.totalPages}
-            onClick={() => setPage((p) => p + 1)}
-            className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
-          >
-            Next →
-          </button>
-        </div>
+          {/* Pagination */}
+          {data && data.pagination.totalPages > 1 && (
+            <div className="flex items-center justify-center gap-3 mt-10">
+              <button
+                id="events-prev-page"
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+                className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
+              >
+                ← Previous
+              </button>
+              <span className="text-slate-500 text-sm">
+                Page {data.pagination.page} of {data.pagination.totalPages}
+              </span>
+              <button
+                id="events-next-page"
+                disabled={page === data.pagination.totalPages}
+                onClick={() => setPage((p) => p + 1)}
+                className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
+              >
+                Next →
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -139,6 +139,7 @@ See `.env.example` for all required variables.
 - [x] Phase 13: Profile & Account Settings (edit name/phone, change password with notification)
 - [x] Phase 14: Organizer Detail Pages (`/organizers/[slug]`, SEO metadata, sitemap, create validation)
 - [x] Phase 15: Admin Categories UI (create/edit/activate-deactivate, admin list API, validation)
+- [x] Phase 16: Events Calendar View (month grid with date-range API filters, list/calendar toggle)
 
 ---
 

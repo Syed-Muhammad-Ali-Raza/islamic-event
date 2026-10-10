@@ -177,6 +177,27 @@ export interface Imambargah {
   isActive: boolean;
 }
 
+export interface Place {
+  id: string;
+  sourceId: string;
+  name: string;
+  category: string;
+  type: string;
+  city: string;
+  province: string;
+  address: string;
+  mapLink: string | null;
+  builtYear: string | null;
+  builtBuilder: string | null;
+  unescoStatus: string | null;
+  timings: string | null;
+  ticket: string | null;
+  description: string | null;
+  sourceLink: string | null;
+  verified: boolean;
+  isActive: boolean;
+}
+
 export interface Event extends EventSummary {
   description: string | null;
   address: string | null;

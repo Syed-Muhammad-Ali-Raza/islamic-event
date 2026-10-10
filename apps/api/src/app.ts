@@ -23,6 +23,7 @@ import adminRoutes from "./modules/admin/admin.routes";
 import notificationRoutes from "./modules/notifications/notification.routes";
 import dastarkhwanRoutes from "./modules/dastarkhwans/dastarkhwan.routes";
 import imambargahRoutes from "./modules/imambargahs/imambargah.routes";
+import placeRoutes from "./modules/places/place.routes";
 
 const app = express();
 
@@ -92,6 +93,7 @@ app.use(`${api}/admin`, adminRoutes);
 app.use(`${api}/notifications`, notificationRoutes);
 app.use(`${api}/dastarkhwans`, dastarkhwanRoutes);
 app.use(`${api}/imambargahs`, imambargahRoutes);
+app.use(`${api}/places`, placeRoutes);
 
 // Profile / user routes
 app.get(`${api}/users/me/saved-events`, requireAuth, listSavedEvents);

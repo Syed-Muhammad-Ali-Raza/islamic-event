@@ -24,6 +24,7 @@ export function Navbar() {
     { href: "/organizers", label: t("nav.organizers") },
     { href: "/dastarkhwan", label: t("nav.dastarkhwan") },
     { href: "/imambargahs", label: t("nav.imambargahs") },
+    { href: "/places", label: t("nav.places") },
   ];
 
   return (

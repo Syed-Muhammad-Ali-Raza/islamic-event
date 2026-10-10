@@ -174,6 +174,45 @@ async function main() {
     console.log(`  ✓ ${points.length} imambargah points seeded`);
   }
 
+  // ── Pakistan places (historical / religious / cultural / natural) ──────────
+  const placesFile = path.join(__dirname, "data", "pakistan-places.json");
+  if (fs.existsSync(placesFile)) {
+    const raw = JSON.parse(fs.readFileSync(placesFile, "utf8"));
+    const places: Array<{
+      id: string; name: string; category: string; type: string; city: string; province: string;
+      address: string; map_link?: string | null;
+      built?: { year?: string | null; builder?: string | null } | null;
+      unesco_status?: string | null;
+      visiting?: { timings?: string | null; ticket?: string | null } | null;
+      description?: string | null; source_link?: string | null;
+    }> = raw.places ?? [];
+
+    for (const p of places) {
+      await prisma.place.upsert({
+        where: { sourceId: p.id },
+        update: {},
+        create: {
+          sourceId: p.id,
+          name: p.name,
+          category: p.category,
+          type: p.type,
+          city: p.city,
+          province: p.province,
+          address: p.address,
+          mapLink: p.map_link ?? null,
+          builtYear: p.built?.year ?? null,
+          builtBuilder: p.built?.builder ?? null,
+          unescoStatus: p.unesco_status ?? null,
+          timings: p.visiting?.timings ?? null,
+          ticket: p.visiting?.ticket ?? null,
+          description: p.description ?? null,
+          sourceLink: p.source_link ?? null,
+        },
+      });
+    }
+    console.log(`  ✓ ${places.length} Pakistan places seeded`);
+  }
+
   const adminEmail = "admin@communityevents.pk";
   const adminExists = await prisma.user.findUnique({ where: { email: adminEmail } });
 

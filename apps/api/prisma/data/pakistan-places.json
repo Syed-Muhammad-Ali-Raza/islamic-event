@@ -1,0 +1,1511 @@
+{
+  "meta": {
+    "title": "Historical, Religious, Cultural and Natural Places in Pakistan",
+    "country": "Pakistan",
+    "count": 71,
+    "categories": [
+      "Historical",
+      "Religious",
+      "Cultural",
+      "Natural / Tourist"
+    ],
+    "notes": [
+      "Timings and ticket info are general guidance only; hours and prices change, so confirm locally before visiting.",
+      "Where source_link points to a Wikipedia search page, open it and pick the matching article.",
+      "UNESCO status reflects knowledge up to mid-2026; check whc.unesco.org for the latest."
+    ]
+  },
+  "places": [
+    {
+      "id": "lahore-fort",
+      "name": "Lahore Fort (Shahi Qila)",
+      "category": "Historical",
+      "type": "Fort",
+      "city": "Lahore",
+      "province": "Punjab",
+      "address": "Fort Road, Walled City, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Lahore+Fort+%28Shahi+Qila%29+Lahore+Pakistan",
+      "built": {
+        "year": "Present form from 1566; additions to 1600s",
+        "builder": "Akbar; additions by Jahangir, Shah Jahan and Aurangzeb"
+      },
+      "unesco_status": "UNESCO World Heritage (1981, with Shalimar Gardens)",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Mughal citadel containing Sheesh Mahal, Naulakha Pavilion, Alamgiri Gate and Moti Masjid.",
+      "source_link": "https://en.wikipedia.org/wiki/Lahore_Fort"
+    },
+    {
+      "id": "rohtas-fort",
+      "name": "Rohtas Fort",
+      "category": "Historical",
+      "type": "Fort",
+      "city": "Dina (near Jhelum)",
+      "province": "Punjab",
+      "address": "Rohtas Fort, near Dina, District Jhelum",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Rohtas+Fort+Dina+%28near+Jhelum%29+Pakistan",
+      "built": {
+        "year": "1541-1548",
+        "builder": "Sher Shah Suri (Todar Mal supervised)"
+      },
+      "unesco_status": "UNESCO World Heritage (1997)",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Massive Afghan-era fort with 12 gates and a long defensive wall, built to control Gakhar territory.",
+      "source_link": "https://en.wikipedia.org/wiki/Rohtas_Fort"
+    },
+    {
+      "id": "baltit-fort",
+      "name": "Baltit Fort",
+      "category": "Historical",
+      "type": "Fort",
+      "city": "Karimabad, Hunza",
+      "province": "Gilgit-Baltistan",
+      "address": "Baltit Fort, Karimabad, Hunza Valley",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Baltit+Fort+Karimabad%2C+Hunza+Pakistan",
+      "built": {
+        "year": "c. 14th century (rebuilt/expanded later)",
+        "builder": "Mirs of Hunza; restored by Aga Khan Trust for Culture (1990s)"
+      },
+      "unesco_status": "On UNESCO Tentative List",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Hilltop fort overlooking Hunza Valley, former seat of the Mirs of Hunza, now a museum.",
+      "source_link": "https://en.wikipedia.org/wiki/Baltit_Fort"
+    },
+    {
+      "id": "altit-fort",
+      "name": "Altit Fort",
+      "category": "Historical",
+      "type": "Fort",
+      "city": "Altit, Hunza",
+      "province": "Gilgit-Baltistan",
+      "address": "Altit Village, Hunza Valley",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Altit+Fort+Altit%2C+Hunza+Pakistan",
+      "built": {
+        "year": "c. 11th century (traditionally)",
+        "builder": "Mirs of Hunza; restored by Aga Khan Trust for Culture"
+      },
+      "unesco_status": "On UNESCO Tentative List",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "One of the oldest monuments in Hunza, with traditional timber-and-stone architecture.",
+      "source_link": "https://en.wikipedia.org/wiki/Altit_Fort"
+    },
+    {
+      "id": "derawar-fort",
+      "name": "Derawar Fort",
+      "category": "Historical",
+      "type": "Fort",
+      "city": "Bahawalpur (Cholistan)",
+      "province": "Punjab",
+      "address": "Derawar Fort, Cholistan Desert, near Ahmedpur East",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Derawar+Fort+Bahawalpur+%28Cholistan%29+Pakistan",
+      "built": {
+        "year": "Originally 9th century; rebuilt 1732",
+        "builder": "Rai Jajja Bhatti; rebuilt by Nawab Sadiq Muhammad Khan I"
+      },
+      "unesco_status": "On UNESCO Tentative List",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Square fortress with 40 bastions rising from the Cholistan Desert.",
+      "source_link": "https://en.wikipedia.org/wiki/Derawar_Fort"
+    },
+    {
+      "id": "ranikot-fort",
+      "name": "Ranikot Fort",
+      "category": "Historical",
+      "type": "Fort",
+      "city": "Jamshoro (near Sann)",
+      "province": "Sindh",
+      "address": "Ranikot Fort, Kirthar foothills, Jamshoro District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Ranikot+Fort+Jamshoro+%28near+Sann%29+Pakistan",
+      "built": {
+        "year": "Reportedly 1812 (older origins debated)",
+        "builder": "Talpur Mirs"
+      },
+      "unesco_status": "On UNESCO Tentative List",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Often called the 'Great Wall of Sindh', with a wall roughly 26 km long.",
+      "source_link": "https://en.wikipedia.org/wiki/Ranikot_Fort"
+    },
+    {
+      "id": "attock-fort",
+      "name": "Attock Fort",
+      "category": "Historical",
+      "type": "Fort",
+      "city": "Attock",
+      "province": "Punjab",
+      "address": "Attock Fort, on the Indus River, Attock",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Attock+Fort+Attock+Pakistan",
+      "built": {
+        "year": "1581-1583",
+        "builder": "Akbar"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "Mughal fort guarding the crossing of the Indus; part of it is under military use, so access can be limited.",
+      "source_link": "https://en.wikipedia.org/wiki/Attock_Fort"
+    },
+    {
+      "id": "bala-hisar",
+      "name": "Bala Hisar Fort",
+      "category": "Historical",
+      "type": "Fort",
+      "city": "Peshawar",
+      "province": "Khyber Pakhtunkhwa",
+      "address": "Bala Hisar Road, Peshawar",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Bala+Hisar+Fort+Peshawar+Pakistan",
+      "built": {
+        "year": "Ancient site; present structure 1830s",
+        "builder": "Rebuilt by Sikh rule (Hari Singh Nalwa era)"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "Historic fort overlooking Peshawar. It is used by the Frontier Corps and public access is restricted.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Bala+Hisar+Peshawar"
+    },
+    {
+      "id": "noor-mahal",
+      "name": "Noor Mahal",
+      "category": "Historical",
+      "type": "Palace",
+      "city": "Bahawalpur",
+      "province": "Punjab",
+      "address": "Noor Mahal, Bahawalpur",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Noor+Mahal+Bahawalpur+Pakistan",
+      "built": {
+        "year": "1872-1875",
+        "builder": "Nawab Sadiq Muhammad Khan IV"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Typically daytime hours, closed one weekday; confirm locally",
+        "ticket": "Ticket required (nominal fee)"
+      },
+      "description": "Italianate palace of the Nawabs of Bahawalpur, now open as a museum.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Noor+Mahal+Bahawalpur"
+    },
+    {
+      "id": "mohatta-palace",
+      "name": "Mohatta Palace",
+      "category": "Historical",
+      "type": "Palace",
+      "city": "Karachi",
+      "province": "Sindh",
+      "address": "Mohatta Palace, Clifton, Karachi",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Mohatta+Palace+Karachi+Pakistan",
+      "built": {
+        "year": "1927",
+        "builder": "Shivratan Chandraratan Mohatta; architect Agha Ahmed Hussain"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Typically daytime hours, closed one weekday; confirm locally",
+        "ticket": "Ticket required (nominal fee)"
+      },
+      "description": "Pink-stone palace in Indo-Saracenic style, now a museum and art space.",
+      "source_link": "https://en.wikipedia.org/wiki/Mohatta_Palace"
+    },
+    {
+      "id": "omar-hayat-mahal",
+      "name": "Omar Hayat Mahal",
+      "category": "Historical",
+      "type": "Palace / Haveli",
+      "city": "Chiniot",
+      "province": "Punjab",
+      "address": "Omar Hayat Mahal, Chiniot",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Omar+Hayat+Mahal+Chiniot+Pakistan",
+      "built": {
+        "year": "1923-1935",
+        "builder": "Sheikh Omar Hayat (Chiniot craftsmen)"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Ornate wooden mansion known for exceptional Chiniot woodwork.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Omar+Hayat+Mahal+Chiniot"
+    },
+    {
+      "id": "shalimar-gardens",
+      "name": "Shalimar Gardens (Shalamar Bagh)",
+      "category": "Historical",
+      "type": "Mughal Garden",
+      "city": "Lahore",
+      "province": "Punjab",
+      "address": "Grand Trunk Road, Baghbanpura, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shalimar+Gardens+%28Shalamar+Bagh%29+Lahore+Pakistan",
+      "built": {
+        "year": "1641-1642",
+        "builder": "Shah Jahan (Khalilullah Khan supervised)"
+      },
+      "unesco_status": "UNESCO World Heritage (1981, with Lahore Fort)",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Terraced Mughal garden with fountains and marble pavilions.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Shalimar+Gardens+Lahore"
+    },
+    {
+      "id": "minar-e-pakistan",
+      "name": "Minar-e-Pakistan",
+      "category": "Historical",
+      "type": "Monument",
+      "city": "Lahore",
+      "province": "Punjab",
+      "address": "Iqbal Park, Circular Road, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Minar-e-Pakistan+Lahore+Pakistan",
+      "built": {
+        "year": "1960-1968",
+        "builder": "Architect Nasreddin Murat-Khan"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "Tower marking the site of the 1940 Lahore Resolution.",
+      "source_link": "https://en.wikipedia.org/wiki/Minar-e-Pakistan"
+    },
+    {
+      "id": "hiran-minar",
+      "name": "Hiran Minar",
+      "category": "Historical",
+      "type": "Monument",
+      "city": "Sheikhupura",
+      "province": "Punjab",
+      "address": "Hiran Minar Road, Sheikhupura",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Hiran+Minar+Sheikhupura+Pakistan",
+      "built": {
+        "year": "1606",
+        "builder": "Jahangir"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Tower and pond complex built in memory of Jahangir's pet antelope.",
+      "source_link": "https://en.wikipedia.org/wiki/Hiran_Minar"
+    },
+    {
+      "id": "khyber-pass",
+      "name": "Khyber Pass",
+      "category": "Historical",
+      "type": "Historic Pass",
+      "city": "Landi Kotal (Khyber)",
+      "province": "Khyber Pakhtunkhwa",
+      "address": "Khyber Pass, Khyber District, near Torkham border",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Khyber+Pass+Landi+Kotal+%28Khyber%29+Pakistan",
+      "built": {
+        "year": "Ancient trade and invasion route",
+        "builder": "N/A (natural pass)"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "Famous mountain pass linking Pakistan and Afghanistan; access may require permission.",
+      "source_link": "https://en.wikipedia.org/wiki/Khyber_Pass"
+    },
+    {
+      "id": "mohenjo-daro",
+      "name": "Mohenjo-daro",
+      "category": "Historical",
+      "type": "Archaeological Site",
+      "city": "Larkana",
+      "province": "Sindh",
+      "address": "Mohenjo-daro, near Dokri, Larkana District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Mohenjo-daro+Larkana+Pakistan",
+      "built": {
+        "year": "c. 2500 BCE",
+        "builder": "Indus Valley Civilization"
+      },
+      "unesco_status": "UNESCO World Heritage (1980)",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Planned Bronze Age city with grid streets, drainage and the Great Bath.",
+      "source_link": "https://en.wikipedia.org/wiki/Mohenjo-daro"
+    },
+    {
+      "id": "harappa",
+      "name": "Harappa",
+      "category": "Historical",
+      "type": "Archaeological Site",
+      "city": "Sahiwal",
+      "province": "Punjab",
+      "address": "Harappa Village, Sahiwal District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Harappa+Sahiwal+Pakistan",
+      "built": {
+        "year": "c. 3300-1300 BCE",
+        "builder": "Indus Valley Civilization"
+      },
+      "unesco_status": "On UNESCO Tentative List",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Type site of the Harappan culture, with a small on-site museum.",
+      "source_link": "https://en.wikipedia.org/wiki/Harappa"
+    },
+    {
+      "id": "taxila",
+      "name": "Taxila Ruins",
+      "category": "Historical",
+      "type": "Archaeological Site",
+      "city": "Taxila",
+      "province": "Punjab",
+      "address": "Taxila, Rawalpindi District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Taxila+Ruins+Taxila+Pakistan",
+      "built": {
+        "year": "6th century BCE to 5th century CE",
+        "builder": "Achaemenid, Mauryan, Greek, Kushan and other rulers"
+      },
+      "unesco_status": "UNESCO World Heritage (1980)",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Ancient Gandhara city with Dharmarajika Stupa, Jaulian monastery and Sirkap ruins.",
+      "source_link": "https://en.wikipedia.org/wiki/Taxila"
+    },
+    {
+      "id": "takht-i-bahi",
+      "name": "Takht-i-Bahi Buddhist Monastery",
+      "category": "Historical",
+      "type": "Archaeological Site",
+      "city": "Mardan",
+      "province": "Khyber Pakhtunkhwa",
+      "address": "Takht-i-Bahi, Mardan District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Takht-i-Bahi+Buddhist+Monastery+Mardan+Pakistan",
+      "built": {
+        "year": "1st century CE",
+        "builder": "Parthian-era Buddhist community"
+      },
+      "unesco_status": "UNESCO World Heritage (1980, with Sahr-i-Bahlol)",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Hilltop Buddhist monastery complex of stupas, chapels and cells.",
+      "source_link": "https://en.wikipedia.org/wiki/Takht-i-Bahi"
+    },
+    {
+      "id": "mehrgarh",
+      "name": "Mehrgarh",
+      "category": "Historical",
+      "type": "Archaeological Site",
+      "city": "Bolan (Kachhi)",
+      "province": "Balochistan",
+      "address": "Mehrgarh, Kachhi Plain near Bolan Pass",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Mehrgarh+Bolan+%28Kachhi%29+Pakistan",
+      "built": {
+        "year": "c. 7000 BCE",
+        "builder": "Neolithic farming community"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "One of the earliest Neolithic farming settlements in South Asia.",
+      "source_link": "https://en.wikipedia.org/wiki/Mehrgarh"
+    },
+    {
+      "id": "bhamala-stupa",
+      "name": "Bhamala Buddhist Complex",
+      "category": "Historical",
+      "type": "Archaeological Site",
+      "city": "Haripur",
+      "province": "Khyber Pakhtunkhwa",
+      "address": "Bhamala, near Khanpur Dam, Haripur",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Bhamala+Buddhist+Complex+Haripur+Pakistan",
+      "built": {
+        "year": "c. 3rd-5th century CE",
+        "builder": "Gandharan Buddhist builders"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Gandharan monastery with a large stupa.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Bhamala+Buddhist+Complex"
+    },
+    {
+      "id": "makli",
+      "name": "Makli Necropolis",
+      "category": "Historical",
+      "type": "Necropolis",
+      "city": "Thatta",
+      "province": "Sindh",
+      "address": "Makli Hill, Thatta",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Makli+Necropolis+Thatta+Pakistan",
+      "built": {
+        "year": "14th-18th centuries",
+        "builder": "Samma, Arghun, Tarkhan and Mughal-era rulers"
+      },
+      "unesco_status": "UNESCO World Heritage (1981)",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "One of the largest necropolises in the world, with thousands of tombs.",
+      "source_link": "https://en.wikipedia.org/wiki/Makli_Necropolis"
+    },
+    {
+      "id": "chaukhandi",
+      "name": "Chaukhandi Tombs",
+      "category": "Historical",
+      "type": "Tombs",
+      "city": "Karachi",
+      "province": "Sindh",
+      "address": "Chaukhandi, Landhi, Karachi",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Chaukhandi+Tombs+Karachi+Pakistan",
+      "built": {
+        "year": "15th-18th centuries",
+        "builder": "Jokhio and Baloch communities"
+      },
+      "unesco_status": "On UNESCO Tentative List",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "Sandstone tombs with intricate carved patterns.",
+      "source_link": "https://en.wikipedia.org/wiki/Chaukhandi_tombs"
+    },
+    {
+      "id": "tomb-jahangir",
+      "name": "Tomb of Jahangir",
+      "category": "Historical",
+      "type": "Tomb",
+      "city": "Lahore (Shahdara)",
+      "province": "Punjab",
+      "address": "Shahdara Bagh, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Tomb+of+Jahangir+Lahore+%28Shahdara%29+Pakistan",
+      "built": {
+        "year": "1637",
+        "builder": "Shah Jahan (for his father Jahangir)"
+      },
+      "unesco_status": "On UNESCO Tentative List",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Mughal mausoleum with inlaid marble and four minarets.",
+      "source_link": "https://en.wikipedia.org/wiki/Tomb_of_Jahangir"
+    },
+    {
+      "id": "tomb-noorjahan",
+      "name": "Tomb of Noor Jahan",
+      "category": "Historical",
+      "type": "Tomb",
+      "city": "Lahore (Shahdara)",
+      "province": "Punjab",
+      "address": "Shahdara, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Tomb+of+Noor+Jahan+Lahore+%28Shahdara%29+Pakistan",
+      "built": {
+        "year": "1645",
+        "builder": "Noor Jahan (planned in her lifetime)"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Mughal tomb of Empress Noor Jahan, near Jahangir's tomb.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Tomb+of+Nur+Jahan"
+    },
+    {
+      "id": "mazar-quaid",
+      "name": "Mazar-e-Quaid (Jinnah Mausoleum)",
+      "category": "Historical",
+      "type": "Mausoleum",
+      "city": "Karachi",
+      "province": "Sindh",
+      "address": "Mazar-e-Quaid, M.A. Jinnah Road, Karachi",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Mazar-e-Quaid+%28Jinnah+Mausoleum%29+Karachi+Pakistan",
+      "built": {
+        "year": "1960-1970",
+        "builder": "Architect Yahya Merchant"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "Marble mausoleum of Muhammad Ali Jinnah, founder of Pakistan.",
+      "source_link": "https://en.wikipedia.org/wiki/Mazar-e-Quaid"
+    },
+    {
+      "id": "tomb-iqbal",
+      "name": "Tomb of Allama Iqbal",
+      "category": "Historical",
+      "type": "Mausoleum",
+      "city": "Lahore",
+      "province": "Punjab",
+      "address": "Hazuri Bagh, near Badshahi Mosque, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Tomb+of+Allama+Iqbal+Lahore+Pakistan",
+      "built": {
+        "year": "1951",
+        "builder": "Government of Pakistan (Afghan lapis-lazuli donated)"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "Mausoleum of the national poet Allama Muhammad Iqbal.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Tomb+of+Allama+Iqbal"
+    },
+    {
+      "id": "frere-hall",
+      "name": "Frere Hall",
+      "category": "Historical",
+      "type": "Colonial Building",
+      "city": "Karachi",
+      "province": "Sindh",
+      "address": "Frere Hall, Fatima Jinnah Road, Karachi",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Frere+Hall+Karachi+Pakistan",
+      "built": {
+        "year": "1865",
+        "builder": "Henry St. Clair Wilkins"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "Venetian-Gothic colonial hall and garden.",
+      "source_link": "https://en.wikipedia.org/wiki/Frere_Hall"
+    },
+    {
+      "id": "empress-market",
+      "name": "Empress Market",
+      "category": "Historical",
+      "type": "Colonial Building",
+      "city": "Karachi",
+      "province": "Sindh",
+      "address": "Saddar, Karachi",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Empress+Market+Karachi+Pakistan",
+      "built": {
+        "year": "1889",
+        "builder": "James Strachan"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "Victorian-era market built to honour Queen Victoria.",
+      "source_link": "https://en.wikipedia.org/wiki/Empress_Market"
+    },
+    {
+      "id": "walled-city-lahore",
+      "name": "Walled City of Lahore",
+      "category": "Historical",
+      "type": "Heritage District",
+      "city": "Lahore",
+      "province": "Punjab",
+      "address": "Walled City, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Walled+City+of+Lahore+Lahore+Pakistan",
+      "built": {
+        "year": "Ancient origins; Mughal-era form",
+        "builder": "Various dynasties; Mughal period dominant"
+      },
+      "unesco_status": "Heritage area; Tentative List interest",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "Historic Lahore with gates, havelis and bazaars; Delhi Gate and Wazir Khan area are popular.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Walled+City+of+Lahore"
+    },
+    {
+      "id": "wagah",
+      "name": "Wagah Border Ceremony",
+      "category": "Historical",
+      "type": "Ceremony Site",
+      "city": "Lahore (Wagah)",
+      "province": "Punjab",
+      "address": "Wagah Border, Grand Trunk Road, near Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Wagah+Border+Ceremony+Lahore+%28Wagah%29+Pakistan",
+      "built": {
+        "year": "Daily ceremony tradition since 1959",
+        "builder": "Pakistan Rangers & BSF"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "Daily flag-lowering ceremony at the India-Pakistan border.",
+      "source_link": "https://en.wikipedia.org/wiki/Wagah_border"
+    },
+    {
+      "id": "badshahi-mosque",
+      "name": "Badshahi Mosque",
+      "category": "Religious",
+      "type": "Mosque",
+      "city": "Lahore",
+      "province": "Punjab",
+      "address": "Walled City, near Lahore Fort, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Badshahi+Mosque+Lahore+Pakistan",
+      "built": {
+        "year": "1671-1673",
+        "builder": "Aurangzeb; architect Fidai Khan Koka"
+      },
+      "unesco_status": "On UNESCO Tentative List",
+      "visiting": {
+        "timings": "Open daily; visitors should avoid prayer times and dress modestly",
+        "ticket": "Free"
+      },
+      "description": "One of the largest mosques in the world, built from red sandstone with white marble domes.",
+      "source_link": "https://en.wikipedia.org/wiki/Badshahi_Mosque"
+    },
+    {
+      "id": "wazir-khan",
+      "name": "Wazir Khan Mosque",
+      "category": "Religious",
+      "type": "Mosque",
+      "city": "Lahore",
+      "province": "Punjab",
+      "address": "Delhi Gate, Walled City, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Wazir+Khan+Mosque+Lahore+Pakistan",
+      "built": {
+        "year": "1634-1641",
+        "builder": "Hakim Ilmuddin Ansari (Wazir Khan), Shah Jahan era"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; visitors should avoid prayer times and dress modestly",
+        "ticket": "Free"
+      },
+      "description": "Mughal mosque renowned for its tile work (kashi kari) and frescoes.",
+      "source_link": "https://en.wikipedia.org/wiki/Wazir_Khan_Mosque"
+    },
+    {
+      "id": "faisal-mosque",
+      "name": "Faisal Mosque",
+      "category": "Religious",
+      "type": "Mosque",
+      "city": "Islamabad",
+      "province": "Islamabad Capital Territory",
+      "address": "Faisal Mosque, Shah Faisal Avenue, Islamabad",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Faisal+Mosque+Islamabad+Pakistan",
+      "built": {
+        "year": "1976-1986",
+        "builder": "Architect Vedat Dalokay; funded by King Faisal of Saudi Arabia"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; visitors should avoid prayer times and dress modestly",
+        "ticket": "Free"
+      },
+      "description": "Modern tent-shaped mosque at the foot of the Margalla Hills.",
+      "source_link": "https://en.wikipedia.org/wiki/Faisal_Mosque"
+    },
+    {
+      "id": "shah-jahan-mosque",
+      "name": "Shah Jahan Mosque",
+      "category": "Religious",
+      "type": "Mosque",
+      "city": "Thatta",
+      "province": "Sindh",
+      "address": "Shah Jahan Mosque, Thatta",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shah+Jahan+Mosque+Thatta+Pakistan",
+      "built": {
+        "year": "1647",
+        "builder": "Shah Jahan"
+      },
+      "unesco_status": "On UNESCO Tentative List",
+      "visiting": {
+        "timings": "Open daily; visitors should avoid prayer times and dress modestly",
+        "ticket": "Free"
+      },
+      "description": "Brick-and-tile mosque with a remarkable number of domes.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Shah+Jahan+Mosque+Thatta"
+    },
+    {
+      "id": "mahabat-khan",
+      "name": "Mahabat Khan Mosque",
+      "category": "Religious",
+      "type": "Mosque",
+      "city": "Peshawar",
+      "province": "Khyber Pakhtunkhwa",
+      "address": "Andar Shehr, Peshawar",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Mahabat+Khan+Mosque+Peshawar+Pakistan",
+      "built": {
+        "year": "c. 1630",
+        "builder": "Mahabat Khan (Mughal governor of Peshawar)"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; visitors should avoid prayer times and dress modestly",
+        "ticket": "Free"
+      },
+      "description": "Mughal-era mosque in the old city of Peshawar.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Mahabat+Khan+Mosque"
+    },
+    {
+      "id": "bhong-mosque",
+      "name": "Bhong Mosque",
+      "category": "Religious",
+      "type": "Mosque",
+      "city": "Bhong (Rahim Yar Khan)",
+      "province": "Punjab",
+      "address": "Bhong, Rahim Yar Khan District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Bhong+Mosque+Bhong+%28Rahim+Yar+Khan%29+Pakistan",
+      "built": {
+        "year": "1932-1982",
+        "builder": "Sardar Rais Ghazi Muhammad Khan"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; visitors should avoid prayer times and dress modestly",
+        "ticket": "Free"
+      },
+      "description": "Ornate mosque (Aga Khan Award for Architecture 1986).",
+      "source_link": "https://en.wikipedia.org/wiki/Bhong_Mosque"
+    },
+    {
+      "id": "data-darbar",
+      "name": "Data Darbar (Ali Hujwiri)",
+      "category": "Religious",
+      "type": "Sufi Shrine",
+      "city": "Lahore",
+      "province": "Punjab",
+      "address": "Bhati Gate, Data Darbar Road, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Data+Darbar+%28Ali+Hujwiri%29+Lahore+Pakistan",
+      "built": {
+        "year": "11th-century shrine; complex expanded in the 20th century",
+        "builder": "Shrine of Ali Hujwiri (d. c. 1072)"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Major Sufi shrine of Data Ganj Bakhsh, one of Lahore's best-known religious sites.",
+      "source_link": "https://en.wikipedia.org/wiki/Data_Darbar"
+    },
+    {
+      "id": "baba-farid",
+      "name": "Shrine of Baba Fareed Ganjshakar",
+      "category": "Religious",
+      "type": "Sufi Shrine",
+      "city": "Pakpattan",
+      "province": "Punjab",
+      "address": "Darbar Baba Fareed, Pakpattan",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shrine+of+Baba+Fareed+Ganjshakar+Pakpattan+Pakistan",
+      "built": {
+        "year": "13th century (Baba Farid d. 1266)",
+        "builder": "Local devotees and later patrons"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Shrine of the Chishti Sufi saint Baba Farid; famous for the annual Urs and Bahishti Darwaza.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Baba+Farid+shrine+Pakpattan"
+    },
+    {
+      "id": "lal-shahbaz",
+      "name": "Shrine of Lal Shahbaz Qalandar",
+      "category": "Religious",
+      "type": "Sufi Shrine",
+      "city": "Sehwan Sharif",
+      "province": "Sindh",
+      "address": "Sehwan Sharif, Jamshoro District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shrine+of+Lal+Shahbaz+Qalandar+Sehwan+Sharif+Pakistan",
+      "built": {
+        "year": "Original tomb 1356",
+        "builder": "Renovated by later rulers and devotees"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Famous Sufi shrine known for dhamal and the annual Urs.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Lal+Shahbaz+Qalandar+shrine"
+    },
+    {
+      "id": "abdullah-shah-ghazi",
+      "name": "Shrine of Abdullah Shah Ghazi",
+      "category": "Religious",
+      "type": "Sufi Shrine",
+      "city": "Karachi",
+      "province": "Sindh",
+      "address": "Clifton, Karachi",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shrine+of+Abdullah+Shah+Ghazi+Karachi+Pakistan",
+      "built": {
+        "year": "Centuries old; modern renovations",
+        "builder": "Local devotees"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Hilltop shrine in Clifton, an important spiritual site of Karachi.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Abdullah+Shah+Ghazi+shrine"
+    },
+    {
+      "id": "bari-imam",
+      "name": "Shrine of Bari Imam",
+      "category": "Religious",
+      "type": "Sufi Shrine",
+      "city": "Islamabad",
+      "province": "Islamabad Capital Territory",
+      "address": "Noorpur Shahan, Islamabad",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shrine+of+Bari+Imam+Islamabad+Pakistan",
+      "built": {
+        "year": "17th century (Shah Abdul Latif Kazmi d. 1705)",
+        "builder": "Mughal-era patronage"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Shrine of the patron saint of Islamabad.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Bari+Imam+shrine"
+    },
+    {
+      "id": "bulleh-shah",
+      "name": "Shrine of Bulleh Shah",
+      "category": "Religious",
+      "type": "Sufi Shrine",
+      "city": "Kasur",
+      "province": "Punjab",
+      "address": "Kasur",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shrine+of+Bulleh+Shah+Kasur+Pakistan",
+      "built": {
+        "year": "18th century (Bulleh Shah d. c. 1757)",
+        "builder": "Local devotees"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Shrine of the Punjabi Sufi poet Bulleh Shah.",
+      "source_link": "https://en.wikipedia.org/wiki/Bulleh_Shah"
+    },
+    {
+      "id": "shah-latif",
+      "name": "Shrine of Shah Abdul Latif Bhittai",
+      "category": "Religious",
+      "type": "Sufi Shrine",
+      "city": "Bhit Shah",
+      "province": "Sindh",
+      "address": "Bhit Shah, Matiari District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shrine+of+Shah+Abdul+Latif+Bhittai+Bhit+Shah+Pakistan",
+      "built": {
+        "year": "Mausoleum built 1754 after the poet's death",
+        "builder": "Ghulam Shah Kalhoro"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Mausoleum of the Sindhi Sufi poet Shah Abdul Latif Bhittai.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Shah+Abdul+Latif+Bhittai+shrine"
+    },
+    {
+      "id": "shah-rukn-alam",
+      "name": "Tomb of Shah Rukn-e-Alam",
+      "category": "Religious",
+      "type": "Sufi Shrine",
+      "city": "Multan",
+      "province": "Punjab",
+      "address": "Fort Kohna Qasim Bagh, Multan",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Tomb+of+Shah+Rukn-e-Alam+Multan+Pakistan",
+      "built": {
+        "year": "1320-1324",
+        "builder": "Ghiyath al-Din Tughluq"
+      },
+      "unesco_status": "On UNESCO Tentative List",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Tughluq-era tomb famous for its massive dome and blue-tile decoration.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Tomb+of+Shah+Rukn-e-Alam"
+    },
+    {
+      "id": "bahauddin-zakariya",
+      "name": "Shrine of Bahauddin Zakariya",
+      "category": "Religious",
+      "type": "Sufi Shrine",
+      "city": "Multan",
+      "province": "Punjab",
+      "address": "Multan Fort area, Multan",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shrine+of+Bahauddin+Zakariya+Multan+Pakistan",
+      "built": {
+        "year": "13th century",
+        "builder": "Built after Bahauddin Zakariya's death (d. c. 1262)"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Major Suhrawardi shrine in Multan.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Bahauddin+Zakariya+shrine"
+    },
+    {
+      "id": "uch-sharif",
+      "name": "Tombs of Uch Sharif",
+      "category": "Religious",
+      "type": "Sufi Shrines",
+      "city": "Uch Sharif",
+      "province": "Punjab",
+      "address": "Uch Sharif, Bahawalpur District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Tombs+of+Uch+Sharif+Uch+Sharif+Pakistan",
+      "built": {
+        "year": "15th century",
+        "builder": "Local Sufi lineages and rulers"
+      },
+      "unesco_status": "On UNESCO Tentative List",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Famous blue-tiled tombs including Bibi Jawindi, Baha al-Halim and Jalaluddin Bukhari.",
+      "source_link": "https://en.wikipedia.org/wiki/Uch_Sharif"
+    },
+    {
+      "id": "mian-mir",
+      "name": "Shrine of Mian Mir",
+      "category": "Religious",
+      "type": "Sufi Shrine",
+      "city": "Lahore",
+      "province": "Punjab",
+      "address": "Dharampura, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shrine+of+Mian+Mir+Lahore+Pakistan",
+      "built": {
+        "year": "17th century (Mian Mir d. 1635)",
+        "builder": "Shah Jahan and Dara Shikoh patronage"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Shrine of the Qadiri Sufi saint Mian Mir.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Mian+Mir+shrine+Lahore"
+    },
+    {
+      "id": "rehman-baba",
+      "name": "Shrine of Rehman Baba",
+      "category": "Religious",
+      "type": "Sufi Shrine",
+      "city": "Peshawar",
+      "province": "Khyber Pakhtunkhwa",
+      "address": "Hazar Khwani, Peshawar",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shrine+of+Rehman+Baba+Peshawar+Pakistan",
+      "built": {
+        "year": "17th century (Rehman Baba d. c. 1715)",
+        "builder": "Local devotees"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Shrine of the beloved Pashto Sufi poet Rehman Baba.",
+      "source_link": "https://en.wikipedia.org/wiki/Rahman_Baba"
+    },
+    {
+      "id": "sakhi-sarwar",
+      "name": "Shrine of Sakhi Sarwar",
+      "category": "Religious",
+      "type": "Sufi Shrine",
+      "city": "Dera Ghazi Khan (Sakhi Sarwar)",
+      "province": "Punjab",
+      "address": "Sakhi Sarwar, DG Khan District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shrine+of+Sakhi+Sarwar+Dera+Ghazi+Khan+%28Sakhi+Sarwar%29+Pakistan",
+      "built": {
+        "year": "Medieval period",
+        "builder": "Local devotees"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; most shrines are accessible all day (some 24 hours)",
+        "ticket": "Free (donations welcome)"
+      },
+      "description": "Important shrine in the Sulaiman Mountains foothills, famous for its fair.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Sakhi+Sarwar"
+    },
+    {
+      "id": "nankana-sahib",
+      "name": "Gurdwara Janam Asthan (Nankana Sahib)",
+      "category": "Religious",
+      "type": "Gurdwara",
+      "city": "Nankana Sahib",
+      "province": "Punjab",
+      "address": "Nankana Sahib, Punjab",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Gurdwara+Janam+Asthan+%28Nankana+Sahib%29+Nankana+Sahib+Pakistan",
+      "built": {
+        "year": "Early 19th century structure",
+        "builder": "Maharaja Ranjit Singh era"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; pilgrims and visitors welcome, cover head and remove shoes",
+        "ticket": "Free for pilgrims; special visa/permit rules may apply for some visitors"
+      },
+      "description": "Birthplace of Guru Nanak and one of Sikhism's holiest sites.",
+      "source_link": "https://en.wikipedia.org/wiki/Nankana_Sahib"
+    },
+    {
+      "id": "kartarpur",
+      "name": "Gurdwara Darbar Sahib Kartarpur",
+      "category": "Religious",
+      "type": "Gurdwara",
+      "city": "Narowal (Kartarpur)",
+      "province": "Punjab",
+      "address": "Kartarpur, Narowal District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Gurdwara+Darbar+Sahib+Kartarpur+Narowal+%28Kartarpur%29+Pakistan",
+      "built": {
+        "year": "1925 (current building); corridor opened 2019",
+        "builder": "Maharaja Bhupinder Singh of Patiala"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; pilgrims and visitors welcome, cover head and remove shoes",
+        "ticket": "Free for pilgrims; special visa/permit rules may apply for some visitors"
+      },
+      "description": "Where Guru Nanak spent his final years; connected to India via the Kartarpur Corridor.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Gurdwara+Darbar+Sahib+Kartarpur"
+    },
+    {
+      "id": "panja-sahib",
+      "name": "Gurdwara Panja Sahib",
+      "category": "Religious",
+      "type": "Gurdwara",
+      "city": "Hasan Abdal",
+      "province": "Punjab",
+      "address": "Hasan Abdal, Attock District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Gurdwara+Panja+Sahib+Hasan+Abdal+Pakistan",
+      "built": {
+        "year": "19th century",
+        "builder": "Hari Singh Nalwa"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; pilgrims and visitors welcome, cover head and remove shoes",
+        "ticket": "Free for pilgrims; special visa/permit rules may apply for some visitors"
+      },
+      "description": "Sikh shrine believed to hold the handprint of Guru Nanak on a boulder.",
+      "source_link": "https://en.wikipedia.org/wiki/Gurdwara_Panja_Sahib"
+    },
+    {
+      "id": "katas-raj",
+      "name": "Katas Raj Temples",
+      "category": "Religious",
+      "type": "Hindu Temple Complex",
+      "city": "Choa Saidan Shah (Chakwal)",
+      "province": "Punjab",
+      "address": "Katas Raj, Chakwal District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Katas+Raj+Temples+Choa+Saidan+Shah+%28Chakwal%29+Pakistan",
+      "built": {
+        "year": "6th-10th centuries (Hindu Shahi era)",
+        "builder": "Hindu Shahi rulers"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; pilgrims and visitors welcome, cover head and remove shoes",
+        "ticket": "Free for pilgrims; special visa/permit rules may apply for some visitors"
+      },
+      "description": "Ancient Hindu temple complex around the sacred Katas pond.",
+      "source_link": "https://en.wikipedia.org/wiki/Katas_Raj_Temples"
+    },
+    {
+      "id": "hinglaj",
+      "name": "Hinglaj Mata Temple",
+      "category": "Religious",
+      "type": "Hindu Temple",
+      "city": "Lasbela (Hingol)",
+      "province": "Balochistan",
+      "address": "Hinglaj, Hingol National Park",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Hinglaj+Mata+Temple+Lasbela+%28Hingol%29+Pakistan",
+      "built": {
+        "year": "Ancient (exact date uncertain)",
+        "builder": "Local tradition"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open daily; pilgrims and visitors welcome, cover head and remove shoes",
+        "ticket": "Free for pilgrims; special visa/permit rules may apply for some visitors"
+      },
+      "description": "Major Hindu pilgrimage site in a cave temple in Hingol National Park.",
+      "source_link": "https://en.wikipedia.org/wiki/Hinglaj_Mata_Temple"
+    },
+    {
+      "id": "lahore-museum",
+      "name": "Lahore Museum",
+      "category": "Cultural",
+      "type": "Museum",
+      "city": "Lahore",
+      "province": "Punjab",
+      "address": "The Mall, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Lahore+Museum+Lahore+Pakistan",
+      "built": {
+        "year": "Museum founded 1865; current building 1894",
+        "builder": "Architects Bhai Ram Singh and John Lockwood Kipling"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Typically daytime hours, closed one weekday; confirm locally",
+        "ticket": "Ticket required (nominal fee)"
+      },
+      "description": "Pakistan's largest museum with Gandhara sculpture and the Fasting Buddha.",
+      "source_link": "https://en.wikipedia.org/wiki/Lahore_Museum"
+    },
+    {
+      "id": "national-museum-karachi",
+      "name": "National Museum of Pakistan",
+      "category": "Cultural",
+      "type": "Museum",
+      "city": "Karachi",
+      "province": "Sindh",
+      "address": "Burns Road, Karachi",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=National+Museum+of+Pakistan+Karachi+Pakistan",
+      "built": {
+        "year": "Established 1950; current building opened 1970",
+        "builder": "Government of Pakistan"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Typically daytime hours, closed one weekday; confirm locally",
+        "ticket": "Ticket required (nominal fee)"
+      },
+      "description": "National collection of archaeology, art and cultural history.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=National+Museum+of+Pakistan"
+    },
+    {
+      "id": "peshawar-museum",
+      "name": "Peshawar Museum",
+      "category": "Cultural",
+      "type": "Museum",
+      "city": "Peshawar",
+      "province": "Khyber Pakhtunkhwa",
+      "address": "Sir Syed Road, Peshawar",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Peshawar+Museum+Peshawar+Pakistan",
+      "built": {
+        "year": "1907",
+        "builder": "British colonial administration"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Typically daytime hours, closed one weekday; confirm locally",
+        "ticket": "Ticket required (nominal fee)"
+      },
+      "description": "Famous for its collection of Gandhara art.",
+      "source_link": "https://en.wikipedia.org/wiki/Peshawar_Museum"
+    },
+    {
+      "id": "taxila-museum",
+      "name": "Taxila Museum",
+      "category": "Cultural",
+      "type": "Museum",
+      "city": "Taxila",
+      "province": "Punjab",
+      "address": "Taxila, Rawalpindi District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Taxila+Museum+Taxila+Pakistan",
+      "built": {
+        "year": "Founded 1918; opened 1928",
+        "builder": "Archaeological Survey of India (Sir John Marshall era)"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Typically daytime hours, closed one weekday; confirm locally",
+        "ticket": "Ticket required (nominal fee)"
+      },
+      "description": "Museum of artefacts from nearby Taxila excavations.",
+      "source_link": "https://en.wikipedia.org/wiki/Taxila_Museum"
+    },
+    {
+      "id": "lok-virsa",
+      "name": "Lok Virsa Museum (Heritage Museum)",
+      "category": "Cultural",
+      "type": "Museum",
+      "city": "Islamabad",
+      "province": "Islamabad Capital Territory",
+      "address": "Shakarparian, Islamabad",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Lok+Virsa+Museum+%28Heritage+Museum%29+Islamabad+Pakistan",
+      "built": {
+        "year": "Institute established 1974",
+        "builder": "Government of Pakistan"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Typically daytime hours, closed one weekday; confirm locally",
+        "ticket": "Ticket required (nominal fee)"
+      },
+      "description": "Museum of Pakistani folk heritage, crafts and traditions.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Lok+Virsa+Museum"
+    },
+    {
+      "id": "fakir-khana",
+      "name": "Fakir Khana Museum",
+      "category": "Cultural",
+      "type": "Museum",
+      "city": "Lahore",
+      "province": "Punjab",
+      "address": "Bhati Gate, Walled City, Lahore",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Fakir+Khana+Museum+Lahore+Pakistan",
+      "built": {
+        "year": "Early 20th century",
+        "builder": "Fakir family of Lahore"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Typically daytime hours, closed one weekday; confirm locally",
+        "ticket": "Ticket required (nominal fee)"
+      },
+      "description": "Private museum with a large collection of art and artefacts.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Fakir+Khana+Museum"
+    },
+    {
+      "id": "pakistan-monument",
+      "name": "Pakistan Monument and Museum",
+      "category": "Cultural",
+      "type": "Monument & Museum",
+      "city": "Islamabad",
+      "province": "Islamabad Capital Territory",
+      "address": "Shakarparian Hills, Islamabad",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Pakistan+Monument+and+Museum+Islamabad+Pakistan",
+      "built": {
+        "year": "2007",
+        "builder": "Architect Arif Masood"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Typically daytime hours, closed one weekday; confirm locally",
+        "ticket": "Ticket required (nominal fee)"
+      },
+      "description": "Flower-shaped monument representing four provinces and three territories.",
+      "source_link": "https://en.wikipedia.org/wiki/Pakistan_Monument"
+    },
+    {
+      "id": "hunza",
+      "name": "Hunza Valley",
+      "category": "Natural / Tourist",
+      "type": "Valley",
+      "city": "Karimabad",
+      "province": "Gilgit-Baltistan",
+      "address": "Karimabad, Hunza",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Hunza+Valley+Karimabad+Pakistan",
+      "built": {
+        "year": "N/A (natural)",
+        "builder": "N/A"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Seasonal access; check weather and road conditions before travel",
+        "ticket": "Varies; some parks charge entry or permit fees"
+      },
+      "description": "Scenic valley with snow peaks, orchards and historic forts.",
+      "source_link": "https://en.wikipedia.org/wiki/Hunza_Valley"
+    },
+    {
+      "id": "attabad-lake",
+      "name": "Attabad Lake",
+      "category": "Natural / Tourist",
+      "type": "Lake",
+      "city": "Gojal, Hunza",
+      "province": "Gilgit-Baltistan",
+      "address": "Attabad, Hunza",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Attabad+Lake+Gojal%2C+Hunza+Pakistan",
+      "built": {
+        "year": "Formed 2010 (landslide)",
+        "builder": "N/A (natural)"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Seasonal access; check weather and road conditions before travel",
+        "ticket": "Varies; some parks charge entry or permit fees"
+      },
+      "description": "Turquoise lake formed by a landslide dam in 2010.",
+      "source_link": "https://en.wikipedia.org/wiki/Attabad_Lake"
+    },
+    {
+      "id": "fairy-meadows",
+      "name": "Fairy Meadows",
+      "category": "Natural / Tourist",
+      "type": "Meadow / Viewpoint",
+      "city": "Chilas (Raikot)",
+      "province": "Gilgit-Baltistan",
+      "address": "Fairy Meadows, below Nanga Parbat",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Fairy+Meadows+Chilas+%28Raikot%29+Pakistan",
+      "built": {
+        "year": "N/A (natural)",
+        "builder": "N/A"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Seasonal access; check weather and road conditions before travel",
+        "ticket": "Varies; some parks charge entry or permit fees"
+      },
+      "description": "Alpine meadow with views of Nanga Parbat; reached by jeep track and trek.",
+      "source_link": "https://en.wikipedia.org/wiki/Fairy_Meadows"
+    },
+    {
+      "id": "deosai",
+      "name": "Deosai National Park",
+      "category": "Natural / Tourist",
+      "type": "National Park",
+      "city": "Skardu",
+      "province": "Gilgit-Baltistan",
+      "address": "Deosai Plains, near Skardu",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Deosai+National+Park+Skardu+Pakistan",
+      "built": {
+        "year": "Established 1993",
+        "builder": "Government of Pakistan"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Seasonal access; check weather and road conditions before travel",
+        "ticket": "Varies; some parks charge entry or permit fees"
+      },
+      "description": "High-altitude plateau known for Himalayan brown bears; access mainly in summer.",
+      "source_link": "https://en.wikipedia.org/wiki/Deosai_National_Park"
+    },
+    {
+      "id": "saif-ul-muluk",
+      "name": "Lake Saif-ul-Muluk",
+      "category": "Natural / Tourist",
+      "type": "Lake",
+      "city": "Naran",
+      "province": "Khyber Pakhtunkhwa",
+      "address": "Kaghan Valley near Naran",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Lake+Saif-ul-Muluk+Naran+Pakistan",
+      "built": {
+        "year": "N/A (natural)",
+        "builder": "N/A"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Seasonal access; check weather and road conditions before travel",
+        "ticket": "Varies; some parks charge entry or permit fees"
+      },
+      "description": "Alpine lake in Kaghan Valley, popular in summer.",
+      "source_link": "https://en.wikipedia.org/wiki/Lake_Saif-ul-Mulook"
+    },
+    {
+      "id": "khewra",
+      "name": "Khewra Salt Mine",
+      "category": "Natural / Tourist",
+      "type": "Mine / Tourist Site",
+      "city": "Khewra (Jhelum)",
+      "province": "Punjab",
+      "address": "Khewra, Jhelum District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Khewra+Salt+Mine+Khewra+%28Jhelum%29+Pakistan",
+      "built": {
+        "year": "Mining since the 1870s (older use)",
+        "builder": "British administration; operated by PMDC"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "One of the world's largest salt mines with salt-carved displays.",
+      "source_link": "https://en.wikipedia.org/wiki/Khewra_Salt_Mine"
+    },
+    {
+      "id": "margalla",
+      "name": "Margalla Hills / Daman-e-Koh",
+      "category": "Natural / Tourist",
+      "type": "Hills / Viewpoint",
+      "city": "Islamabad",
+      "province": "Islamabad Capital Territory",
+      "address": "Margalla Hills National Park, Islamabad",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Margalla+Hills+%2F+Daman-e-Koh+Islamabad+Pakistan",
+      "built": {
+        "year": "N/A (natural)",
+        "builder": "N/A"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Open access / public area",
+        "ticket": "Free"
+      },
+      "description": "Hill park with trails and Daman-e-Koh viewpoint over Islamabad.",
+      "source_link": "https://en.wikipedia.org/wiki/Margalla_Hills"
+    },
+    {
+      "id": "quaid-residency",
+      "name": "Quaid-e-Azam Residency",
+      "category": "Cultural",
+      "type": "Historic Residence / Museum",
+      "city": "Ziarat",
+      "province": "Balochistan",
+      "address": "Ziarat, Balochistan",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Quaid-e-Azam+Residency+Ziarat+Pakistan",
+      "built": {
+        "year": "1892",
+        "builder": "British administration (originally a sanatorium)"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Typically daytime hours, closed one weekday; confirm locally",
+        "ticket": "Ticket required (nominal fee)"
+      },
+      "description": "Wooden residence where Jinnah spent his last days in 1948; also a gateway to Ziarat's juniper forests.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Quaid-e-Azam+Residency"
+    },
+    {
+      "id": "shigar-fort",
+      "name": "Shigar Fort (Fong Khar)",
+      "category": "Historical",
+      "type": "Fort / Heritage Hotel",
+      "city": "Shigar",
+      "province": "Gilgit-Baltistan",
+      "address": "Shigar Valley, Skardu District",
+      "map_link": "https://www.google.com/maps/search/?api=1&query=Shigar+Fort+%28Fong+Khar%29+Shigar+Pakistan",
+      "built": {
+        "year": "17th century",
+        "builder": "Raja Hasan Khan Amacha; restored by Aga Khan Trust for Culture"
+      },
+      "unesco_status": "Not inscribed",
+      "visiting": {
+        "timings": "Daytime hours (varies by season); confirm locally",
+        "ticket": "Ticket required; foreign visitors usually pay a higher rate"
+      },
+      "description": "Restored Balti fort, now a heritage hotel and museum.",
+      "source_link": "https://en.wikipedia.org/wiki/Special:Search?search=Shigar+Fort"
+    }
+  ]
+}

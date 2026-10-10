@@ -405,6 +405,37 @@ model Imambargah {
   @@map("imambargahs")
 }
 
+// ─── Pakistan places (historical, religious, cultural & natural/tourist) ──────
+
+model Place {
+  id           String   @id @default(cuid())
+  sourceId     String   @unique
+  name         String
+  category     String // Historical | Religious | Cultural | Natural / Tourist
+  type         String
+  city         String
+  province     String
+  address      String
+  mapLink      String?
+  builtYear    String?
+  builtBuilder String?
+  unescoStatus String?
+  timings      String?
+  ticket       String?
+  description  String?
+  sourceLink   String?
+  verified     Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([category])
+  @@index([city])
+  @@index([province])
+  @@index([isActive])
+  @@map("places")
+}
+
 // ─── Notification ─────────────────────────────────────────────────────────────
 
 model Notification {

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md", "requirements.md"],
+  "references": {
+    "requirements": {
+      "path": "requirements.md",
+      "description": "Functional requirements and delivered-feature status for the community events platform"
+    }
+  },
+  "command": {
+    "verify": {
+      "description": "Run the repo verify batch: typecheck both apps, lint web, run API tests"
+    }
+  }
+}

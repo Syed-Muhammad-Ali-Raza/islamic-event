@@ -24,6 +24,7 @@ import notificationRoutes from "./modules/notifications/notification.routes";
 import dastarkhwanRoutes from "./modules/dastarkhwans/dastarkhwan.routes";
 import imambargahRoutes from "./modules/imambargahs/imambargah.routes";
 import placeRoutes from "./modules/places/place.routes";
+import darbarRoutes from "./modules/darbars/darbar.routes";
 
 const app = express();
 
@@ -94,6 +95,7 @@ app.use(`${api}/notifications`, notificationRoutes);
 app.use(`${api}/dastarkhwans`, dastarkhwanRoutes);
 app.use(`${api}/imambargahs`, imambargahRoutes);
 app.use(`${api}/places`, placeRoutes);
+app.use(`${api}/darbars`, darbarRoutes);
 
 // Profile / user routes
 app.get(`${api}/users/me/saved-events`, requireAuth, listSavedEvents);

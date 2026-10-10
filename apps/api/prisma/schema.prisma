@@ -436,6 +436,33 @@ model Place {
   @@map("places")
 }
 
+// ─── Darbars (Sufi shrines) of Pakistan ──────────────────────────────────────
+
+model Darbar {
+  id             String   @id @default(cuid())
+  sourceId       String   @unique
+  name           String
+  saint          String
+  saintDeathYear String?
+  ursDate        String?
+  city           String
+  province       String
+  address        String
+  mapLink        String?
+  timings        String?
+  description    String?
+  sourceLink     String?
+  verified       Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([city])
+  @@index([province])
+  @@index([isActive])
+  @@map("darbars")
+}
+
 // ─── Notification ─────────────────────────────────────────────────────────────
 
 model Notification {

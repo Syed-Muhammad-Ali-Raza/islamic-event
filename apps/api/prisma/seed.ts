@@ -213,6 +213,40 @@ async function main() {
     console.log(`  ✓ ${places.length} Pakistan places seeded`);
   }
 
+  // ── Darbars (Sufi shrines) ────────────────────────────────────────────────
+  const darbarsFile = path.join(__dirname, "data", "pakistan-darbars.json");
+  if (fs.existsSync(darbarsFile)) {
+    const raw = JSON.parse(fs.readFileSync(darbarsFile, "utf8"));
+    const darbars: Array<{
+      id: string; name: string; saint: string; saint_death_year?: string | null;
+      urs_date?: string | null; city: string; province: string; address: string;
+      map_link?: string | null; timings?: string | null; description?: string | null;
+      source_link?: string | null;
+    }> = raw.darbars ?? [];
+
+    for (const d of darbars) {
+      await prisma.darbar.upsert({
+        where: { sourceId: d.id },
+        update: {},
+        create: {
+          sourceId: d.id,
+          name: d.name,
+          saint: d.saint,
+          saintDeathYear: d.saint_death_year ?? null,
+          ursDate: d.urs_date ?? null,
+          city: d.city,
+          province: d.province,
+          address: d.address,
+          mapLink: d.map_link ?? null,
+          timings: d.timings ?? null,
+          description: d.description ?? null,
+          sourceLink: d.source_link ?? null,
+        },
+      });
+    }
+    console.log(`  ✓ ${darbars.length} darbars seeded`);
+  }
+
   const adminEmail = "admin@communityevents.pk";
   const adminExists = await prisma.user.findUnique({ where: { email: adminEmail } });
 

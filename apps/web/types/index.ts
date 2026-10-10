@@ -198,6 +198,24 @@ export interface Place {
   isActive: boolean;
 }
 
+export interface Darbar {
+  id: string;
+  sourceId: string;
+  name: string;
+  saint: string;
+  saintDeathYear: string | null;
+  ursDate: string | null;
+  city: string;
+  province: string;
+  address: string;
+  mapLink: string | null;
+  timings: string | null;
+  description: string | null;
+  sourceLink: string | null;
+  verified: boolean;
+  isActive: boolean;
+}
+
 export interface Event extends EventSummary {
   description: string | null;
   address: string | null;

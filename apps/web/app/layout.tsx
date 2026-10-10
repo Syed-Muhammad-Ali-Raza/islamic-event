@@ -1,10 +1,18 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Noto_Naskh_Arabic } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers/Providers";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const notoNaskhArabic = Noto_Naskh_Arabic({
+  subsets: ["arabic"],
+  variable: "--font-arabic",
+  display: "swap",
+});
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
@@ -53,7 +61,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={`dark ${inter.variable} ${notoNaskhArabic.variable}`}>
       <head>
         <JsonLdScript data={[websiteJsonLd(), organizationJsonLd()]} />
       </head>

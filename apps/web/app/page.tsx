@@ -7,6 +7,13 @@ export const metadata: Metadata = {
   title: "Community Events — Discover Religious & Community Events Near You",
   description:
     "Find Majlis, Milad, Mehfil-e-Naat, Dars, Quran Khwani, and other religious and community events near you. Join the South Asian community platform.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Community Events — Discover Religious & Community Events Near You",
+    description:
+      "Find Majlis, Milad, Mehfil-e-Naat, Dars, Quran Khwani, and other religious and community events near you.",
+    url: "/",
+  },
 };
 
 export default function HomePage() {

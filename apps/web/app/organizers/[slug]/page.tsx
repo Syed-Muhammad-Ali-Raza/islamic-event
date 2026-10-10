@@ -37,6 +37,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description:
       organizer.description ??
       `${organizer.name}${location ? ` — events in ${location}` : ""}. Discover upcoming events published by this organizer.`,
+    alternates: {
+      canonical: `/organizers/${slug}`,
+    },
+    openGraph: {
+      title: `${organizer.name} — Organizer | Community Events`,
+      description:
+        organizer.description ??
+        `${organizer.name}${location ? ` — events in ${location}` : ""}. Discover upcoming events published by this organizer.`,
+      url: `/organizers/${slug}`,
+    },
   };
 }
 

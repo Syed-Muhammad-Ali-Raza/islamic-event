@@ -1,11 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "@/components/providers/Providers";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(APP_URL),
   title: {
     default: "Community Events — Religious & Community Events Platform",
     template: "%s | Community Events",
@@ -17,19 +19,34 @@ export const metadata: Metadata = {
     "Islamic events", "Muslim events", "Pakistani community", "Indian community",
     "South Asian events", "religious events",
   ],
+  applicationName: "Community Events",
+  authors: [{ name: "Community Events" }],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     siteName: "Community Events",
     title: "Community Events — Religious & Community Events Platform",
     description: "Discover religious and community events near you.",
+    url: "/",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
+    title: "Community Events — Religious & Community Events Platform",
+    description: "Discover religious and community events near you.",
   },
   robots: {
     index: true,
     follow: true,
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#059669",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -155,6 +155,7 @@ See `.env.example` for all required variables.
 - [x] Phase 29: Security hardening (account lockout after 5 failed logins / 15 min, CSRF origin guard on state-changing requests, trust proxy in production, extra Next.js security headers — on top of existing helmet/CORS/rate-limit/bcrypt/JWT/zod/upload allow-list)
 - [x] Phase 30: Muharram jaloos (procession) routes — Procession model + seed of 32 entries (Lahore, Islamabad, Rawalpindi, Multan, Faisalabad: processions, road closures, city overview), public `GET /api/v1/processions` (city/month/day/kind filters, q search), and a city-tabbed Jaloos section with route highlights, Google Maps links and disclaimers on `/categories/muharram`
 - [x] Phase 31: Charity directory — Charity model + seed of 29 organizations across 6 provinces (focus, 100%-policy notes, contacts, registration), public `GET /api/v1/charities` (country/province/city filters, `policy=100` flag, q search) + `GET /charities/facets`, and a country→province→city cascading-dropdown directory with 100%-policy badges and disclaimers on `/categories/charity`
+- [x] Phase 32: SEO P1+P2 — root metadata (viewport/themeColor, OG image, icon, manifest, canonical, security headers on admin routes via `X-Robots-Tag`), canonicals + OG URLs on all public pages, and conversion of 5 client pages (`/events`, `/dastarkhwan`, `/imambargahs`, `/places`, `/darbars`) to server components with `generateMetadata`, server-side fetch (`fetchList`) and client explorer components hydrated with `initialData`
 
 ---
 

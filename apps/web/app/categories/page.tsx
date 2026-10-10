@@ -8,6 +8,13 @@ export const metadata: Metadata = {
   title: "Event Categories",
   description:
     "Browse Majlis, Milad, Mehfil-e-Naat, Dars, Quran Khwani, Urs, Iftar and more religious and community event categories.",
+  alternates: { canonical: "/categories" },
+  openGraph: {
+    title: "Event Categories | Community Events",
+    description:
+      "Browse Majlis, Milad, Mehfil-e-Naat, Dars, Quran Khwani, Urs, Iftar and more religious and community event categories.",
+    url: "/categories",
+  },
 };
 
 export default async function CategoriesPage() {

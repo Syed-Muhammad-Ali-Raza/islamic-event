@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { categoryService } from "@/services/category.service";
+import type { Category } from "@/types";
 
 export const categoryKeys = {
   all: ["categories"] as const,
@@ -7,10 +8,11 @@ export const categoryKeys = {
   detail: (slug: string) => ["categories", "detail", slug] as const,
 };
 
-export function useCategories() {
+export function useCategories(initialData?: Category[]) {
   return useQuery({
     queryKey: categoryKeys.list(),
     queryFn: () => categoryService.listCategories(),
+    initialData,
     staleTime: 5 * 60_000, // Categories rarely change — cache for 5 minutes
   });
 }

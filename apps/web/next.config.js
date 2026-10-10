@@ -3,6 +3,7 @@ const path = require("path");
 
 const nextConfig = {
   outputFileTracingRoot: path.join(__dirname, "../.."),
+  poweredByHeader: false,
   images: {
     remotePatterns: [
       {
@@ -23,6 +24,10 @@ const nextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
         ],
+      },
+      {
+        source: "/(admin|profile|saved|events/create)(.*)",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
     ];
   },

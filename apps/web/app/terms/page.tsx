@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "The rules and responsibilities that apply when using Community Events.",
+  alternates: { canonical: "/terms" },
 };
 
 export default function TermsPage() {

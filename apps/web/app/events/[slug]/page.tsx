@@ -46,10 +46,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: event.title,
     description,
+    alternates: {
+      canonical: `/events/${event.slug}`,
+    },
     openGraph: {
       title: event.title,
       description,
       type: "article",
+      url: `/events/${event.slug}`,
       images: event.posterUrl ? [{ url: event.posterUrl }] : undefined,
     },
     twitter: {

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { eventService, type EventFilters } from "@/services/event.service";
+import type { EventSummary, PaginatedResponse } from "@/types";
 
 // ─── Query keys ───────────────────────────────────────────────────────────────
 export const eventKeys = {
@@ -15,10 +16,14 @@ export const savedEventKeys = {
 };
 
 // ─── List events ──────────────────────────────────────────────────────────────
-export function useEvents(filters: EventFilters = {}) {
+export function useEvents(
+  filters: EventFilters = {},
+  initialData?: PaginatedResponse<EventSummary>
+) {
   return useQuery({
     queryKey: eventKeys.list(filters),
     queryFn: () => eventService.listEvents(filters),
+    initialData,
     placeholderData: keepPreviousData,
     staleTime: 60_000, // 1 minute
   });

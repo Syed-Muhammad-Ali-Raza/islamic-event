@@ -1,5 +1,6 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { imambargahService } from "@/services/imambargah.service";
+import type { Imambargah, PaginatedResponse } from "@/types";
 
 export const imambargahKeys = {
   all: ["imambargahs"] as const,
@@ -7,10 +8,17 @@ export const imambargahKeys = {
     ["imambargahs", "list", page, q, city] as const,
 };
 
-export function useImambargahs(page = 1, q = "", city = "", limit = 24) {
+export function useImambargahs(
+  page = 1,
+  q = "",
+  city = "",
+  limit = 24,
+  initialData?: PaginatedResponse<Imambargah>
+) {
   return useQuery({
     queryKey: imambargahKeys.list(page, q, city),
     queryFn: () => imambargahService.list({ page, limit, q, city }),
+    initialData,
     placeholderData: keepPreviousData,
     staleTime: 60_000,
   });

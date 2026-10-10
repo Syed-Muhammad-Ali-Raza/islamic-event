@@ -148,6 +148,7 @@ See `.env.example` for all required variables.
 - [x] Phase 22: RSVP Email Notifications (organizer notified on new RSVPs, 24h event reminders for attendees via hourly sweep)
 - [x] Phase 23: Attendee QR Check-in (per-attendee QR pass, organizer camera/paste check-in, undo, checked-in column in CSV)
 - [x] Phase 24: Free Dastarkhwan directory (42 seeded free food points for the poor & needy, city filter + search at /dastarkhwan)
+- [x] Phase 25: Imambargahs / Karbalas directory (43 seeded historic & notable Shia sacred sites across 7 cities, city filter + search at /imambargahs)
 
 ---
 

@@ -137,6 +137,43 @@ async function main() {
     console.log(`  ✓ ${points.length} free dastarkhwan points seeded`);
   }
 
+  // ── Imambargahs / Karbalas (idempotent; preserves admin edits) ─────────────
+  const imambargahFile = path.join(__dirname, "data", "imambargahs.json");
+  if (fs.existsSync(imambargahFile)) {
+    const raw = JSON.parse(fs.readFileSync(imambargahFile, "utf8"));
+    const points: Array<{
+      id: string; name: string; city: string; area?: string | null; address: string;
+      google_maps_url?: string | null; latitude?: number | null; longitude?: number | null;
+      year_built?: string | null; founder_or_caretaker?: string | null; contact?: string | null;
+      notes?: string | null; source?: string | null; verified?: boolean; confidence?: string;
+    }> = raw.points ?? [];
+
+    for (const p of points) {
+      await prisma.imambargah.upsert({
+        where: { sourceId: p.id },
+        update: {},
+        create: {
+          sourceId: p.id,
+          name: p.name,
+          city: p.city,
+          area: p.area ?? null,
+          address: p.address,
+          googleMapsUrl: p.google_maps_url ?? null,
+          latitude: p.latitude ?? null,
+          longitude: p.longitude ?? null,
+          yearBuilt: p.year_built ?? null,
+          founderOrCaretaker: p.founder_or_caretaker ?? null,
+          contact: p.contact ?? null,
+          notes: p.notes ?? null,
+          sourceUrl: p.source ?? null,
+          verified: p.verified ?? false,
+          confidence: p.confidence ?? "unconfirmed",
+        },
+      });
+    }
+    console.log(`  ✓ ${points.length} imambargah points seeded`);
+  }
+
   const adminEmail = "admin@communityevents.pk";
   const adminExists = await prisma.user.findUnique({ where: { email: adminEmail } });
 

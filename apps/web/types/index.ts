@@ -157,6 +157,26 @@ export interface Dastarkhwan {
   isActive: boolean;
 }
 
+export interface Imambargah {
+  id: string;
+  sourceId: string;
+  name: string;
+  city: string;
+  area: string | null;
+  address: string;
+  googleMapsUrl: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  yearBuilt: string | null;
+  founderOrCaretaker: string | null;
+  contact: string | null;
+  notes: string | null;
+  sourceUrl: string | null;
+  verified: boolean;
+  confidence: string;
+  isActive: boolean;
+}
+
 export interface Event extends EventSummary {
   description: string | null;
   address: string | null;

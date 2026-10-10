@@ -23,6 +23,7 @@ export function Navbar() {
     { href: "/categories", label: t("nav.categories") },
     { href: "/organizers", label: t("nav.organizers") },
     { href: "/dastarkhwan", label: t("nav.dastarkhwan") },
+    { href: "/imambargahs", label: t("nav.imambargahs") },
   ];
 
   return (

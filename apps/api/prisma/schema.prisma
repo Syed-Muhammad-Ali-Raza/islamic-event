@@ -377,6 +377,34 @@ model Dastarkhwan {
   @@map("dastarkhwans")
 }
 
+// ─── Imambargahs / Karbalas (historic & notable Shia sacred sites) ────────────
+
+model Imambargah {
+  id                 String   @id @default(cuid())
+  sourceId           String   @unique
+  name               String
+  city               String
+  area               String?
+  address            String
+  googleMapsUrl      String?
+  latitude           Float?
+  longitude          Float?
+  yearBuilt          String?
+  founderOrCaretaker String?
+  contact            String?
+  notes              String?
+  sourceUrl          String?
+  verified           Boolean  @default(false)
+  confidence         String
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([city])
+  @@index([isActive])
+  @@map("imambargahs")
+}
+
 // ─── Notification ─────────────────────────────────────────────────────────────
 
 model Notification {

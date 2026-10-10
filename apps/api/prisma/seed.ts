@@ -359,6 +359,47 @@ async function main() {
     console.log(`  ✓ ${items.length} processions seeded`);
   }
 
+  // ── Charity organizations (idempotent) ─────────────────────────────────────
+  const charityFile = path.join(__dirname, "data", "pakistan-charities.json");
+  if (fs.existsSync(charityFile)) {
+    const raw = JSON.parse(fs.readFileSync(charityFile, "utf8"));
+    const items: Array<{
+      id: string; name: string; country: string; province: string; city: string;
+      type?: string | null; focus?: string | null; policyNote?: string | null;
+      address?: string | null; latitude?: number | null; longitude?: number | null;
+      googleMapsLink?: string | null; contactNumbers?: string | null;
+      founded?: string | null; founder?: string | null; website?: string | null;
+      registration?: string | null;
+    }> = raw.charities ?? [];
+
+    for (const c of items) {
+      await prisma.charity.upsert({
+        where: { sourceId: c.id },
+        update: {},
+        create: {
+          sourceId: c.id,
+          name: c.name,
+          country: c.country,
+          province: c.province,
+          city: c.city,
+          type: c.type ?? null,
+          focus: c.focus ?? null,
+          policyNote: c.policyNote ?? null,
+          address: c.address ?? null,
+          latitude: c.latitude ?? null,
+          longitude: c.longitude ?? null,
+          googleMapsLink: c.googleMapsLink ?? null,
+          contactNumbers: c.contactNumbers ?? null,
+          founded: c.founded ?? null,
+          founder: c.founder ?? null,
+          website: c.website ?? null,
+          registration: c.registration ?? null,
+        },
+      });
+    }
+    console.log(`  ✓ ${items.length} charities seeded`);
+  }
+
   const adminEmail = "admin@communityevents.pk";
   const adminExists = await prisma.user.findUnique({ where: { email: adminEmail } });
 

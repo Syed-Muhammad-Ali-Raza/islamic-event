@@ -526,6 +526,38 @@ model Procession {
   @@map("processions")
 }
 
+// ─── Charity organizations ────────────────────────────────────────────────────
+
+model Charity {
+  id              String   @id @default(cuid())
+  sourceId        String   @unique
+  name            String
+  country         String
+  province        String
+  city            String
+  type            String?
+  focus           String?
+  policyNote      String?
+  address         String?
+  latitude        Float?
+  longitude       Float?
+  googleMapsLink  String?
+  contactNumbers  String?
+  founded         String?
+  founder         String?
+  website         String?
+  registration    String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([country])
+  @@index([province])
+  @@index([city])
+  @@index([isActive])
+  @@map("charities")
+}
+
 // ─── Notification ─────────────────────────────────────────────────────────────
 
 model Notification {

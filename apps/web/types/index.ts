@@ -257,6 +257,34 @@ export interface Procession {
   isActive: boolean;
 }
 
+export interface Charity {
+  id: string;
+  sourceId: string;
+  name: string;
+  country: string;
+  province: string;
+  city: string;
+  type: string | null;
+  focus: string | null;
+  policyNote: string | null;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  googleMapsLink: string | null;
+  contactNumbers: string | null;
+  founded: string | null;
+  founder: string | null;
+  website: string | null;
+  registration: string | null;
+  isActive: boolean;
+}
+
+export interface CharityFacets {
+  countries: string[];
+  provinces: string[];
+  cities: string[];
+}
+
 export interface Event extends EventSummary {
   description: string | null;
   address: string | null;

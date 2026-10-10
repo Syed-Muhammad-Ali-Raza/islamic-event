@@ -8,6 +8,8 @@ import { EventActions } from "@/components/events/EventActions";
 import { EventRsvp } from "@/components/events/EventRsvp";
 import { AttendeeQr } from "@/components/events/AttendeeQr";
 import { ShareButtons } from "@/components/events/ShareButtons";
+import { JsonLdScript } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, eventJsonLd } from "@/lib/seo";
 import type { Event } from "@/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
@@ -71,40 +73,29 @@ export default async function EventDetailPage({ params }: Props) {
   if (!event) notFound();
 
   const eventDate = new Date(event.date);
-  const startDateISO = `${event.date}T${event.startTime ?? "00:00"}:00`;
-  const endDateISO = event.endTime ? `${event.date}T${event.endTime}:00` : undefined;
   const ended = isPast(new Date(`${event.date}T${event.endTime ?? "23:59"}:00`));
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    name: event.title,
-    description: event.description ?? undefined,
-    startDate: startDateISO,
-    endDate: endDateISO,
-    eventStatus: "https://schema.org/EventScheduled",
-    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    image: event.posterUrl ?? undefined,
-    location: event.venue
-      ? {
-          "@type": "Place",
-          name: event.venue,
-          address: event.address ?? undefined,
-        }
-      : event.address
-        ? { "@type": "Place", name: event.address }
-        : undefined,
-    organizer: event.organizer
-      ? { "@type": "Organization", name: event.organizer.name }
-      : undefined,
-  };
+  const jsonLd = eventJsonLd({
+    title: event.title,
+    description: event.description,
+    date: event.date,
+    startTime: event.startTime,
+    endTime: event.endTime,
+    posterUrl: event.posterUrl,
+    venue: event.venue,
+    address: event.address,
+    organizer: event.organizer,
+  });
+
+  const breadcrumb = breadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Events", path: "/events" },
+    { name: event.title, path: `/events/${event.slug}` },
+  ]);
 
   return (
     <div className="container-page py-8">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLdScript data={[jsonLd, breadcrumb]} />
 
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6" aria-label="Breadcrumb">

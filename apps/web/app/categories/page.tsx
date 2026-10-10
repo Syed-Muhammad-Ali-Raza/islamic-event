@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CATEGORY_ICONS } from "@/lib/constants";
+import { JsonLdScript } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchFromApi } from "@/lib/server-api";
 import type { Category } from "@/types";
 
@@ -22,6 +24,22 @@ export default async function CategoriesPage() {
 
   return (
     <div className="container-page py-10">
+      <JsonLdScript
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Categories", path: "/categories" },
+          ]),
+          ...(categories.length > 0
+            ? [
+                itemListJsonLd(
+                  "Event categories",
+                  categories.map((c) => ({ name: c.name, path: `/categories/${c.slug}` }))
+                ),
+              ]
+            : []),
+        ]}
+      />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-900 mb-2">Categories</h1>
         <p className="text-slate-500 text-sm">

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PlacesExplorer } from "@/components/directories/PlacesExplorer";
+import { JsonLdScript } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchList } from "@/lib/server-api";
 import type { Place } from "@/types";
 
@@ -23,7 +25,27 @@ export default async function PlacesPage() {
   const data = await getData();
 
   return (
-    <Suspense
+    <>
+      <JsonLdScript
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Pakistan Places", path: "/places" },
+          ]),
+          ...(data && data.data.length > 0
+            ? [
+                itemListJsonLd(
+                  "Places in Pakistan",
+                  data.data.map((d) => ({
+                    name: d.name,
+                    path: d.mapLink ?? "/places",
+                  }))
+                ),
+              ]
+            : []),
+        ]}
+      />
+      <Suspense
       fallback={
         <div className="container-page py-10">
           <div className="skeleton h-8 w-48 mb-2" />
@@ -37,6 +59,7 @@ export default async function PlacesPage() {
       }
     >
       <PlacesExplorer initialData={data ?? undefined} />
-    </Suspense>
+      </Suspense>
+    </>
   );
 }

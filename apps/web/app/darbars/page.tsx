@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { DarbarsExplorer } from "@/components/directories/DarbarsExplorer";
+import { JsonLdScript } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchList } from "@/lib/server-api";
 import type { Darbar, UrsDate } from "@/types";
 
@@ -27,7 +29,27 @@ export default async function DarbarsPage() {
   const { darbars, ursDates } = await getData();
 
   return (
-    <Suspense
+    <>
+      <JsonLdScript
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Darbars & Urs Calendar", path: "/darbars" },
+          ]),
+          ...(darbars && darbars.data.length > 0
+            ? [
+                itemListJsonLd(
+                  "Shrines of Pakistan",
+                  darbars.data.map((d) => ({
+                    name: d.name,
+                    path: d.mapLink ?? "/darbars",
+                  }))
+                ),
+              ]
+            : []),
+        ]}
+      />
+      <Suspense
       fallback={
         <div className="container-page py-10">
           <div className="skeleton h-8 w-48 mb-2" />
@@ -41,6 +63,7 @@ export default async function DarbarsPage() {
       }
     >
       <DarbarsExplorer initialDarbars={darbars ?? undefined} initialUrs={ursDates ?? undefined} />
-    </Suspense>
+      </Suspense>
+    </>
   );
 }

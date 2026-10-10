@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { DastarkhwanExplorer } from "@/components/directories/DastarkhwanExplorer";
+import { JsonLdScript } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchList } from "@/lib/server-api";
 import type { Dastarkhwan } from "@/types";
 
@@ -23,7 +25,27 @@ export default async function DastarkhwanPage() {
   const data = await getData();
 
   return (
-    <Suspense
+    <>
+      <JsonLdScript
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Free Dastarkhwan", path: "/dastarkhwan" },
+          ]),
+          ...(data && data.data.length > 0
+            ? [
+                itemListJsonLd(
+                  "Free food points",
+                  data.data.map((d) => ({
+                    name: d.name,
+                    path: d.googleMapsUrl ?? "/dastarkhwan",
+                  }))
+                ),
+              ]
+            : []),
+        ]}
+      />
+      <Suspense
       fallback={
         <div className="container-page py-10">
           <div className="skeleton h-8 w-56 mb-2" />
@@ -37,6 +59,7 @@ export default async function DastarkhwanPage() {
       }
     >
       <DastarkhwanExplorer initialData={data ?? undefined} />
-    </Suspense>
+      </Suspense>
+    </>
   );
 }

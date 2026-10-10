@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { JsonLdScript } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
@@ -9,6 +11,12 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <div className="container-page py-12 max-w-3xl">
+      <JsonLdScript
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Terms of Service", path: "/terms" },
+        ])}
+      />
       <h1 className="text-3xl font-bold text-slate-900 mb-2">Terms of Service</h1>
       <p className="text-slate-500 text-sm mb-8">Last updated: October 2026</p>
 

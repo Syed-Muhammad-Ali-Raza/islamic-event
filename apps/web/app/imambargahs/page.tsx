@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ImambargahExplorer } from "@/components/directories/ImambargahExplorer";
+import { JsonLdScript } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchList } from "@/lib/server-api";
 import type { Imambargah } from "@/types";
 
@@ -23,7 +25,27 @@ export default async function ImambargahsPage() {
   const data = await getData();
 
   return (
-    <Suspense
+    <>
+      <JsonLdScript
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Imambargahs", path: "/imambargahs" },
+          ]),
+          ...(data && data.data.length > 0
+            ? [
+                itemListJsonLd(
+                  "Imambargahs of Pakistan",
+                  data.data.map((d) => ({
+                    name: d.name,
+                    path: d.googleMapsUrl ?? "/imambargahs",
+                  }))
+                ),
+              ]
+            : []),
+        ]}
+      />
+      <Suspense
       fallback={
         <div className="container-page py-10">
           <div className="skeleton h-8 w-48 mb-2" />
@@ -37,6 +59,7 @@ export default async function ImambargahsPage() {
       }
     >
       <ImambargahExplorer initialData={data ?? undefined} />
-    </Suspense>
+      </Suspense>
+    </>
   );
 }

@@ -6,6 +6,8 @@ import { MuharramJaloos } from "@/components/events/MuharramJaloos";
 import { CharityDirectory } from "@/components/events/CharityDirectory";
 import { UpcomingUrs } from "@/components/events/UpcomingUrs";
 import { CATEGORY_ICONS } from "@/lib/constants";
+import { JsonLdScript } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchFromApi, fetchPaginated } from "@/lib/server-api";
 import type { Category, Charity, EventSummary, Procession, UrsDate } from "@/types";
 
@@ -68,6 +70,23 @@ export default async function CategoryDetailPage({ params }: Props) {
 
   return (
     <div className="container-page py-10">
+      <JsonLdScript
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Categories", path: "/categories" },
+            { name: category.name, path: `/categories/${category.slug}` },
+          ]),
+          ...(eventList.length > 0
+            ? [
+                itemListJsonLd(
+                  `${category.name} events`,
+                  eventList.map((e) => ({ name: e.title, path: `/events/${e.slug}` }))
+                ),
+              ]
+            : []),
+        ]}
+      />
       {/* Header */}
       <div className="card-glass p-6 sm:p-8 mb-8 text-center">
         <div className="text-5xl mb-3">{CATEGORY_ICONS[category.slug] ?? "📅"}</div>

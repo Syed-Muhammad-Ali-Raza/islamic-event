@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { EventsExplorer } from "@/components/events/EventsExplorer";
 import { EventCardSkeleton } from "@/components/ui/Skeleton";
+import { JsonLdScript } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchFromApi, fetchList } from "@/lib/server-api";
 import type { Category, EventSummary } from "@/types";
 
@@ -56,8 +58,25 @@ export default async function EventsPage({ searchParams }: Props) {
   const { search, category } = await searchParams;
   const { events, categories } = await getData(search, category);
 
+  const eventEntries = (events?.data ?? []).map((e) => ({
+    name: e.title,
+    path: `/events/${e.slug}`,
+  }));
+
   return (
-    <Suspense
+    <>
+      <JsonLdScript
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Events", path: "/events" },
+          ]),
+          ...(eventEntries.length > 0
+            ? [itemListJsonLd("Upcoming events", eventEntries)]
+            : []),
+        ]}
+      />
+      <Suspense
       fallback={
         <div className="container-page py-8">
           <div className="skeleton h-8 w-40 mb-2" />
@@ -71,6 +90,7 @@ export default async function EventsPage({ searchParams }: Props) {
       }
     >
       <EventsExplorer initialData={events ?? undefined} categories={categories} />
-    </Suspense>
+      </Suspense>
+    </>
   );
 }

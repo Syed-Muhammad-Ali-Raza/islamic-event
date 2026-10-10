@@ -4,6 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, BadgeCheck, Globe, Mail, MapPin, Phone } from "lucide-react";
 import { EventCard } from "@/components/events/EventCard";
+import { JsonLdScript } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { fetchFromApi, fetchPaginated } from "@/lib/server-api";
 import type { EventSummary } from "@/types";
 import type { OrganizerListItem } from "@/services/organizer.service";
@@ -66,6 +68,13 @@ export default async function OrganizerDetailPage({ params }: Props) {
 
   return (
     <div className="container-page py-10">
+      <JsonLdScript
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Organizers", path: "/organizers" },
+          { name: organizer.name, path: `/organizers/${slug}` },
+        ])}
+      />
       <Link
         href="/organizers"
         className="inline-flex items-center gap-1.5 text-slate-500 hover:text-brand-700 text-sm transition-colors mb-6"

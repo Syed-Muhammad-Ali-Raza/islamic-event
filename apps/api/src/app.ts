@@ -1,4 +1,4 @@
-import express from "express";
+﻿import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import compression from "compression";
@@ -10,7 +10,7 @@ import { config } from "./config";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 import { requireAuth } from "./middleware/auth.middleware";
 
-// ─── Module routers ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Module routers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 import authRoutes from "./modules/auth/auth.routes";
 import eventRoutes from "./modules/events/event.routes";
 import categoryRoutes from "./modules/categories/category.routes";
@@ -21,10 +21,11 @@ import { listSavedEvents } from "./modules/saved-events/savedEvents.routes";
 import uploadRoutes from "./modules/upload/upload.routes";
 import adminRoutes from "./modules/admin/admin.routes";
 import notificationRoutes from "./modules/notifications/notification.routes";
+import dastarkhwanRoutes from "./modules/dastarkhwans/dastarkhwan.routes";
 
 const app = express();
 
-// ─── Security ─────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Security â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.use(helmet());
 app.use(
   cors({
@@ -35,7 +36,7 @@ app.use(
   })
 );
 
-// ─── General rate limiter ─────────────────────────────────────────────────────
+// â”€â”€â”€ General rate limiter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 300,
@@ -57,7 +58,7 @@ if (config.nodeEnv !== "test") {
   app.use(limiter);
 }
 
-// ─── Body & misc ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Body & misc â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
@@ -67,12 +68,12 @@ if (config.nodeEnv !== "test") {
   app.use(morgan(config.nodeEnv === "development" ? "dev" : "combined"));
 }
 
-// ─── Health check ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Health check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString(), env: config.nodeEnv });
 });
 
-// ─── API Routes ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ API Routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const api = config.apiPrefix;
 
 if (config.nodeEnv !== "test") {
@@ -88,11 +89,12 @@ app.use(`${api}/people`, peopleRoutes);
 app.use(`${api}/upload`, uploadRoutes);
 app.use(`${api}/admin`, adminRoutes);
 app.use(`${api}/notifications`, notificationRoutes);
+app.use(`${api}/dastarkhwans`, dastarkhwanRoutes);
 
 // Profile / user routes
 app.get(`${api}/users/me/saved-events`, requireAuth, listSavedEvents);
 
-// ─── Error handling (must be last) ───────────────────────────────────────────
+// â”€â”€â”€ Error handling (must be last) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.use(notFoundHandler);
 app.use(errorHandler);
 

@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import fs from "fs";
+import path from "path";
 
 const prisma = new PrismaClient();
 
@@ -99,6 +101,42 @@ async function main() {
   }
 
   // ─── Admin user ───────────────────────────────────────────────────────────────
+  // ── Free Dastarkhwan points (idempotent; preserves admin edits) ──────────
+  const dastarkhwanFile = path.join(__dirname, "data", "dastarkhwan-points.json");
+  if (fs.existsSync(dastarkhwanFile)) {
+    const raw = JSON.parse(fs.readFileSync(dastarkhwanFile, "utf8"));
+    const points: Array<{
+      id: string; name: string; city: string; area?: string | null; address: string;
+      google_maps_url?: string | null; latitude?: number | null; longitude?: number | null;
+      type: string; schedule?: string | null; source?: string | null; source_year?: string | null;
+      verified?: boolean; notes?: string | null;
+    }> = raw.points ?? [];
+
+    for (const p of points) {
+      await prisma.dastarkhwan.upsert({
+        where: { sourceId: p.id },
+        update: {},
+        create: {
+          sourceId: p.id,
+          name: p.name,
+          city: p.city,
+          area: p.area ?? null,
+          address: p.address,
+          googleMapsUrl: p.google_maps_url ?? null,
+          latitude: p.latitude ?? null,
+          longitude: p.longitude ?? null,
+          type: p.type,
+          schedule: p.schedule ?? null,
+          sourceUrl: p.source ?? null,
+          sourceYear: p.source_year ?? null,
+          verified: p.verified ?? false,
+          notes: p.notes ?? null,
+        },
+      });
+    }
+    console.log(`  ✓ ${points.length} free dastarkhwan points seeded`);
+  }
+
   const adminEmail = "admin@communityevents.pk";
   const adminExists = await prisma.user.findUnique({ where: { email: adminEmail } });
 

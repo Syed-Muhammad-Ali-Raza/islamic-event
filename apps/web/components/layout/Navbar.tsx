@@ -22,6 +22,7 @@ export function Navbar() {
     { href: "/events", label: t("nav.events") },
     { href: "/categories", label: t("nav.categories") },
     { href: "/organizers", label: t("nav.organizers") },
+    { href: "/dastarkhwan", label: t("nav.dastarkhwan") },
   ];
 
   return (

@@ -138,6 +138,25 @@ export interface CheckinResult {
   alreadyCheckedIn: boolean;
 }
 
+export interface Dastarkhwan {
+  id: string;
+  sourceId: string;
+  name: string;
+  city: string;
+  area: string | null;
+  address: string;
+  googleMapsUrl: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  type: string;
+  schedule: string | null;
+  sourceUrl: string | null;
+  sourceYear: string | null;
+  verified: boolean;
+  notes: string | null;
+  isActive: boolean;
+}
+
 export interface Event extends EventSummary {
   description: string | null;
   address: string | null;

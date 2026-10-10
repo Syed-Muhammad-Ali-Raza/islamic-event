@@ -350,6 +350,33 @@ model EventReport {
   @@map("event_reports")
 }
 
+// ─── Free Dastarkhwan (free food points for the poor & needy) ────────────────
+
+model Dastarkhwan {
+  id            String   @id @default(cuid())
+  sourceId      String   @unique
+  name          String
+  city          String
+  area          String?
+  address       String
+  googleMapsUrl String?
+  latitude      Float?
+  longitude     Float?
+  type          String
+  schedule      String?
+  sourceUrl     String?
+  sourceYear    String?
+  verified      Boolean  @default(false)
+  notes         String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([city])
+  @@index([isActive])
+  @@map("dastarkhwans")
+}
+
 // ─── Notification ─────────────────────────────────────────────────────────────
 
 model Notification {

@@ -147,6 +147,7 @@ See `.env.example` for all required variables.
 - [x] Phase 21: RSVP CSV Export (download attendee list from organizer dashboard)
 - [x] Phase 22: RSVP Email Notifications (organizer notified on new RSVPs, 24h event reminders for attendees via hourly sweep)
 - [x] Phase 23: Attendee QR Check-in (per-attendee QR pass, organizer camera/paste check-in, undo, checked-in column in CSV)
+- [x] Phase 24: Free Dastarkhwan directory (42 seeded free food points for the poor & needy, city filter + search at /dastarkhwan)
 
 ---
 

@@ -125,6 +125,19 @@ export interface EventRsvpState {
   myRsvp: "INTERESTED" | "ATTENDING" | null;
 }
 
+export interface MyRsvpInfo {
+  type: "INTERESTED" | "ATTENDING";
+  checkedInAt: string | null;
+  createdAt: string;
+  qrToken: string;
+}
+
+export interface CheckinResult {
+  attendee: { id: string; name: string; email: string };
+  checkedInAt: string;
+  alreadyCheckedIn: boolean;
+}
+
 export interface Event extends EventSummary {
   description: string | null;
   address: string | null;

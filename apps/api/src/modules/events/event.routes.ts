@@ -2,7 +2,7 @@ import { Router } from "express";
 import * as EventController from "./event.controller";
 import { requireAuth, optionalAuth } from "../../middleware/auth.middleware";
 import { validateBody, validateQuery } from "../../middleware/validate.middleware";
-import { CreateEventSchema, UpdateEventSchema, EventQuerySchema, ReportEventSchema, RsvpSchema } from "./event.validation";
+import { CreateEventSchema, UpdateEventSchema, EventQuerySchema, ReportEventSchema, RsvpSchema, CheckinSchema } from "./event.validation";
 
 const router = Router();
 
@@ -26,6 +26,15 @@ router.get("/:id/rsvps", requireAuth, EventController.getEventRsvps);
 
 // GET /api/v1/events/:id/rsvps/export  (organizer/admin only)
 router.get("/:id/rsvps/export", requireAuth, EventController.exportEventRsvps);
+
+// GET /api/v1/events/:id/rsvps/me  (my RSVP + QR token)
+router.get("/:id/rsvps/me", requireAuth, EventController.getMyRsvp);
+
+// POST /api/v1/events/:id/checkins  (organizer/admin scans an attendee QR)
+router.post("/:id/checkins", requireAuth, validateBody(CheckinSchema), EventController.checkInAttendee);
+
+// DELETE /api/v1/events/:id/checkins/:rsvpId  (undo a check-in)
+router.delete("/:id/checkins/:rsvpId", requireAuth, EventController.undoCheckIn);
 
 // PUT /api/v1/events/:id/rsvps
 router.put("/:id/rsvps", requireAuth, validateBody(RsvpSchema), EventController.setRsvp);

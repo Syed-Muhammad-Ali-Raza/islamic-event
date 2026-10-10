@@ -168,7 +168,7 @@ describe("Event RSVPs", () => {
     expect(res.headers["content-type"]).toContain("text/csv");
     expect(res.headers["content-disposition"]).toContain("attachment");
     const body = res.text;
-    expect(body.split("\r\n")[0]).toBe("Name,Email,Type,RSVP Date");
+    expect(body.split("\r\n")[0]).toBe("Name,Email,Type,RSVP Date,Checked In");
     expect(body).toContain(user.email);
     expect(body).toContain("ATTENDING");
   });

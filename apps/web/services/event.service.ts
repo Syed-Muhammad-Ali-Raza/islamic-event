@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client";
-import type { ApiSuccess, PaginatedResponse, Event, EventSummary, EventRsvpState } from "@/types";
+import type { ApiSuccess, PaginatedResponse, Event, EventSummary, EventRsvpState, MyRsvpInfo, CheckinResult } from "@/types";
 
 export interface EventFilters {
   page?: number;
@@ -96,7 +96,13 @@ export const eventService = {
 
   async getEventRsvps(eventId: string, page = 1, limit = 20) {
     const res = await apiClient.get<
-      PaginatedResponse<{ id: string; type: "INTERESTED" | "ATTENDING"; createdAt: string; user: { id: string; name: string; email: string } }>
+      PaginatedResponse<{
+        id: string;
+        type: "INTERESTED" | "ATTENDING";
+        checkedInAt: string | null;
+        createdAt: string;
+        user: { id: string; name: string; email: string };
+      }> & { counts: { interested: number; attending: number; checkedIn: number } }
     >(`/events/${eventId}/rsvps`, { params: { page, limit } });
     return res.data;
   },
@@ -111,5 +117,22 @@ export const eventService = {
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
+  },
+
+  async getMyRsvp(eventId: string) {
+    const res = await apiClient.get<ApiSuccess<MyRsvpInfo>>(`/events/${eventId}/rsvps/me`);
+    return res.data.data;
+  },
+
+  async checkIn(eventId: string, code: string) {
+    const res = await apiClient.post<ApiSuccess<CheckinResult>>(`/events/${eventId}/checkins`, { code });
+    return res.data.data;
+  },
+
+  async undoCheckIn(eventId: string, rsvpId: string) {
+    const res = await apiClient.delete<ApiSuccess<{ rsvpId: string }>>(
+      `/events/${eventId}/checkins/${rsvpId}`
+    );
+    return res.data.data;
   },
 };

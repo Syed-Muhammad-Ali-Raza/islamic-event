@@ -145,6 +145,8 @@ See `.env.example` for all required variables.
 - [x] Phase 19: Event Sharing (WhatsApp/X/Facebook, copy link, QR code on event detail)
 - [x] Phase 20: Organizer RSVP Dashboard (RSVP list per event for organizer/admin, attendees panel on My Events)
 - [x] Phase 21: RSVP CSV Export (download attendee list from organizer dashboard)
+- [x] Phase 22: RSVP Email Notifications (organizer notified on new RSVPs, 24h event reminders for attendees via hourly sweep)
+- [x] Phase 23: Attendee QR Check-in (per-attendee QR pass, organizer camera/paste check-in, undo, checked-in column in CSV)
 
 ---
 

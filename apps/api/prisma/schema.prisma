@@ -302,11 +302,13 @@ enum RsvpType {
 }
 
 model EventRsvp {
-  id        String    @id @default(cuid())
-  userId    String
-  eventId   String
-  type      RsvpType
-  createdAt DateTime  @default(now())
+  id            String    @id @default(cuid())
+  userId        String
+  eventId       String
+  type          RsvpType
+  checkedInAt   DateTime?
+  reminderSentAt DateTime?
+  createdAt     DateTime  @default(now())
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)

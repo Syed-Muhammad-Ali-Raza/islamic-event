@@ -6,6 +6,7 @@ import { format, isPast } from "date-fns";
 import { Calendar, Clock, MapPin, Eye, Users, Building2 } from "lucide-react";
 import { EventActions } from "@/components/events/EventActions";
 import { EventRsvp } from "@/components/events/EventRsvp";
+import { AttendeeQr } from "@/components/events/AttendeeQr";
 import { ShareButtons } from "@/components/events/ShareButtons";
 import type { Event } from "@/types";
 
@@ -152,6 +153,7 @@ export default async function EventDetailPage({ params }: Props) {
 
             <div className="mt-5">
               <EventRsvp eventId={event.id} slug={event.slug} initial={event.rsvps} />
+              {event.rsvps?.myRsvp === "ATTENDING" && <AttendeeQr eventId={event.id} />}
             </div>
 
             <div className="mt-5">

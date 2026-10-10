@@ -92,3 +92,13 @@ export const RsvpSchema = z.object({
 });
 
 export type RsvpInput = z.infer<typeof RsvpSchema>;
+
+export const CheckinSchema = z.object({
+  code: z
+    .string({ required_error: "QR code is required" })
+    .trim()
+    .min(1, "QR code is required")
+    .max(2000, "QR code is too long"),
+});
+
+export type CheckinInput = z.infer<typeof CheckinSchema>;

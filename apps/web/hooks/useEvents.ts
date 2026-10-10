@@ -94,6 +94,15 @@ export function useEventRsvps(eventId: string, page = 1, enabled = true) {
   });
 }
 
+export function useMyRsvp(eventId: string, enabled = true) {
+  return useQuery({
+    queryKey: [...eventKeys.all, "my-rsvp", eventId] as const,
+    queryFn: () => eventService.getMyRsvp(eventId),
+    enabled: enabled && !!eventId,
+    retry: false,
+  });
+}
+
 // ─── Saved events list ────────────────────────────────────────────────────────
 export function useSavedEvents(page = 1, limit = 12, enabled = true) {
   return useQuery({

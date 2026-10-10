@@ -5,6 +5,8 @@ export type NotificationType =
   | "EVENT_REJECTED"
   | "EVENT_CANCELLED"
   | "NEW_EVENT"
+  | "RSVP_NEW"
+  | "EVENT_REMINDER"
   | "SYSTEM";
 
 interface NotifyInput {

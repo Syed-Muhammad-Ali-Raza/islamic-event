@@ -202,3 +202,49 @@ export async function sendNewEventAdminEmail(opts: {
     text: `New event pending review: ${opts.eventTitle}`,
   });
 }
+
+export async function sendRsvpOrganizerEmail(opts: {
+  to: string;
+  organizerName: string;
+  attendeeName: string;
+  eventTitle: string;
+  eventUrl: string;
+}): Promise<void> {
+  await sendEmail({
+    to: opts.to,
+    subject: `New attendee for ${opts.eventTitle}`,
+    html: layout(
+      "Someone is attending your event",
+      paragraph(`Assalamu Alaikum ${opts.organizerName},`) +
+        paragraph(`<strong>${opts.attendeeName}</strong> marked themselves as <strong>Attending</strong>:`) +
+        paragraph(`<strong>${opts.eventTitle}</strong>`) +
+        button(opts.eventUrl, "View Event") +
+        smallNote(`You can see your full attendee list and check people in from My Events.`)
+    ),
+    text: `${opts.attendeeName} is attending ${opts.eventTitle}`,
+  });
+}
+
+export async function sendEventReminderEmail(opts: {
+  to: string;
+  name: string;
+  eventTitle: string;
+  eventUrl: string;
+  whenLabel: string;
+  venue: string;
+}): Promise<void> {
+  await sendEmail({
+    to: opts.to,
+    subject: `Reminder: ${opts.eventTitle} is coming up`,
+    html: layout(
+      "Event reminder",
+      paragraph(`Assalamu Alaikum ${opts.name},`) +
+        paragraph("This is a friendly reminder that an event you're attending is coming up:") +
+        paragraph(`<strong>${opts.eventTitle}</strong>`) +
+        paragraph(`${opts.whenLabel}${opts.venue ? ` · ${opts.venue}` : ""}`) +
+        button(opts.eventUrl, "View Event") +
+        smallNote(`Please show the QR code on the event page at the entrance for quick check-in.`)
+    ),
+    text: `Reminder: ${opts.eventTitle} — ${opts.whenLabel}`,
+  });
+}

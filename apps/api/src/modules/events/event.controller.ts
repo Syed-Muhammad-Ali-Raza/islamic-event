@@ -86,7 +86,17 @@ export async function getEventRsvps(req: Request, res: Response, next: NextFunct
       page,
       limit
     );
-    sendPaginated({ res, data: result.rsvps, page, limit, total: result.total });
+    res.status(200).json({
+      success: true,
+      data: result.rsvps,
+      counts: result.counts,
+      pagination: {
+        page,
+        limit,
+        total: result.total,
+        totalPages: Math.ceil(result.total / limit),
+      },
+    });
   } catch (err) { next(err); }
 }
 
@@ -100,5 +110,40 @@ export async function exportEventRsvps(req: Request, res: Response, next: NextFu
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
     res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
     res.status(200).send(csv);
+  } catch (err) { next(err); }
+}
+
+export async function getMyRsvp(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await EventService.getMyRsvp(req.params.id, req.user!.id);
+    sendSuccess({ res, data: result });
+  } catch (err) { next(err); }
+}
+
+export async function checkInAttendee(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await EventService.checkInAttendee(
+      req.params.id,
+      { id: req.user!.id, role: req.user!.role },
+      req.body.code
+    );
+    sendSuccess({
+      res,
+      data: result,
+      message: result.alreadyCheckedIn
+        ? `${result.attendee.name} was already checked in.`
+        : `${result.attendee.name} checked in!`,
+    });
+  } catch (err) { next(err); }
+}
+
+export async function undoCheckIn(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await EventService.undoCheckIn(
+      req.params.id,
+      { id: req.user!.id, role: req.user!.role },
+      req.params.rsvpId
+    );
+    sendSuccess({ res, data: result, message: "Check-in undone." });
   } catch (err) { next(err); }
 }

@@ -1,11 +1,12 @@
 import { Prisma } from "@prisma/client";
+import jwt from "jsonwebtoken";
 import { prisma } from "../../config/prisma";
 import { config } from "../../config";
 import { Errors } from "../../utils/AppError";
 import { generateSlug, parsePagination } from "../../utils/helpers";
-import { sendNewEventAdminEmail } from "../../services/email.service";
+import { sendNewEventAdminEmail, sendRsvpOrganizerEmail } from "../../services/email.service";
 import { notify } from "../../services/notification.service";
-import type { CreateEventInput, UpdateEventInput, EventQueryInput } from "./event.validation";
+import type { CreateEventInput, UpdateEventInput, EventQueryInput, CheckinInput } from "./event.validation";
 
 // ─── Select shape used on public event listing ────────────────────────────────
 const eventListSelect = {
@@ -349,15 +350,51 @@ export async function setRsvp(
 ): Promise<RsvpState> {
   const event = await prisma.event.findUnique({
     where: { id: eventId },
-    select: { status: true },
+    select: { status: true, createdById: true, title: true, slug: true },
   });
   if (!event || event.status !== "APPROVED") throw Errors.notFound("Event");
+
+  const previous = await prisma.eventRsvp.findUnique({
+    where: { userId_eventId: { userId, eventId } },
+    select: { type: true },
+  });
 
   await prisma.eventRsvp.upsert({
     where: { userId_eventId: { userId, eventId } },
     create: { userId, eventId, type },
     update: { type },
   });
+
+  // Phase 22: tell the organizer about first-time RSVPs (never on switches)
+  if (!previous && event.createdById !== userId) {
+    const attendee = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, email: true },
+    });
+    const action = type === "ATTENDING" ? "is attending" : "is interested in";
+    await notify({
+      userId: event.createdById,
+      type: "RSVP_NEW",
+      title: type === "ATTENDING" ? "New attendee for your event" : "New interest in your event",
+      body: `${attendee?.name ?? "Someone"} ${action} "${event.title}"`,
+      link: "/profile/events",
+    });
+    if (type === "ATTENDING" && attendee) {
+      const organizer = await prisma.user.findUnique({
+        where: { id: event.createdById },
+        select: { name: true, email: true },
+      });
+      if (organizer) {
+        await sendRsvpOrganizerEmail({
+          to: organizer.email,
+          organizerName: organizer.name,
+          attendeeName: attendee.name,
+          eventTitle: event.title,
+          eventUrl: `${config.app.url}/events/${event.slug}`,
+        });
+      }
+    }
+  }
 
   const counts = await rsvpCounts(eventId);
   return { ...counts, myRsvp: type };
@@ -383,6 +420,7 @@ export async function getRsvpState(eventId: string, userId?: string): Promise<Rs
 export type RsvpListEntry = {
   id: string;
   type: "INTERESTED" | "ATTENDING";
+  checkedInAt: string | null;
   createdAt: string;
   user: { id: string; name: string; email: string };
 };
@@ -392,7 +430,11 @@ export async function getEventRsvps(
   requester: { id: string; role: string },
   page: number,
   limit: number
-): Promise<{ rsvps: RsvpListEntry[]; counts: { interested: number; attending: number }; total: number }> {
+): Promise<{
+  rsvps: RsvpListEntry[];
+  counts: { interested: number; attending: number; checkedIn: number };
+  total: number;
+}> {
   const event = await prisma.event.findUnique({
     where: { id: eventId },
     select: { createdById: true },
@@ -403,12 +445,13 @@ export async function getEventRsvps(
   const skip = (page - 1) * limit;
   const where = { eventId };
 
-  const [rows, total, interested, attending] = await prisma.$transaction([
+  const [rows, total, interested, attending, checkedIn] = await prisma.$transaction([
     prisma.eventRsvp.findMany({
       where,
       select: {
         id: true,
         type: true,
+        checkedInAt: true,
         createdAt: true,
         user: { select: { id: true, name: true, email: true } },
       },
@@ -419,11 +462,16 @@ export async function getEventRsvps(
     prisma.eventRsvp.count({ where }),
     prisma.eventRsvp.count({ where: { eventId, type: "INTERESTED" } }),
     prisma.eventRsvp.count({ where: { eventId, type: "ATTENDING" } }),
+    prisma.eventRsvp.count({ where: { eventId, checkedInAt: { not: null } } }),
   ]);
 
   return {
-    rsvps: rows.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() })),
-    counts: { interested, attending },
+    rsvps: rows.map((r) => ({
+      ...r,
+      checkedInAt: r.checkedInAt ? r.checkedInAt.toISOString() : null,
+      createdAt: r.createdAt.toISOString(),
+    })),
+    counts: { interested, attending, checkedIn },
     total,
   };
 }
@@ -444,21 +492,145 @@ export async function getEventRsvpsCsv(
     select: {
       type: true,
       createdAt: true,
+      checkedInAt: true,
       user: { select: { name: true, email: true } },
     },
     orderBy: [{ type: "asc" }, { createdAt: "asc" }],
   });
 
   const escape = (v: string) => `"${v.replace(/"/g, '""')}"`;
-  const header = "Name,Email,Type,RSVP Date";
+  const header = "Name,Email,Type,RSVP Date,Checked In";
   const lines = rows.map((r) =>
     [
       escape(r.user.name),
       escape(r.user.email),
       r.type,
       r.createdAt.toISOString().slice(0, 10),
+      r.checkedInAt ? r.checkedInAt.toISOString().slice(0, 10) : "",
     ].join(",")
   );
 
   return { csv: [header, ...lines].join("\r\n"), eventTitle: event.title };
+}
+
+// ─── Attendee QR check-in ────────────────────────────────────────────────────
+
+function signCheckinToken(rsvpId: string, eventId: string): string {
+  return jwt.sign({ rsvpId, eventId }, config.jwt.accessSecret, { expiresIn: "30d" });
+}
+
+function verifyCheckinToken(code: string): { rsvpId: string; eventId: string } | null {
+  try {
+    const payload = jwt.verify(code, config.jwt.accessSecret) as { rsvpId?: string; eventId?: string };
+    if (!payload.rsvpId || !payload.eventId) return null;
+    return { rsvpId: payload.rsvpId, eventId: payload.eventId };
+  } catch {
+    return null;
+  }
+}
+
+async function requireEventOwner(eventId: string, requester: { id: string; role: string }): Promise<void> {
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+    select: { createdById: true },
+  });
+  if (!event) throw Errors.notFound("Event");
+  if (event.createdById !== requester.id && requester.role !== "ADMIN") throw Errors.forbidden();
+}
+
+export type MyRsvpInfo = {
+  type: "INTERESTED" | "ATTENDING";
+  checkedInAt: string | null;
+  createdAt: string;
+  qrToken: string;
+};
+
+export async function getMyRsvp(eventId: string, userId: string): Promise<MyRsvpInfo> {
+  const rsvp = await prisma.eventRsvp.findUnique({
+    where: { userId_eventId: { userId, eventId } },
+    select: { id: true, type: true, checkedInAt: true, createdAt: true },
+  });
+  if (!rsvp) throw Errors.notFound("RSVP");
+  return {
+    type: rsvp.type,
+    checkedInAt: rsvp.checkedInAt ? rsvp.checkedInAt.toISOString() : null,
+    createdAt: rsvp.createdAt.toISOString(),
+    qrToken: signCheckinToken(rsvp.id, eventId),
+  };
+}
+
+export type CheckinResult = {
+  attendee: { id: string; name: string; email: string };
+  checkedInAt: string;
+  alreadyCheckedIn: boolean;
+};
+
+export async function checkInAttendee(
+  eventId: string,
+  requester: { id: string; role: string },
+  code: string
+): Promise<CheckinResult> {
+  await requireEventOwner(eventId, requester);
+
+  const payload = verifyCheckinToken(code.trim());
+  if (!payload || payload.eventId !== eventId) throw Errors.notFound("QR code");
+
+  const rsvp = await prisma.eventRsvp.findUnique({
+    where: { id: payload.rsvpId },
+    select: {
+      id: true,
+      eventId: true,
+      type: true,
+      checkedInAt: true,
+      user: { select: { id: true, name: true, email: true } },
+    },
+  });
+  if (!rsvp || rsvp.eventId !== eventId) throw Errors.notFound("QR code");
+
+  if (rsvp.type !== "ATTENDING") {
+    throw Errors.conflict(
+      "This person RSVP'd as Interested only — ask them to switch to Attending first.",
+      "RSVP_NOT_ATTENDING"
+    );
+  }
+
+  if (rsvp.checkedInAt) {
+    return {
+      attendee: rsvp.user,
+      checkedInAt: rsvp.checkedInAt.toISOString(),
+      alreadyCheckedIn: true,
+    };
+  }
+
+  const updated = await prisma.eventRsvp.update({
+    where: { id: rsvp.id },
+    data: { checkedInAt: new Date() },
+  });
+
+  return {
+    attendee: rsvp.user,
+    checkedInAt: updated.checkedInAt!.toISOString(),
+    alreadyCheckedIn: false,
+  };
+}
+
+export async function undoCheckIn(
+  eventId: string,
+  requester: { id: string; role: string },
+  rsvpId: string
+): Promise<{ rsvpId: string }> {
+  await requireEventOwner(eventId, requester);
+
+  const rsvp = await prisma.eventRsvp.findUnique({
+    where: { id: rsvpId },
+    select: { eventId: true, checkedInAt: true },
+  });
+  if (!rsvp || rsvp.eventId !== eventId) throw Errors.notFound("RSVP");
+  if (!rsvp.checkedInAt) throw Errors.conflict("Not checked in yet", "NOT_CHECKED_IN");
+
+  await prisma.eventRsvp.update({
+    where: { id: rsvpId },
+    data: { checkedInAt: null },
+  });
+  return { rsvpId };
 }

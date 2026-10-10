@@ -463,6 +463,36 @@ model Darbar {
   @@map("darbars")
 }
 
+// ─── Urs dates (researched schedules for major Sufi shrines) ─────────────────
+
+model UrsDate {
+  id              String   @id @default(cuid())
+  sourceId        String   @unique
+  name            String
+  saint           String
+  saintDeathYear  String?
+  city            String
+  ursRule         String?
+  calendarBasis   String?
+  lastObserved    String?
+  nextExpected    String?
+  confidence      String // high | medium | low | none
+  sources         String?
+  notes           String?
+  howToConfirm    String?
+  researched      Boolean  @default(false)
+  upcomingOrder   Int?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([researched])
+  @@index([city])
+  @@index([upcomingOrder])
+  @@index([isActive])
+  @@map("urs_dates")
+}
+
 // ─── Notification ─────────────────────────────────────────────────────────────
 
 model Notification {

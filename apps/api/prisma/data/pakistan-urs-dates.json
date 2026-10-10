@@ -1,0 +1,593 @@
+{
+  "meta": {
+    "title": "Urs dates of major Sufi shrines in Pakistan",
+    "prepared_on": "2026-10-10",
+    "counts": {
+      "with_researched_dates": 16,
+      "not_verified": 20
+    },
+    "how_to_read": [
+      "last_observed = what news or official sources reported.",
+      "next_expected = my estimate from the rule; lunar dates can shift by 1-2 days with moon sighting.",
+      "confidence: high = rule and recent date both confirmed; medium = rule confirmed but next date estimated; low = no stable rule found; none = not researched."
+    ],
+    "calendar_anchors_pakistan": {
+      "1 Safar 1448": "Jul 16, 2026",
+      "1 Rabi al-Awwal 1448": "Aug 15, 2026",
+      "1 Ramadan 1448": "about Feb 9, 2027"
+    },
+    "upcoming_in_order": [
+      [
+        "Shah Rukn-e-Alam (Multan)",
+        "About Oct 17-20, 2026"
+      ],
+      [
+        "Sultan Bahu (Jhang)",
+        "About Nov 12 or 19, 2026"
+      ],
+      [
+        "Golra Sharif - Babuji (Islamabad)",
+        "About Nov 12-13, 2026"
+      ],
+      [
+        "Lal Shahbaz Qalandar (Sehwan)",
+        "About Jan 27-30, 2027"
+      ],
+      [
+        "Sachal Sarmast (Daraza Sharif)",
+        "About Feb 21-23, 2027"
+      ],
+      [
+        "Madhu Lal Hussain (Lahore)",
+        "March-April 2027 (not announced)"
+      ],
+      [
+        "Golra Sharif - Lala Ji (Islamabad)",
+        "About May 14-15, 2027"
+      ],
+      [
+        "Abdullah Shah Ghazi (Karachi)",
+        "About May 28-30, 2027"
+      ],
+      [
+        "Baba Farid (Pakpattan)",
+        "Bahishti Darwaza about Jun 9-11, 2027"
+      ],
+      [
+        "Shah Abdul Latif Bhittai (Bhit Shah)",
+        "About Jul 18-20, 2027"
+      ],
+      [
+        "Data Darbar (Lahore)",
+        "About Jul 22-24, 2027"
+      ],
+      [
+        "Golra Sharif - Pir Mehr Ali Shah (Islamabad)",
+        "About Aug 2-4, 2027"
+      ],
+      [
+        "Bari Imam (Islamabad)",
+        "Aug 15-17, 2027 (expected)"
+      ],
+      [
+        "Bulleh Shah (Kasur)",
+        "Late August 2027 (not announced)"
+      ]
+    ],
+    "note": "Urs dates are announced by Auqaf departments or district administrations; always confirm a few days before travelling."
+  },
+  "shrines_with_researched_dates": [
+    {
+      "id": "shah-rukn-alam",
+      "name": "Shrine of Shah Rukn-e-Alam",
+      "city": "Multan",
+      "saint": "Shah Rukn-e-Alam",
+      "saint_death_year": "1335 (7 Jumada al-Awwal 735 AH)",
+      "urs_rule": "3 days ending around 7 Jumada al-Awwal",
+      "calendar_basis": "Islamic lunar",
+      "last_observed": "712th Urs: Oct 28-30, 2025",
+      "next_expected": "About Oct 17-20, 2026 (UPCOMING). No official 2026 announcement found yet",
+      "confidence": "medium",
+      "sources": [
+        "https://www.app.com.pk/?p=1095652",
+        "https://auqaf.punjab.gov.pk/node/79"
+      ],
+      "notes": "Date estimated from the lunar rule; confirm with Multan Auqaf/district administration."
+    },
+    {
+      "id": "sultan-bahu",
+      "name": "Darbar Sultan Bahu",
+      "city": "Garh Maharaja (Jhang)",
+      "saint": "Sultan Bahu",
+      "saint_death_year": "1691 (1102 AH)",
+      "urs_rule": "First Thursday of Jumada al-Thani",
+      "calendar_basis": "Islamic lunar",
+      "last_observed": "Held 2025 (exact dates not verified)",
+      "next_expected": "About Nov 12 or Nov 19, 2026 (first Thursday of Jumada al-Thani 1448; depends on moon sighting)",
+      "confidence": "medium",
+      "sources": [
+        "https://doam.gov.pk/sites/10131",
+        "https://en.wikipedia.org/wiki/Sultan_Bahu"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "golra-sharif-babuji",
+      "name": "Golra Sharif - Urs of Hazrat Babuji",
+      "city": "Islamabad",
+      "saint": "Pir Ghulam Muhyuddin Gilani (Babuji)",
+      "saint_death_year": "1974 (2 Jumada al-Thani 1394 AH)",
+      "urs_rule": "1-2 Jumada al-Thani",
+      "calendar_basis": "Islamic lunar",
+      "last_observed": "Not checked",
+      "next_expected": "About Nov 12-13, 2026",
+      "confidence": "medium",
+      "sources": [
+        "https://golra-sharif.odoo.com/urs-mubarak"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "lal-shahbaz",
+      "name": "Shrine of Lal Shahbaz Qalandar",
+      "city": "Sehwan Sharif",
+      "saint": "Lal Shahbaz Qalandar",
+      "saint_death_year": "1274 (per common account)",
+      "urs_rule": "18-20 Shaban (official schedule can differ by a day or two)",
+      "calendar_basis": "Islamic lunar",
+      "last_observed": "774th Urs: Feb 9-11, 2026 (as announced by DC Jamshoro)",
+      "next_expected": "About Jan 27-30, 2027",
+      "confidence": "medium",
+      "sources": [
+        "https://www.thenews.pk/print/1391520-arrangements-for-lal-shahbaz-qalandar-s-urs-reviewed",
+        "https://dailytimes.com.pk/?p=590604"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "sachal-sarmast",
+      "name": "Shrine of Sachal Sarmast",
+      "city": "Daraza Sharif (Khairpur)",
+      "saint": "Sachal Sarmast",
+      "saint_death_year": "1829",
+      "urs_rule": "13-15 Ramadan (some years reported as 14-16)",
+      "calendar_basis": "Islamic lunar",
+      "last_observed": "Urs held in Ramadan (earlier editions: 13-15 Ramadan)",
+      "next_expected": "About Feb 21-23, 2027",
+      "confidence": "medium",
+      "sources": [
+        "https://arynews.tv/khairpur-sachal-sarmast-annual-urs-at-daraza-sharif-begins-today"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "madhu-lal-hussain",
+      "name": "Shrine of Madhu Lal Hussain (Mela Chiraghan)",
+      "city": "Lahore",
+      "saint": "Shah Hussain (Madhu Lal Hussain)",
+      "saint_death_year": "1599",
+      "urs_rule": "No fixed lunar date found; set each year, usually March-April",
+      "calendar_basis": "Varies",
+      "last_observed": "438th Urs: Mar 28-30, 2026. Other years: 2022 Mar 26, 2023 Mar 11, 2024 Mar 2, 2025 Apr 12",
+      "next_expected": "March-April 2027 (not announced)",
+      "confidence": "low",
+      "sources": [
+        "https://dailytimes.com.pk/1470143/urs-of-hazrat-madhu-lal-hussain-starts/",
+        "https://www.officeholidays.com/holidays/pakistan/pakistan-punjab/mela-chiraghan"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "golra-sharif-lala-ji",
+      "name": "Golra Sharif - Urs of Pir Abdul Haq Gilani (Lala Ji)",
+      "city": "Islamabad",
+      "saint": "Pir Syed Abdul Haq Gilani",
+      "saint_death_year": "2020 (8 Zil-Hajj 1441 AH)",
+      "urs_rule": "7-8 Zil-Hajj",
+      "calendar_basis": "Islamic lunar",
+      "last_observed": "Not checked",
+      "next_expected": "About May 14-15, 2027",
+      "confidence": "medium",
+      "sources": [
+        "https://golra-sharif.odoo.com/urs-mubarak"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "abdullah-shah-ghazi",
+      "name": "Shrine of Abdullah Shah Ghazi",
+      "city": "Karachi",
+      "saint": "Abdullah Shah Ghazi",
+      "saint_death_year": "c. 768 (traditional)",
+      "urs_rule": "22 Zil-Hajj (KMC local holiday)",
+      "calendar_basis": "Islamic lunar",
+      "last_observed": "June 8, 2026 (22 Zil-Hajj 1447 AH; KMC local holiday)",
+      "next_expected": "About May 28-30, 2027",
+      "confidence": "high",
+      "sources": [
+        "https://en.dailypakistan.com.pk/04-Jun-2026/local-holiday-declared-in-karachi-on-june-8-for-abdullah-shah-ghazi-urs",
+        "https://www.dawn.com/news/1430036"
+      ],
+      "notes": "Some 2026 reports mistakenly print 1446 AH; 22 Zil-Hajj 1447 AH is the correct year for June 2026."
+    },
+    {
+      "id": "baba-farid",
+      "name": "Shrine of Baba Farid Ganjshakar",
+      "city": "Pakpattan",
+      "saint": "Baba Farid",
+      "saint_death_year": "1266 (664 AH)",
+      "urs_rule": "Urs runs about 15 days, from 25 Zil-Hajj to 10 Muharram; Bahishti Darwaza opens around 5-6 Muharram",
+      "calendar_basis": "Islamic lunar",
+      "last_observed": "784th Urs, 2026 (Bahishti Darwaza opening ceremony reported June 19, 2026)",
+      "next_expected": "Urs starts about May 31-Jun 2, 2027; Bahishti Darwaza about Jun 9-11, 2027",
+      "confidence": "medium",
+      "sources": [
+        "https://auqaf.punjab.gov.pk/node/791",
+        "https://dawn.com/news/382947",
+        "https://auqaf.punjab.gov.pk/node/768"
+      ],
+      "notes": "Sources differ on whether the Bahishti Darwaza opens on the night of 5 or 6 Muharram."
+    },
+    {
+      "id": "shah-latif",
+      "name": "Shrine of Shah Abdul Latif Bhittai",
+      "city": "Bhit Shah",
+      "saint": "Shah Abdul Latif Bhittai",
+      "saint_death_year": "1752 (14 Safar 1165 AH)",
+      "urs_rule": "14-16 Safar (3 days; Sindh public holiday on day 1)",
+      "calendar_basis": "Islamic lunar",
+      "last_observed": "283rd Urs: began Jul 29, 2026",
+      "next_expected": "About Jul 18-20, 2027",
+      "confidence": "high",
+      "sources": [
+        "https://arynews.tv/governor-sindh-inaugurates-annual-urs-shah-abdul-latif-bhittai",
+        "https://propakistani.pk/2025/08/07/sindh-announces-public-holiday-2/amp/"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "data-darbar",
+      "name": "Data Darbar",
+      "city": "Lahore",
+      "saint": "Ali Hujwiri (Data Ganj Bakhsh)",
+      "saint_death_year": "c. 1072",
+      "urs_rule": "18-20 Safar (3 days; local Lahore holiday on the main day)",
+      "calendar_basis": "Islamic lunar",
+      "last_observed": "983rd Urs: Aug 2-4, 2026 (Lahore local holiday on Aug 4)",
+      "next_expected": "984th Urs: about Jul 22-24, 2027",
+      "confidence": "high",
+      "sources": [
+        "https://tribune.com.pk/story/2621816/punjab-announces-aug-4-public-holiday-in-lahore",
+        "https://auqaf.punjab.gov.pk/node/811",
+        "https://www.dawn.com/news/2020025"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "bahauddin-zakariya",
+      "name": "Shrine of Bahauddin Zakariya",
+      "city": "Multan",
+      "saint": "Bahauddin Zakariya",
+      "saint_death_year": "1262 or 1267 (sources differ)",
+      "urs_rule": "3-day Urs; exact date set each year by the shrine and Auqaf",
+      "calendar_basis": "Unclear",
+      "last_observed": "Jul 20-22, 2026. An earlier edition was held Sep 23-25, 2021",
+      "next_expected": "Not confirmed. Check Multan administration",
+      "confidence": "low",
+      "sources": [
+        "https://dailytimes.com.pk/?p=1525977",
+        "https://www.app.com.pk/?p=239391"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "golra-sharif-mehr-ali-shah",
+      "name": "Golra Sharif - Urs of Pir Mehr Ali Shah",
+      "city": "Islamabad",
+      "saint": "Pir Syed Mehr Ali Shah",
+      "saint_death_year": "1937 (29 Safar 1356 AH)",
+      "urs_rule": "29 Safar to 1 Rabi al-Awwal",
+      "calendar_basis": "Islamic lunar",
+      "last_observed": "About Aug 13-15, 2026 (computed from the rule)",
+      "next_expected": "About Aug 2-4, 2027",
+      "confidence": "medium",
+      "sources": [
+        "https://golra-sharif.odoo.com/urs-mubarak"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "golra-sharif-ghaus-azam",
+      "name": "Golra Sharif - Urs of Ghaus-e-Azam",
+      "city": "Islamabad",
+      "saint": "Abdul Qadir Jilani",
+      "saint_death_year": "1166",
+      "urs_rule": "9-11 Rabi al-Thani",
+      "calendar_basis": "Islamic lunar",
+      "last_observed": "About Sep 21-23, 2026 (computed from the rule)",
+      "next_expected": "About Sep 10-12, 2027",
+      "confidence": "medium",
+      "sources": [
+        "https://golra-sharif.odoo.com/urs-mubarak"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "bari-imam",
+      "name": "Shrine of Bari Imam",
+      "city": "Islamabad",
+      "saint": "Shah Abdul Latif Kazmi (Bari Imam)",
+      "saint_death_year": "1705",
+      "urs_rule": "Fixed Gregorian dates: Aug 15-17 (committee decision; chadar poshi on Aug 14)",
+      "calendar_basis": "Gregorian",
+      "last_observed": "Aug 15-17, 2026 (also Aug 15-17, 2025)",
+      "next_expected": "Aug 15-17, 2027 (expected)",
+      "confidence": "medium",
+      "sources": [
+        "https://pakobserver.net/dar-hails-committee-efforts-for-bari-imam-shrine-development-urs-preparations/",
+        "https://www.app.com.pk/?p=1264789"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "bulleh-shah",
+      "name": "Shrine of Bulleh Shah",
+      "city": "Kasur",
+      "saint": "Bulleh Shah",
+      "saint_death_year": "1757",
+      "urs_rule": "10 Bhadon (desi calendar), late August; local holiday on the middle day",
+      "calendar_basis": "Desi/Bikrami (solar)",
+      "last_observed": "269th Urs: about Aug 28-30, 2026 (holiday Aug 29). 268th: Aug 22-24, 2025",
+      "next_expected": "Late August 2027 (not announced)",
+      "confidence": "medium",
+      "sources": [
+        "https://thepakistanconnect.com/holiday-announced-on-august-29/",
+        "https://www.app.com.pk/?p=1051521",
+        "https://kasur.punjab.gov.pk/"
+      ],
+      "notes": "Corrects my earlier file, which listed this as an Islamic-calendar Urs."
+    }
+  ],
+  "shrines_not_verified": [
+    {
+      "id": "mian-mir",
+      "name": "Shrine of Mian Mir",
+      "city": "Lahore",
+      "saint": "Mian Mir",
+      "saint_death_year": "1635",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "shah-jamal",
+      "name": "Shrine of Shah Jamal",
+      "city": "Lahore",
+      "saint": "Shah Jamal",
+      "saint_death_year": "c. 1671",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "mauj-darya",
+      "name": "Shrine of Mauj Darya Bukhari",
+      "city": "Lahore",
+      "saint": "Mauj Darya Bukhari",
+      "saint_death_year": "16th century",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "bibi-pak-daman",
+      "name": "Bibi Pak Daman",
+      "city": "Lahore",
+      "saint": "Uncertain",
+      "saint_death_year": "Uncertain",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "waris-shah",
+      "name": "Shrine of Waris Shah",
+      "city": "Jandiala Sher Khan",
+      "saint": "Waris Shah",
+      "saint_death_year": "1798",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "sakhi-sarwar",
+      "name": "Shrine of Sakhi Sarwar",
+      "city": "DG Khan",
+      "saint": "Sakhi Sarwar",
+      "saint_death_year": "12th century",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "khwaja-ghulam-farid",
+      "name": "Shrine of Khwaja Ghulam Farid",
+      "city": "Kot Mithan",
+      "saint": "Khwaja Ghulam Farid",
+      "saint_death_year": "1901",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "taunsa-sharif",
+      "name": "Darbar Taunsa Sharif",
+      "city": "Taunsa",
+      "saint": "Khwaja Sulaiman Taunsvi",
+      "saint_death_year": "1850",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "shah-inayat",
+      "name": "Shrine of Shah Inayat Shaheed",
+      "city": "Jhok Sharif",
+      "saint": "Shah Inayat Shaheed",
+      "saint_death_year": "1718",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "makhdoom-nuh",
+      "name": "Shrine of Makhdoom Nuh",
+      "city": "Hala",
+      "saint": "Makhdoom Nuh",
+      "saint_death_year": "c. 1590",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "bulri-shah-karim",
+      "name": "Shrine of Shah Abdul Karim Bulri",
+      "city": "Bulri Shah Karim",
+      "saint": "Shah Abdul Karim Bulri",
+      "saint_death_year": "1623",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "mangho-pir",
+      "name": "Mangho Pir",
+      "city": "Karachi",
+      "saint": "Haji Sultan Mangho",
+      "saint_death_year": "13th century",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "rehman-baba",
+      "name": "Shrine of Rehman Baba",
+      "city": "Peshawar",
+      "saint": "Rehman Baba",
+      "saint_death_year": "c. 1715",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "pir-baba",
+      "name": "Shrine of Pir Baba",
+      "city": "Buner",
+      "saint": "Pir Baba",
+      "saint_death_year": "1583",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "mian-muhammad-bakhsh",
+      "name": "Shrine of Mian Muhammad Bakhsh",
+      "city": "Mirpur",
+      "saint": "Mian Muhammad Bakhsh",
+      "saint_death_year": "1907",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "shah-noorani",
+      "name": "Shrine of Shah Noorani",
+      "city": "Khuzdar",
+      "saint": "Shah Noorani",
+      "saint_death_year": "Uncertain",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "pir-ghaib",
+      "name": "Pir Ghaib",
+      "city": "Bolan",
+      "saint": "Pir Ghaib",
+      "saint_death_year": "Uncertain",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "jalaluddin-bukhari",
+      "name": "Tomb of Jalaluddin Surkh-Posh Bukhari",
+      "city": "Uch Sharif",
+      "saint": "Jalaluddin Surkh-Posh Bukhari",
+      "saint_death_year": "c. 1292",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "jahaniyan-jahangasht",
+      "name": "Tomb of Makhdoom Jahaniyan Jahangasht",
+      "city": "Uch Sharif",
+      "saint": "Makhdoom Jahaniyan Jahangasht",
+      "saint_death_year": "1384",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    },
+    {
+      "id": "shah-shams-sabzwari",
+      "name": "Shrine of Shah Shams (Multan)",
+      "city": "Multan",
+      "saint": "Shah Shams",
+      "saint_death_year": "13th century (uncertain)",
+      "urs_rule": "Not verified",
+      "last_observed": "Not verified",
+      "next_expected": "Not verified",
+      "confidence": "none",
+      "how_to_confirm": "Ask the provincial Auqaf department or the shrine administration; local holiday notices are usually published a few days before"
+    }
+  ]
+}

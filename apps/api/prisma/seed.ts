@@ -247,6 +247,80 @@ async function main() {
     console.log(`  ✓ ${darbars.length} darbars seeded`);
   }
 
+  // ── Urs dates (researched schedules; idempotent) ──────────────────────────
+  const ursFile = path.join(__dirname, "data", "pakistan-urs-dates.json");
+  if (fs.existsSync(ursFile)) {
+    const raw = JSON.parse(fs.readFileSync(ursFile, "utf8"));
+    const upcomingOrder: Record<string, number> = {
+      "shah-rukn-alam": 1,
+      "sultan-bahu": 2,
+      "golra-sharif-babuji": 3,
+      "lal-shahbaz": 4,
+      "sachal-sarmast": 5,
+      "madhu-lal-hussain": 6,
+      "golra-sharif-lala-ji": 7,
+      "abdullah-shah-ghazi": 8,
+      "baba-farid": 9,
+      "shah-latif": 10,
+      "data-darbar": 11,
+      "golra-sharif-mehr-ali-shah": 12,
+      "bari-imam": 13,
+      "bulleh-shah": 14,
+    };
+
+    const researched: Array<{
+      id: string; name: string; saint: string; saint_death_year?: string | null; city: string;
+      urs_rule?: string | null; calendar_basis?: string | null; last_observed?: string | null;
+      next_expected?: string | null; confidence?: string; sources?: string[]; notes?: string | null;
+    }> = raw.shrines_with_researched_dates ?? [];
+    const unverified: Array<{
+      id: string; name: string; saint: string; saint_death_year?: string | null; city: string;
+      how_to_confirm?: string | null;
+    }> = raw.shrines_not_verified ?? [];
+
+    for (const u of researched) {
+      await prisma.ursDate.upsert({
+        where: { sourceId: u.id },
+        update: {},
+        create: {
+          sourceId: u.id,
+          name: u.name,
+          saint: u.saint,
+          saintDeathYear: u.saint_death_year ?? null,
+          city: u.city,
+          ursRule: u.urs_rule ?? null,
+          calendarBasis: u.calendar_basis ?? null,
+          lastObserved: u.last_observed ?? null,
+          nextExpected: u.next_expected ?? null,
+          confidence: u.confidence ?? "medium",
+          sources: (u.sources ?? []).join(" ; ") || null,
+          notes: u.notes ?? null,
+          researched: true,
+          upcomingOrder: upcomingOrder[u.id] ?? null,
+        },
+      });
+    }
+
+    for (const u of unverified) {
+      await prisma.ursDate.upsert({
+        where: { sourceId: u.id },
+        update: {},
+        create: {
+          sourceId: u.id,
+          name: u.name,
+          saint: u.saint,
+          saintDeathYear: u.saint_death_year ?? null,
+          city: u.city,
+          confidence: "none",
+          howToConfirm: u.how_to_confirm ?? null,
+          researched: false,
+        },
+      });
+    }
+
+    console.log(`  ✓ ${researched.length + unverified.length} Urs dates seeded (${researched.length} researched, ${unverified.length} not verified)`);
+  }
+
   const adminEmail = "admin@communityevents.pk";
   const adminExists = await prisma.user.findUnique({ where: { email: adminEmail } });
 

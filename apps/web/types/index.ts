@@ -216,6 +216,26 @@ export interface Darbar {
   isActive: boolean;
 }
 
+export interface UrsDate {
+  id: string;
+  sourceId: string;
+  name: string;
+  saint: string;
+  saintDeathYear: string | null;
+  city: string;
+  ursRule: string | null;
+  calendarBasis: string | null;
+  lastObserved: string | null;
+  nextExpected: string | null;
+  confidence: string;
+  sources: string | null;
+  notes: string | null;
+  howToConfirm: string | null;
+  researched: boolean;
+  upcomingOrder: number | null;
+  isActive: boolean;
+}
+
 export interface Event extends EventSummary {
   description: string | null;
   address: string | null;

@@ -151,6 +151,7 @@ See `.env.example` for all required variables.
 - [x] Phase 25: Imambargahs / Karbalas directory (43 seeded historic & notable Shia sacred sites across 7 cities, city filter + search at /imambargahs)
 - [x] Phase 26: Pakistan Places directory (71 seeded historical/religious/cultural/natural places, category + province filters + search at /places)
 - [x] Phase 27: Darbars / Shrines directory (34 seeded Sufi shrines with saint, death year & Urs dates, province filter + search at /darbars)
+- [x] Phase 28: Urs Calendar (36 researched/unverified Urs schedules with curated upcoming order, confidence levels & calendar anchors — Urs Calendar tab at /darbars)
 
 ---
 

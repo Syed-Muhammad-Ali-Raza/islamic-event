@@ -26,6 +26,7 @@ import imambargahRoutes from "./modules/imambargahs/imambargah.routes";
 import placeRoutes from "./modules/places/place.routes";
 import darbarRoutes from "./modules/darbars/darbar.routes";
 import ursDateRoutes from "./modules/urs-dates/ursDate.routes";
+import processionRoutes from "./modules/processions/procession.routes";
 
 const app = express();
 
@@ -128,6 +129,7 @@ app.use(`${api}/imambargahs`, imambargahRoutes);
 app.use(`${api}/places`, placeRoutes);
 app.use(`${api}/darbars`, darbarRoutes);
 app.use(`${api}/urs-dates`, ursDateRoutes);
+app.use(`${api}/processions`, processionRoutes);
 
 // Profile / user routes
 app.get(`${api}/users/me/saved-events`, requireAuth, listSavedEvents);

@@ -2,20 +2,24 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EventCard } from "@/components/events/EventCard";
+import { MuharramJaloos } from "@/components/events/MuharramJaloos";
 import { CATEGORY_ICONS } from "@/lib/constants";
 import { fetchFromApi, fetchPaginated } from "@/lib/server-api";
-import type { Category, EventSummary } from "@/types";
+import type { Category, EventSummary, Procession } from "@/types";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
 async function getData(slug: string) {
-  const [category, events] = await Promise.all([
+  const [category, events, processions] = await Promise.all([
     fetchFromApi<Category & { _count?: { events: number } }>(`/categories/${slug}`, 300),
     fetchPaginated<EventSummary>(`/events?category=${encodeURIComponent(slug)}&limit=24`, 60),
+    slug === "muharram"
+      ? fetchPaginated<Procession>("/processions?limit=100", 60)
+      : Promise.resolve(null),
   ]);
-  return { category, events };
+  return { category, events, processions };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -34,11 +38,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryDetailPage({ params }: Props) {
   const { slug } = await params;
-  const { category, events } = await getData(slug);
+  const { category, events, processions } = await getData(slug);
 
   if (!category) notFound();
 
   const eventList = events?.data ?? [];
+  const processionList = processions?.data ?? [];
 
   return (
     <div className="container-page py-10">
@@ -74,6 +79,9 @@ export default async function CategoryDetailPage({ params }: Props) {
           ))}
         </div>
       )}
+
+      {/* Muharram procession (jaloos) routes — only on the Muharram category page */}
+      {processionList.length > 0 && <MuharramJaloos processions={processionList} />}
     </div>
   );
 }

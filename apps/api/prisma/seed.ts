@@ -321,6 +321,44 @@ async function main() {
     console.log(`  ✓ ${researched.length + unverified.length} Urs dates seeded (${researched.length} researched, ${unverified.length} not verified)`);
   }
 
+  // ── Muharram / Safar processions (jaloos routes; idempotent) ───────────────
+  const processionFile = path.join(__dirname, "data", "muharram-processions.json");
+  if (fs.existsSync(processionFile)) {
+    const raw = JSON.parse(fs.readFileSync(processionFile, "utf8"));
+    const items: Array<{
+      id: string; city: string; month: string; day: string; kind?: string; name: string;
+      type?: string | null; start?: string | null; end?: string | null; route?: string | null;
+      routeHighlights?: string[]; time?: string | null; googleMaps?: string | null;
+      description?: string | null; notes?: string | null; sortOrder?: number;
+    }> = raw.processions ?? [];
+
+    for (const p of items) {
+      await prisma.procession.upsert({
+        where: { sourceId: p.id },
+        update: {},
+        create: {
+          sourceId: p.id,
+          city: p.city,
+          month: p.month,
+          day: p.day,
+          kind: p.kind ?? "procession",
+          name: p.name,
+          type: p.type ?? null,
+          start: p.start ?? null,
+          end: p.end ?? null,
+          route: p.route ?? null,
+          routeHighlights: (p.routeHighlights ?? []).join("\n") || null,
+          time: p.time ?? null,
+          googleMaps: p.googleMaps ?? null,
+          description: p.description ?? null,
+          notes: p.notes ?? null,
+          sortOrder: p.sortOrder ?? 0,
+        },
+      });
+    }
+    console.log(`  ✓ ${items.length} processions seeded`);
+  }
+
   const adminEmail = "admin@communityevents.pk";
   const adminExists = await prisma.user.findUnique({ where: { email: adminEmail } });
 

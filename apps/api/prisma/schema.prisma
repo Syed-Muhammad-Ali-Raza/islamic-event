@@ -495,6 +495,37 @@ model UrsDate {
   @@map("urs_dates")
 }
 
+// ─── Muharram / Safar processions (jaloos routes) ─────────────────────────────
+
+model Procession {
+  id              String   @id @default(cuid())
+  sourceId        String   @unique
+  city            String
+  month           String // Muharram | Safar
+  day             String // "9" | "10" | "20" | "1-10" ...
+  kind            String   @default("procession") // procession | road_closure | summary
+  name            String
+  type            String?
+  start           String?
+  end             String?
+  route           String?
+  routeHighlights String?
+  time            String?
+  googleMaps      String?
+  description     String?
+  notes           String?
+  sortOrder       Int      @default(0)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([city])
+  @@index([month, day])
+  @@index([kind])
+  @@index([isActive])
+  @@map("processions")
+}
+
 // ─── Notification ─────────────────────────────────────────────────────────────
 
 model Notification {

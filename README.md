@@ -153,6 +153,7 @@ See `.env.example` for all required variables.
 - [x] Phase 27: Darbars / Shrines directory (34 seeded Sufi shrines with saint, death year & Urs dates, province filter + search at /darbars)
 - [x] Phase 28: Urs Calendar (36 researched/unverified Urs schedules with curated upcoming order, confidence levels & calendar anchors — Urs Calendar tab at /darbars)
 - [x] Phase 29: Security hardening (account lockout after 5 failed logins / 15 min, CSRF origin guard on state-changing requests, trust proxy in production, extra Next.js security headers — on top of existing helmet/CORS/rate-limit/bcrypt/JWT/zod/upload allow-list)
+- [x] Phase 30: Muharram jaloos (procession) routes — Procession model + seed of 32 entries (Lahore, Islamabad, Rawalpindi, Multan, Faisalabad: processions, road closures, city overview), public `GET /api/v1/processions` (city/month/day/kind filters, q search), and a city-tabbed Jaloos section with route highlights, Google Maps links and disclaimers on `/categories/muharram`
 
 ---
 

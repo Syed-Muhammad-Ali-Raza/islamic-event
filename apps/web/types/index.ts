@@ -236,6 +236,27 @@ export interface UrsDate {
   isActive: boolean;
 }
 
+export interface Procession {
+  id: string;
+  sourceId: string;
+  city: string;
+  month: string;
+  day: string;
+  kind: string;
+  name: string;
+  type: string | null;
+  start: string | null;
+  end: string | null;
+  route: string | null;
+  routeHighlights: string | null;
+  time: string | null;
+  googleMaps: string | null;
+  description: string | null;
+  notes: string | null;
+  sortOrder: number;
+  isActive: boolean;
+}
+
 export interface Event extends EventSummary {
   description: string | null;
   address: string | null;

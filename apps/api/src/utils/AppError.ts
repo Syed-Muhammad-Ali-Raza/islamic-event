@@ -35,6 +35,9 @@ export const Errors = {
   badRequest: (msg: string, code = "BAD_REQUEST") =>
     new AppError(msg, 400, code),
 
+  tooManyAttempts: (msg: string, code = "TOO_MANY_ATTEMPTS") =>
+    new AppError(msg, 429, code),
+
   internal: (msg = "Something went wrong. Please try again.") =>
     new AppError(msg, 500, "INTERNAL_ERROR"),
 };

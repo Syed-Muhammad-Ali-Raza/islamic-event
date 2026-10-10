@@ -152,6 +152,7 @@ See `.env.example` for all required variables.
 - [x] Phase 26: Pakistan Places directory (71 seeded historical/religious/cultural/natural places, category + province filters + search at /places)
 - [x] Phase 27: Darbars / Shrines directory (34 seeded Sufi shrines with saint, death year & Urs dates, province filter + search at /darbars)
 - [x] Phase 28: Urs Calendar (36 researched/unverified Urs schedules with curated upcoming order, confidence levels & calendar anchors — Urs Calendar tab at /darbars)
+- [x] Phase 29: Security hardening (account lockout after 5 failed logins / 15 min, CSRF origin guard on state-changing requests, trust proxy in production, extra Next.js security headers — on top of existing helmet/CORS/rate-limit/bcrypt/JWT/zod/upload allow-list)
 
 ---
 

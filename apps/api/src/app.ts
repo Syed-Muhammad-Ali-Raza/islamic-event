@@ -29,6 +29,13 @@ import ursDateRoutes from "./modules/urs-dates/ursDate.routes";
 
 const app = express();
 
+// Behind a reverse proxy (nginx, load balancer) trust the first hop so
+// rate limiting and logs see the real client IP.
+if (config.nodeEnv === "production") {
+  app.set("trust proxy", 1);
+}
+
+
 // â”€â”€â”€ Security â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.use(helmet());
 app.use(
@@ -61,6 +68,29 @@ const authLimiter = rateLimit({
 if (config.nodeEnv !== "test") {
   app.use(limiter);
 }
+
+// ─── Origin guard (CSRF defense-in-depth for state-changing requests) ─────────
+// Browsers always send Origin on cross-site POST/PUT/PATCH/DELETE. If present
+// and not matching our allowed origin, reject early. Requests without an
+// Origin header (curl, server-to-server) are allowed — they can't be forged
+// by a browser.
+const allowedOrigins = new Set(
+  [config.cors.origin, config.app.url].flatMap((o) =>
+    typeof o === "string" ? o.split(",").map((s) => s.trim()) : []
+  )
+);
+app.use((req, res, next) => {
+  if (["GET", "HEAD", "OPTIONS"].includes(req.method)) return next();
+  const origin = req.headers.origin;
+  if (origin && !allowedOrigins.has(origin)) {
+    return res.status(403).json({
+      success: false,
+      message: "Cross-origin request rejected.",
+      code: "ORIGIN_REJECTED",
+    });
+  }
+  next();
+});
 
 // â”€â”€â”€ Body & misc â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.use(express.json({ limit: "10mb" }));

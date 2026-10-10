@@ -115,6 +115,11 @@ export async function register(input: RegisterInput): Promise<{
   return { user, accessToken, refreshToken };
 }
 
+// ─── Account lockout ──────────────────────────────────────────────────────────
+
+const LOCK_THRESHOLD = 5;
+const LOCK_MINUTES = 15;
+
 export async function login(input: LoginInput): Promise<{
   user: SafeUser;
   accessToken: string;
@@ -133,22 +138,57 @@ export async function login(input: LoginInput): Promise<{
       isActive: true,
       emailVerifiedAt: true,
       createdAt: true,
+      failedLoginAttempts: true,
+      lockedUntil: true,
     },
   });
+
+  // Account lockout check
+  if (user?.lockedUntil && user.lockedUntil > new Date()) {
+    throw Errors.tooManyAttempts(
+      "Account temporarily locked due to too many failed login attempts. Please try again later.",
+      "ACCOUNT_LOCKED"
+    );
+  }
 
   // Constant-time comparison even when user is not found to prevent timing attacks
   const passwordToCheck = user?.passwordHash ?? "$2b$12$invalidhashtopreventtiming.....";
   const isValid = user ? await bcrypt.compare(input.password, passwordToCheck) : false;
 
   if (!user || !isValid || !user.isActive) {
+    // Track failed attempts for existing active accounts
+    if (user && user.isActive) {
+      const attempts = user.failedLoginAttempts + 1;
+      const shouldLock = attempts >= LOCK_THRESHOLD;
+      await prisma.user.update({
+        where: { id: user.id },
+        data: shouldLock
+          ? { failedLoginAttempts: 0, lockedUntil: new Date(Date.now() + LOCK_MINUTES * 60_000) }
+          : { failedLoginAttempts: attempts },
+      });
+    }
     throw Errors.unauthorized("Invalid email or password.");
+  }
+
+  // Reset failed attempts on successful login
+  if (user.failedLoginAttempts > 0 || user.lockedUntil) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { failedLoginAttempts: 0, lockedUntil: null },
+    });
   }
 
   const accessToken = signAccessToken(user.id, user.email, user.role);
   const refreshToken = signRefreshToken(user.id);
 
-  // Return without passwordHash
-  const { passwordHash: _, isActive: __, ...safeUser } = user;
+  // Return without passwordHash / lockout fields
+  const {
+    passwordHash: _,
+    isActive: __,
+    failedLoginAttempts: ___,
+    lockedUntil: ____,
+    ...safeUser
+  } = user;
 
   return { user: safeUser, accessToken, refreshToken };
 }

@@ -73,6 +73,8 @@ model User {
   role                UserRole  @default(USER)
   isActive            Boolean   @default(true)
   emailVerifiedAt     DateTime?
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
   verificationToken   String?   @unique
   verificationExpires DateTime?
   resetToken          String?   @unique

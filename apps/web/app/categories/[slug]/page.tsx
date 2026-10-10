@@ -4,16 +4,17 @@ import { notFound } from "next/navigation";
 import { EventCard } from "@/components/events/EventCard";
 import { MuharramJaloos } from "@/components/events/MuharramJaloos";
 import { CharityDirectory } from "@/components/events/CharityDirectory";
+import { UpcomingUrs } from "@/components/events/UpcomingUrs";
 import { CATEGORY_ICONS } from "@/lib/constants";
 import { fetchFromApi, fetchPaginated } from "@/lib/server-api";
-import type { Category, Charity, EventSummary, Procession } from "@/types";
+import type { Category, Charity, EventSummary, Procession, UrsDate } from "@/types";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
 async function getData(slug: string) {
-  const [category, events, processions, charities] = await Promise.all([
+  const [category, events, processions, charities, ursDates] = await Promise.all([
     fetchFromApi<Category & { _count?: { events: number } }>(`/categories/${slug}`, 300),
     fetchPaginated<EventSummary>(`/events?category=${encodeURIComponent(slug)}&limit=24`, 60),
     slug === "muharram"
@@ -22,8 +23,11 @@ async function getData(slug: string) {
     slug === "charity"
       ? fetchPaginated<Charity>("/charities?limit=200", 60)
       : Promise.resolve(null),
+    slug === "urs"
+      ? fetchPaginated<UrsDate>("/urs-dates?limit=100", 60)
+      : Promise.resolve(null),
   ]);
-  return { category, events, processions, charities };
+  return { category, events, processions, charities, ursDates };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -42,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryDetailPage({ params }: Props) {
   const { slug } = await params;
-  const { category, events, processions, charities } = await getData(slug);
+  const { category, events, processions, charities, ursDates } = await getData(slug);
 
   if (!category) notFound();
 
@@ -50,6 +54,7 @@ export default async function CategoryDetailPage({ params }: Props) {
   const processionList = processions?.data ?? [];
   const charityList = charities?.data ?? [];
   const charityCountries = Array.from(new Set(charityList.map((c) => c.country))).sort();
+  const ursList = ursDates?.data ?? [];
 
   return (
     <div className="container-page py-10">
@@ -93,6 +98,9 @@ export default async function CategoryDetailPage({ params }: Props) {
       {charityList.length > 0 && (
         <CharityDirectory charities={charityList} countries={charityCountries} />
       )}
+
+      {/* Upcoming Urs calendar — only on the Urs category page */}
+      {ursList.length > 0 && <UpcomingUrs dates={ursList} />}
     </div>
   );
 }

@@ -136,13 +136,13 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav: primary links + Directories dropdown */}
-          <nav className="hidden xl:flex items-center gap-1 min-w-0" aria-label="Main Navigation">
+          <nav className="hidden xl:flex items-center gap-1.5" aria-label="Main Navigation">
             {primaryLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={clsx(
-                  "px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
+                  "px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
                   isActive(link.href)
                     ? "bg-emerald-50 text-brand-700 font-semibold shadow-xs"
                     : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
@@ -158,7 +158,7 @@ export function Navbar() {
               <button
                 onClick={() => setDirsOpen((v) => !v)}
                 className={clsx(
-                  "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
                   (dirsOpen || dirsActive)
                     ? "bg-emerald-50 text-brand-700 font-semibold shadow-xs"
                     : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
@@ -232,23 +232,31 @@ export function Navbar() {
           </nav>
 
           {/* Right actions */}
-          <div className="flex items-center gap-2 shrink-0">
-            {/* Quick search input trigger */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 ml-auto">
+            {/* Quick search button / trigger */}
             <Link
               href="/events?search="
-              className="hidden sm:flex items-center gap-2 pl-3 pr-2.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 border border-slate-200/70 text-slate-500 hover:text-slate-800 text-xs transition-colors"
+              className="hidden 2xl:flex items-center gap-2 pl-3 pr-2.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 border border-slate-200/70 text-slate-500 hover:text-slate-800 text-xs transition-colors"
               aria-label={t("nav.search")}
             >
               <Search size={14} className="text-slate-400" />
               <span>Search gatherings...</span>
-              <kbd className="hidden md:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-white border border-slate-200 rounded">
+              <kbd className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-white border border-slate-200 rounded">
                 /
               </kbd>
             </Link>
 
-            <Link href="/events?search=" className="btn-ghost p-2 sm:hidden" aria-label={t("nav.search")}>
+            {/* Compact search icon button for lg/xl screens */}
+            <Link
+              href="/events?search="
+              className="btn-ghost p-2 text-slate-600 hover:text-slate-900 2xl:hidden rounded-lg"
+              aria-label={t("nav.search")}
+              title={t("nav.search")}
+            >
               <Search size={18} />
             </Link>
+
+            <div className="hidden lg:block h-4 w-px bg-slate-200/80 my-auto" />
 
             <LocationIndicator variant="compact" />
 

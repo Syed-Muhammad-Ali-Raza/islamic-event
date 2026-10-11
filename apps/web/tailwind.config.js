@@ -1,10 +1,12 @@
+const path = require("path");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./hooks/**/*.{js,ts,jsx,tsx}",
-    "./lib/**/*.{js,ts,jsx,tsx}",
+    path.join(__dirname, "./app/**/*.{js,ts,jsx,tsx,mdx}"),
+    path.join(__dirname, "./components/**/*.{js,ts,jsx,tsx,mdx}"),
+    path.join(__dirname, "./hooks/**/*.{js,ts,jsx,tsx}"),
+    path.join(__dirname, "./lib/**/*.{js,ts,jsx,tsx}"),
   ],
   darkMode: "class",
   theme: {

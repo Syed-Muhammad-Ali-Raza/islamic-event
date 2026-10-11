@@ -40,6 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${APP_URL}/imambargahs`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
     { url: `${APP_URL}/places`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
     { url: `${APP_URL}/darbars`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
+    { url: `${APP_URL}/melas`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
     { url: `${APP_URL}/privacy`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${APP_URL}/terms`, changeFrequency: "yearly", priority: 0.2 },
   ];

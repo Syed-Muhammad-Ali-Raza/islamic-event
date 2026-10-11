@@ -11,9 +11,10 @@ const FILES = [
   "ImambargahExplorer.tsx",
   "PlacesExplorer.tsx",
   "DarbarsExplorer.tsx",
+  "MelaExplorer.tsx",
 ];
 
-const KEY_RE = /"(directories|dastarkhwan|imambargahs|places|darbars)\.[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*"/g;
+const KEY_RE = /"(directories|dastarkhwan|imambargahs|places|darbars|melas)\.[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*"/g;
 
 type Tree = { [key: string]: string | Tree };
 
@@ -28,7 +29,7 @@ describe("directory explorer i18n keys", () => {
   const en = i18n.getResourceBundle("en", "translation") as Tree;
 
   it("has directory namespaces in the English bundle", () => {
-    for (const ns of ["directories", "dastarkhwan", "imambargahs", "places", "darbars"]) {
+    for (const ns of ["directories", "dastarkhwan", "imambargahs", "places", "darbars", "melas"]) {
       expect(resolve(en, ns)).toBeTruthy();
     }
   });

@@ -29,6 +29,8 @@ import ursDateRoutes from "./modules/urs-dates/ursDate.routes";
 import processionRoutes from "./modules/processions/procession.routes";
 import charityRoutes from "./modules/charities/charity.routes";
 import cityRoutes from "./modules/cities/city.routes";
+import melaRoutes from "./modules/melas/mela.routes";
+import auqafUrsDateRoutes from "./modules/auqaf-urs-dates/auqafUrsDate.routes";
 
 const app = express();
 
@@ -134,6 +136,8 @@ app.use(`${api}/urs-dates`, ursDateRoutes);
 app.use(`${api}/processions`, processionRoutes);
 app.use(`${api}/charities`, charityRoutes);
 app.use(`${api}/cities`, cityRoutes);
+app.use(`${api}/melas`, melaRoutes);
+app.use(`${api}/auqaf-urs-dates`, auqafUrsDateRoutes);
 
 // Profile / user routes
 app.get(`${api}/users/me/saved-events`, requireAuth, listSavedEvents);

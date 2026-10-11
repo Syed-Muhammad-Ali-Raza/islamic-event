@@ -558,6 +558,61 @@ model Charity {
   @@map("charities")
 }
 
+// ─── Melas (festivals / fairs) of Pakistan ────────────────────────────────────
+
+model Mela {
+  id             String   @id @default(cuid())
+  sourceId       String   @unique
+  name           String
+  type           String?
+  city           String
+  province       String
+  venue          String?
+  address        String?
+  googleMapsUrl  String?
+  latitude       Float?
+  longitude      Float?
+  whenHeld       String?
+  duration       String?
+  history        String?
+  whatHappens    String?
+  statusNotes    String?
+  source         String?
+  verified       Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([city])
+  @@index([province])
+  @@index([isActive])
+  @@map("melas")
+}
+
+// ─── Punjab Auqaf urs calendar (zone-based shrine schedule) ───────────────────
+
+model AuqafUrsDate {
+  id              String   @id @default(cuid())
+  sourceId        String   @unique
+  name            String
+  type            String?
+  zone            String
+  province        String
+  dateAsPublished String
+  googleMapsUrl   String?
+  latitude        Float?
+  longitude       Float?
+  source          String?
+  verified        Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([zone])
+  @@index([isActive])
+  @@map("auqaf_urs_dates")
+}
+
 // ─── Notification ─────────────────────────────────────────────────────────────
 
 model Notification {

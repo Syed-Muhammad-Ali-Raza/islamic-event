@@ -359,6 +359,79 @@ async function main() {
     console.log(`  ✓ ${items.length} processions seeded`);
   }
 
+  // ── Melas (festivals; idempotent) ───────────────────────────────────────────
+  const melasFile = path.join(__dirname, "data", "pakistan-melas.json");
+  if (fs.existsSync(melasFile)) {
+    const raw = JSON.parse(fs.readFileSync(melasFile, "utf8"));
+    const melas: Array<{
+      id: string; name: string; type?: string | null; city: string; province: string;
+      venue?: string | null; address?: string | null; google_maps_url?: string | null;
+      latitude?: number | null; longitude?: number | null; when_held?: string | null;
+      duration?: string | null; history?: string | null; what_happens?: string | null;
+      status_notes?: string | null; source?: string | null; verified?: boolean;
+    }> = raw.melas ?? [];
+
+    for (const m of melas) {
+      await prisma.mela.upsert({
+        where: { sourceId: m.id },
+        update: {},
+        create: {
+          sourceId: m.id,
+          name: m.name,
+          type: m.type ?? null,
+          city: m.city,
+          province: m.province,
+          venue: m.venue ?? null,
+          address: m.address ?? null,
+          googleMapsUrl: m.google_maps_url ?? null,
+          latitude: m.latitude ?? null,
+          longitude: m.longitude ?? null,
+          whenHeld: m.when_held ?? null,
+          duration: m.duration ?? null,
+          history: m.history ?? null,
+          whatHappens: m.what_happens ?? null,
+          statusNotes: m.status_notes ?? null,
+          source: m.source ?? null,
+          verified: m.verified ?? false,
+        },
+      });
+    }
+    console.log(`  ✓ ${melas.length} melas seeded`);
+  }
+
+  // ── Punjab Auqaf urs calendar (idempotent) ──────────────────────────────────
+  const auqafFile = path.join(__dirname, "data", "pakistan-melas.json");
+  if (fs.existsSync(auqafFile)) {
+    const raw = JSON.parse(fs.readFileSync(auqafFile, "utf8"));
+    const auqaf: Array<{
+      id: string; name: string; type?: string | null; zone: string; province: string;
+      date_as_published: string; google_maps_url?: string | null;
+      latitude?: number | null; longitude?: number | null; source?: string | null;
+      verified?: boolean;
+    }> = raw.auqaf_urs_calendar ?? [];
+
+    for (const a of auqaf) {
+      await prisma.auqafUrsDate.upsert({
+        where: { sourceId: a.id },
+        update: {},
+        create: {
+          sourceId: a.id,
+          name: a.name,
+          type: a.type ?? null,
+          zone: a.zone,
+          province: a.province,
+          dateAsPublished: a.date_as_published,
+          googleMapsUrl: a.google_maps_url ?? null,
+          latitude: a.latitude ?? null,
+          longitude: a.longitude ?? null,
+          source: a.source ?? null,
+          verified: a.verified ?? false,
+        },
+      });
+    }
+    console.log(`  ✓ ${auqaf.length} Auqaf urs calendar dates seeded`);
+  }
+
   // ── Charity organizations (idempotent) ─────────────────────────────────────
   const charityFile = path.join(__dirname, "data", "pakistan-charities.json");
   if (fs.existsSync(charityFile)) {

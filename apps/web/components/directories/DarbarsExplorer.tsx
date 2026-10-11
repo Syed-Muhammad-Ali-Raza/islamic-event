@@ -185,7 +185,7 @@ export function DarbarsExplorer({
             <select
               value={province}
               onChange={(e) => selectProvince(e.target.value)}
-              className="input px-3 py-2 text-xs"
+              className="input w-auto px-3 py-2 text-xs"
               aria-label={t("directories.filterProvince")}
             >
               {PROVINCES.map((p) => (

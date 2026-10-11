@@ -248,7 +248,7 @@ export function MuharramJaloos({
           <select
             value={month}
             onChange={(e) => selectMonth(e.target.value)}
-            className="ml-auto input px-3 py-2 text-xs"
+            className="ml-auto input w-auto px-3 py-2 text-xs"
             aria-label="Filter by month"
           >
             <option value="">All months</option>

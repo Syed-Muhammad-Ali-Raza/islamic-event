@@ -253,6 +253,42 @@ export interface UrsDate {
   isActive: boolean;
 }
 
+export interface Mela {
+  id: string;
+  sourceId: string;
+  name: string;
+  type: string | null;
+  city: string;
+  province: string;
+  venue: string | null;
+  address: string | null;
+  googleMapsUrl: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  whenHeld: string | null;
+  duration: string | null;
+  history: string | null;
+  whatHappens: string | null;
+  statusNotes: string | null;
+  source: string | null;
+  verified: boolean;
+  isActive: boolean;
+}
+
+export interface AuqafUrsDate {
+  id: string;
+  sourceId: string;
+  name: string;
+  type: string | null;
+  zone: string;
+  province: string;
+  dateAsPublished: string;
+  googleMapsUrl: string | null;
+  source: string | null;
+  verified: boolean;
+  isActive: boolean;
+}
+
 export interface Procession {
   id: string;
   sourceId: string;

@@ -53,7 +53,7 @@ npx prisma generate --schema apps/api/prisma/schema.prisma
 
 ## Conventions
 
-### API module pattern (mirrored across dastarkhwans, imambargahs, places, darbars, urs-dates, processions, charities)
+### API module pattern (mirrored across dastarkhwans, imambargahs, places, darbars, urs-dates, processions, charities, melas, auqaf-urs-dates)
 
 ```
 src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, .routes.ts
@@ -79,7 +79,7 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 
 ## Data sources
 
-Curated JSON in `apps/api/prisma/data/`: dastarkhwan-points, imambargahs, pakistan-places, pakistan-darbars, pakistan-urs-dates, muharram-processions, pakistan-charities. All seeded idempotently; re-run `npm run db:seed --workspace apps/api` after editing.
+Curated JSON in `apps/api/prisma/data/`: dastarkhwan-points, imambargahs, pakistan-places, pakistan-darbars, pakistan-urs-dates, muharram-processions, pakistan-charities, pakistan-melas (melas + auqaf_urs_calendar). All seeded idempotently; re-run `npm run db:seed --workspace apps/api` after editing.
 
 ## Security baseline (already in place — don't regress)
 

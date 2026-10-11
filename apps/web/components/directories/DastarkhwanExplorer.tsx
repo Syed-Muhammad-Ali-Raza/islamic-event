@@ -3,12 +3,20 @@
 import { useState } from "react";
 import { Search, MapPin, Clock, ExternalLink, BadgeCheck, AlertTriangle, Soup } from "lucide-react";
 import { clsx } from "clsx";
+import { useTranslation } from "react-i18next";
 import { useDastarkhwans } from "@/hooks/useDastarkhwans";
 import type { Dastarkhwan, PaginatedResponse } from "@/types";
 
-const CITIES = ["", "Lahore", "Karachi", "Faisalabad", "Multan"];
+const CITIES = [
+  { v: "", k: "directories.allCities" },
+  { v: "Lahore", k: "directories.cities.lahore" },
+  { v: "Karachi", k: "directories.cities.karachi" },
+  { v: "Faisalabad", k: "directories.cities.faisalabad" },
+  { v: "Multan", k: "directories.cities.multan" },
+];
 
 export function DastarkhwanExplorer({ initialData }: { initialData?: PaginatedResponse<Dastarkhwan> }) {
+  const { t } = useTranslation();
   const [input, setInput] = useState("");
   const [q, setQ] = useState("");
   const [city, setCity] = useState("");
@@ -30,18 +38,17 @@ export function DastarkhwanExplorer({ initialData }: { initialData?: PaginatedRe
     <div className="container-page py-10">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-slate-900 mb-2 inline-flex items-center gap-2">
-          <Soup size={26} className="text-brand-600" /> Free Dastarkhwan
+          <Soup size={26} className="text-brand-600" /> {t("dastarkhwan.title")}
         </h1>
-        <p className="text-slate-500 text-sm">
-          Free food points (dastarkhwan / langar) for the poor and needy — Lahore, Karachi, Faisalabad &amp; Multan
-        </p>
+        <p className="text-slate-500 text-sm">{t("dastarkhwan.subtitle")}</p>
       </div>
 
       <div className="mb-6 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
         <AlertTriangle size={15} className="shrink-0 mt-0.5" />
         <p>
-          Community-sourced list — timings and addresses are <strong>not phone-verified</strong>. Please confirm before
-          travelling, and treat every point with respect. Know a place we&apos;re missing? Contact support.
+          {t("dastarkhwan.disclaimerPre")}
+          <strong>{t("dastarkhwan.disclaimerStrong")}</strong>
+          {t("dastarkhwan.disclaimerPost")}
         </p>
       </div>
 
@@ -50,16 +57,16 @@ export function DastarkhwanExplorer({ initialData }: { initialData?: PaginatedRe
         <div className="flex flex-wrap gap-1.5">
           {CITIES.map((c) => (
             <button
-              key={c || "all"}
-              onClick={() => selectCity(c)}
+              key={c.v || "all"}
+              onClick={() => selectCity(c.v)}
               className={clsx(
                 "px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
-                city === c
+                city === c.v
                   ? "bg-brand-600 text-white"
                   : "bg-white border border-slate-200 text-slate-600 hover:border-brand-300 hover:text-brand-700"
               )}
             >
-              {c || "All cities"}
+              {t(c.k)}
             </button>
           ))}
         </div>
@@ -72,13 +79,13 @@ export function DastarkhwanExplorer({ initialData }: { initialData?: PaginatedRe
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && applySearch()}
-              placeholder="Search name, area or address…"
+              placeholder={t("dastarkhwan.searchPlaceholder")}
               className="flex-1 bg-transparent text-slate-900 placeholder-slate-400 text-sm focus:outline-none"
-              aria-label="Search free food points"
+              aria-label={t("dastarkhwan.searchAria")}
             />
           </div>
           <button onClick={applySearch} className="btn-primary px-4 py-2.5 text-sm">
-            Search
+            {t("directories.search")}
           </button>
         </div>
       </div>
@@ -93,8 +100,8 @@ export function DastarkhwanExplorer({ initialData }: { initialData?: PaginatedRe
       ) : !data || data.data.length === 0 ? (
         <div className="card-glass text-center py-16 px-6">
           <p className="text-5xl mb-4">🍽️</p>
-          <p className="text-lg font-medium text-slate-900">No matching food points</p>
-          <p className="text-slate-500 text-sm mt-1">Try another city or clear your search.</p>
+          <p className="text-lg font-medium text-slate-900">{t("dastarkhwan.emptyTitle")}</p>
+          <p className="text-slate-500 text-sm mt-1">{t("directories.tryCity")}</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -104,11 +111,11 @@ export function DastarkhwanExplorer({ initialData }: { initialData?: PaginatedRe
                 <h3 className="font-semibold text-slate-900 leading-snug">{point.name}</h3>
                 {point.verified ? (
                   <span className="inline-flex items-center gap-1 rounded-md bg-emerald-100 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 shrink-0">
-                    <BadgeCheck size={11} /> Verified
+                    <BadgeCheck size={11} /> {t("directories.verified")}
                   </span>
                 ) : (
                   <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500 shrink-0">
-                    Not verified
+                    {t("directories.notVerified")}
                   </span>
                 )}
               </div>
@@ -139,7 +146,7 @@ export function DastarkhwanExplorer({ initialData }: { initialData?: PaginatedRe
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 transition-colors"
                   >
-                    <MapPin size={12} /> Open in Google Maps
+                    <MapPin size={12} /> {t("directories.openMaps")}
                   </a>
                 )}
                 {point.sourceUrl && (
@@ -149,7 +156,7 @@ export function DastarkhwanExplorer({ initialData }: { initialData?: PaginatedRe
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-brand-700 transition-colors"
                   >
-                    Source <ExternalLink size={10} />
+                    {t("directories.source")} <ExternalLink size={10} />
                   </a>
                 )}
               </div>
@@ -165,25 +172,26 @@ export function DastarkhwanExplorer({ initialData }: { initialData?: PaginatedRe
             onClick={() => setPage((p) => p - 1)}
             className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
           >
-            ← Previous
+            {t("directories.prev")}
           </button>
           <span className="text-slate-500 text-sm">
-            Page {data.pagination.page} of {data.pagination.totalPages}
+            {t("directories.pageOf", { page: data.pagination.page, total: data.pagination.totalPages })}
           </span>
           <button
             disabled={page === data.pagination.totalPages}
             onClick={() => setPage((p) => p + 1)}
             className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
           >
-            Next →
+            {t("directories.next")}
           </button>
         </div>
       )}
 
       {data && (
         <p className="text-center text-xs text-slate-400 mt-6">
-          {data.pagination.total} free food point{data.pagination.total === 1 ? "" : "s"} listed · last updated from
-          public sources
+          {t(data.pagination.total === 1 ? "dastarkhwan.listedOne" : "dastarkhwan.listedOther", {
+            count: data.pagination.total,
+          })}
         </p>
       )}
     </div>

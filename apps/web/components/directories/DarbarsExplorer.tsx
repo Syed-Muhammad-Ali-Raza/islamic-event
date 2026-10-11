@@ -6,41 +6,42 @@ import {
   BookOpen, ListOrdered, ChevronDown, ChevronUp, Info,
 } from "lucide-react";
 import { clsx } from "clsx";
+import { useTranslation } from "react-i18next";
 import { useDarbars } from "@/hooks/useDarbars";
 import { useUrsDates } from "@/hooks/useUrsDates";
 import type { Darbar, PaginatedResponse, UrsDate } from "@/types";
 
 const PROVINCES = [
-  { value: "", label: "All provinces" },
-  { value: "Punjab", label: "Punjab" },
-  { value: "Sindh", label: "Sindh" },
-  { value: "Khyber Pakhtunkhwa", label: "Khyber Pakhtunkhwa" },
-  { value: "Balochistan", label: "Balochistan" },
-  { value: "Gilgit-Baltistan", label: "Gilgit-Baltistan" },
-  { value: "Islamabad Capital Territory", label: "Islamabad (ICT)" },
-  { value: "Azad Jammu & Kashmir", label: "Azad Jammu & Kashmir" },
+  { value: "", k: "directories.allProvinces" },
+  { value: "Punjab", k: "directories.provinces.punjab" },
+  { value: "Sindh", k: "directories.provinces.sindh" },
+  { value: "Khyber Pakhtunkhwa", k: "directories.provinces.kpk" },
+  { value: "Balochistan", k: "directories.provinces.balochistan" },
+  { value: "Gilgit-Baltistan", k: "directories.provinces.gilgit" },
+  { value: "Islamabad Capital Territory", k: "directories.provinces.ict" },
+  { value: "Azad Jammu & Kashmir", k: "directories.provinces.ajk" },
 ];
 
 const CALENDAR_ANCHORS = [
-  { label: "1 Safar 1448", date: "Jul 16, 2026" },
-  { label: "1 Rabi al-Awwal 1448", date: "Aug 15, 2026" },
-  { label: "1 Ramadan 1448", date: "about Feb 9, 2027" },
+  { lk: "darbars.anchor1Label", dk: "darbars.anchor1Date" },
+  { lk: "darbars.anchor2Label", dk: "darbars.anchor2Date" },
+  { lk: "darbars.anchor3Label", dk: "darbars.anchor3Date" },
 ];
 
-const CONFIDENCE_CHIP: Record<string, { label: string; className: string }> = {
-  high: { label: "High confidence", className: "bg-emerald-100 text-emerald-700" },
-  medium: { label: "Medium confidence", className: "bg-sky-100 text-sky-700" },
-  low: { label: "Low confidence", className: "bg-amber-100 text-amber-700" },
-  none: { label: "Not researched", className: "bg-slate-100 text-slate-500" },
+const CONFIDENCE_CHIP: Record<string, { labelKey: string; className: string }> = {
+  high: { labelKey: "darbars.confHigh", className: "bg-emerald-100 text-emerald-700" },
+  medium: { labelKey: "darbars.confMedium", className: "bg-sky-100 text-sky-700" },
+  low: { labelKey: "darbars.confLow", className: "bg-amber-100 text-amber-700" },
+  none: { labelKey: "darbars.confNone", className: "bg-slate-100 text-slate-500" },
 };
 
 const clean = (s: string | null | undefined) => (s && s !== "Uncertain" && s !== "Not verified" ? s : null);
 
-function confidenceChip(confidence: string) {
+function confidenceChip(confidence: string, t: (k: string) => string) {
   const c = CONFIDENCE_CHIP[confidence] ?? CONFIDENCE_CHIP.none;
   return (
     <span className={clsx("rounded-md px-1.5 py-0.5 text-[10px] font-medium shrink-0", c.className)}>
-      {c.label}
+      {t(c.labelKey)}
     </span>
   );
 }
@@ -57,6 +58,7 @@ export function DarbarsExplorer({
   initialDarbars?: PaginatedResponse<Darbar>;
   initialUrs?: PaginatedResponse<UrsDate>;
 }) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<"shrines" | "urs">("shrines");
 
   // Shrines tab state
@@ -108,11 +110,9 @@ export function DarbarsExplorer({
     <div className="container-page py-10">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-slate-900 mb-2 inline-flex items-center gap-2">
-          <Sparkles size={26} className="text-brand-600" /> Darbars (Shrines)
+          <Sparkles size={26} className="text-brand-600" /> {t("darbars.title")}
         </h1>
-        <p className="text-slate-500 text-sm">
-          Sufi darbars &amp; shrines across Pakistan — with saints, death years and researched annual Urs dates
-        </p>
+        <p className="text-slate-500 text-sm">{t("darbars.subtitle")}</p>
       </div>
 
       {/* Tabs */}
@@ -126,7 +126,7 @@ export function DarbarsExplorer({
               : "bg-white border border-slate-200 text-slate-600 hover:border-brand-300 hover:text-brand-700"
           )}
         >
-          <BookOpen size={14} /> Shrines
+          <BookOpen size={14} /> {t("darbars.tabShrines")}
         </button>
         <button
           onClick={() => setTab("urs")}
@@ -137,7 +137,7 @@ export function DarbarsExplorer({
               : "bg-white border border-slate-200 text-slate-600 hover:border-brand-300 hover:text-brand-700"
           )}
         >
-          <ListOrdered size={14} /> Urs Calendar
+          <ListOrdered size={14} /> {t("darbars.tabUrs")}
         </button>
       </div>
 
@@ -146,10 +146,9 @@ export function DarbarsExplorer({
           <div className="mb-6 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
             <AlertTriangle size={15} className="shrink-0 mt-0.5" />
             <p>
-              Community-sourced list built from public encyclopaedia and heritage sources — Urs dates follow the
-              Islamic lunar calendar and shift about 10-11 days earlier each year, and death years from traditional
-              accounts may differ between sources. Please <strong>confirm locally</strong> before travelling and
-              treat every shrine with respect. Know a darbar we&apos;re missing? Contact support.
+              {t("darbars.disclaimerPre")}
+              <strong>{t("darbars.disclaimerStrong")}</strong>
+              {t("darbars.disclaimerPost")}
             </p>
           </div>
 
@@ -158,11 +157,11 @@ export function DarbarsExplorer({
               value={province}
               onChange={(e) => selectProvince(e.target.value)}
               className="input px-3 py-2 text-xs"
-              aria-label="Filter by province"
+              aria-label={t("directories.filterProvince")}
             >
               {PROVINCES.map((p) => (
                 <option key={p.value || "all"} value={p.value}>
-                  {p.label}
+                  {t(p.k)}
                 </option>
               ))}
             </select>
@@ -175,13 +174,13 @@ export function DarbarsExplorer({
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && applySearch()}
-                  placeholder="Search shrine, saint or city…"
+                  placeholder={t("darbars.searchPlaceholder")}
                   className="flex-1 bg-transparent text-slate-900 placeholder-slate-400 text-sm focus:outline-none"
-                  aria-label="Search darbars"
+                  aria-label={t("darbars.searchAria")}
                 />
               </div>
               <button onClick={applySearch} className="btn-primary px-4 py-2.5 text-sm">
-                Search
+                {t("directories.search")}
               </button>
             </div>
           </div>
@@ -195,8 +194,8 @@ export function DarbarsExplorer({
           ) : !data || data.data.length === 0 ? (
             <div className="card-glass text-center py-16 px-6">
               <p className="text-5xl mb-4">🕯️</p>
-              <p className="text-lg font-medium text-slate-900">No matching darbars</p>
-              <p className="text-slate-500 text-sm mt-1">Try another province or clear your search.</p>
+              <p className="text-lg font-medium text-slate-900">{t("darbars.emptyTitle")}</p>
+              <p className="text-slate-500 text-sm mt-1">{t("directories.tryProvince")}</p>
             </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -208,14 +207,14 @@ export function DarbarsExplorer({
                     <User size={12} className="text-brand-600 shrink-0 mt-0.5" />
                     <span>
                       {darbar.saint}
-                      {clean(darbar.saintDeathYear) ? ` · d. ${darbar.saintDeathYear}` : ""}
+                      {clean(darbar.saintDeathYear) ? ` · ${t("darbars.died")} ${darbar.saintDeathYear}` : ""}
                     </span>
                   </p>
 
                   <div className="flex flex-wrap items-center gap-1.5">
                     {clean(darbar.ursDate) && (
                       <span className="inline-flex items-center gap-1 rounded-md bg-white border border-slate-200 px-1.5 py-0.5 text-[10px] text-slate-600">
-                        <CalendarDays size={10} className="text-brand-600" /> Urs: {darbar.ursDate}
+                        <CalendarDays size={10} className="text-brand-600" /> {t("darbars.ursLabel")}: {darbar.ursDate}
                       </span>
                     )}
                     <span className="rounded-md bg-white border border-slate-200 px-1.5 py-0.5 text-[10px] text-slate-500">
@@ -243,7 +242,7 @@ export function DarbarsExplorer({
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 transition-colors"
                       >
-                        <MapPin size={12} /> Open in Google Maps
+                        <MapPin size={12} /> {t("directories.openMaps")}
                       </a>
                     )}
                     {darbar.sourceLink && (
@@ -253,7 +252,7 @@ export function DarbarsExplorer({
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-brand-700 transition-colors"
                       >
-                        Source <ExternalLink size={10} />
+                            {t("directories.source")} <ExternalLink size={10} />
                       </a>
                     )}
                   </div>
@@ -267,27 +266,28 @@ export function DarbarsExplorer({
               <button
                 disabled={page === 1}
                 onClick={() => setPage((p) => p - 1)}
-                className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
-              >
-                ← Previous
-              </button>
-              <span className="text-slate-500 text-sm">
-                Page {data.pagination.page} of {data.pagination.totalPages}
-              </span>
-              <button
-                disabled={page === data.pagination.totalPages}
-                onClick={() => setPage((p) => p + 1)}
-                className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
-              >
-                Next →
-              </button>
+              className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
+            >
+              {t("directories.prev")}
+            </button>
+            <span className="text-slate-500 text-sm">
+              {t("directories.pageOf", { page: data.pagination.page, total: data.pagination.totalPages })}
+            </span>
+            <button
+              disabled={page === data.pagination.totalPages}
+              onClick={() => setPage((p) => p + 1)}
+              className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
+            >
+              {t("directories.next")}
+            </button>
             </div>
           )}
 
           {data && (
             <p className="text-center text-xs text-slate-400 mt-6">
-              {data.pagination.total} darbar{data.pagination.total === 1 ? "" : "s"} listed · built from public
-              heritage sources
+              {t(data.pagination.total === 1 ? "darbars.listedOne" : "darbars.listedOther", {
+                count: data.pagination.total,
+              })}
             </p>
           )}
         </>
@@ -297,25 +297,24 @@ export function DarbarsExplorer({
           <div className="mb-6 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
             <AlertTriangle size={15} className="shrink-0 mt-0.5" />
             <p>
-              <strong>Urs dates are announced by Auqaf departments or district administrations — always confirm a
-              few days before travelling.</strong>{" "}
-              <em>Next expected</em> dates are estimates from the lunar rule and can shift 1-2 days with moon
-              sighting. Data prepared 10 Oct 2026 from public news and official sources.
+              <strong>{t("darbars.ursDisclaimerStrong")}</strong>{" "}
+              <em>{t("darbars.ursDisclaimerEm")}</em>
+              {t("darbars.ursDisclaimerPost")}
             </p>
           </div>
 
           {/* Calendar anchors */}
           <div className="mb-6 card-glass p-4">
             <p className="text-xs font-semibold text-slate-700 mb-2 inline-flex items-center gap-1.5">
-              <Info size={13} className="text-brand-600" /> Pakistan calendar anchors (1448 AH)
+              <Info size={13} className="text-brand-600" /> {t("darbars.anchorsLabel")}
             </p>
             <div className="flex flex-wrap gap-2">
               {CALENDAR_ANCHORS.map((a) => (
                 <span
-                  key={a.label}
+                  key={a.lk}
                   className="rounded-lg bg-white border border-slate-200 px-2.5 py-1 text-[11px] text-slate-600"
                 >
-                  <strong className="text-slate-800">{a.label}</strong> ≈ {a.date}
+                  <strong className="text-slate-800">{t(a.lk)}</strong> ≈ {t(a.dk)}
                 </span>
               ))}
             </div>
@@ -329,9 +328,9 @@ export function DarbarsExplorer({
                 type="text"
                 value={ursQuery}
                 onChange={(e) => setUrsQuery(e.target.value)}
-                placeholder="Filter by shrine, saint, city or date…"
+                placeholder={t("darbars.ursPlaceholder")}
                 className="flex-1 bg-transparent text-slate-900 placeholder-slate-400 text-sm focus:outline-none"
-                aria-label="Filter Urs dates"
+                aria-label={t("darbars.ursAria")}
               />
             </div>
           </div>
@@ -345,7 +344,7 @@ export function DarbarsExplorer({
           ) : (
             <>
               {/* Upcoming */}
-              <h2 className="text-lg font-bold text-slate-900 mb-3">Upcoming Urs (in order)</h2>
+              <h2 className="text-lg font-bold text-slate-900 mb-3">{t("darbars.upcomingTitle")}</h2>
               <div className="space-y-2.5 mb-10">
                 {filteredUrs.upcoming.map((u) => (
                   <div
@@ -358,7 +357,7 @@ export function DarbarsExplorer({
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="font-semibold text-slate-900 text-sm">{u.name}</p>
-                        {confidenceChip(u.confidence)}
+                        {confidenceChip(u.confidence, t)}
                       </div>
                       <p className="text-xs text-slate-500 mt-0.5">
                         {u.saint} · {u.city}
@@ -370,36 +369,36 @@ export function DarbarsExplorer({
                   </div>
                 ))}
                 {filteredUrs.upcoming.length === 0 && (
-                  <p className="text-sm text-slate-500">No upcoming Urs matches your filter.</p>
+                  <p className="text-sm text-slate-500">{t("darbars.noUpcoming")}</p>
                 )}
               </div>
 
               {/* Other researched */}
               {filteredUrs.researchedRest.length > 0 && (
                 <>
-                  <h2 className="text-lg font-bold text-slate-900 mb-3">Other researched dates</h2>
+                  <h2 className="text-lg font-bold text-slate-900 mb-3">{t("darbars.otherTitle")}</h2>
                   <div className="grid gap-3 sm:grid-cols-2 mb-10">
                     {filteredUrs.researchedRest.map((u) => (
                       <div key={u.id} className="card-glass p-4 flex flex-col gap-2">
                         <div className="flex items-start justify-between gap-2">
                           <p className="font-semibold text-slate-900 text-sm leading-snug">{u.name}</p>
-                          {confidenceChip(u.confidence)}
+                          {confidenceChip(u.confidence, t)}
                         </div>
                         <p className="text-xs text-slate-500">
                           {u.saint}
-                          {clean(u.saintDeathYear) ? ` · d. ${u.saintDeathYear}` : ""} · {u.city}
+                          {clean(u.saintDeathYear) ? ` · ${t("darbars.died")} ${u.saintDeathYear}` : ""} · {u.city}
                         </p>
                         {clean(u.ursRule) && (
-                          <p className="text-xs text-slate-600">Rule: {u.ursRule}</p>
+                          <p className="text-xs text-slate-600">{t("darbars.rule")} {u.ursRule}</p>
                         )}
                         {clean(u.lastObserved) && (
-                          <p className="text-xs text-slate-500">Last observed: {u.lastObserved}</p>
+                          <p className="text-xs text-slate-500">{t("darbars.lastObserved")} {u.lastObserved}</p>
                         )}
                         {clean(u.nextExpected) && (
-                          <p className="text-xs font-medium text-brand-700">Next expected: {u.nextExpected}</p>
+                          <p className="text-xs font-medium text-brand-700">{t("darbars.nextExpected")} {u.nextExpected}</p>
                         )}
                         {u.calendarBasis && (
-                          <p className="text-[11px] text-slate-400">Calendar: {u.calendarBasis}</p>
+                          <p className="text-[11px] text-slate-400">{t("darbars.calendar")} {u.calendarBasis}</p>
                         )}
                         {u.notes && <p className="text-[11px] italic text-slate-400">{u.notes}</p>}
                         {firstSource(u.sources) && (
@@ -409,7 +408,7 @@ export function DarbarsExplorer({
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-brand-700 transition-colors"
                           >
-                            Source <ExternalLink size={10} />
+                        {t("directories.source")} <ExternalLink size={10} />
                           </a>
                         )}
                       </div>
@@ -424,7 +423,7 @@ export function DarbarsExplorer({
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand-700 mb-3"
               >
                 {showUnresearched ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-                Not yet researched ({filteredUrs.unverified.length})
+                {t("darbars.notResearched", { count: filteredUrs.unverified.length })}
               </button>
               {showUnresearched && (
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -432,7 +431,7 @@ export function DarbarsExplorer({
                     <div key={u.id} className="card-glass p-4 flex flex-col gap-1.5">
                       <div className="flex items-start justify-between gap-2">
                         <p className="font-medium text-slate-700 text-sm leading-snug">{u.name}</p>
-                        {confidenceChip("none")}
+                        {confidenceChip("none", t)}
                       </div>
                       <p className="text-xs text-slate-500">
                         {u.saint} · {u.city}
@@ -443,15 +442,15 @@ export function DarbarsExplorer({
                     </div>
                   ))}
                   {filteredUrs.unverified.length === 0 && (
-                    <p className="text-sm text-slate-500">Nothing matches your filter.</p>
+                    <p className="text-sm text-slate-500">{t("darbars.nothingMatches")}</p>
                   )}
                 </div>
               )}
 
               <p className="text-center text-xs text-slate-400 mt-8">
-                {ursAll.filter((u) => u.researched).length} researched ·{" "}
-                {ursAll.filter((u) => !u.researched).length} not yet researched · always confirm with local Auqaf /
-                administration
+                {t("darbars.researchA", { count: ursAll.filter((u) => u.researched).length })} ·{" "}
+                {t("darbars.researchB", { count: ursAll.filter((u) => !u.researched).length })} ·{" "}
+                {t("darbars.researchC")}
               </p>
             </>
           )}

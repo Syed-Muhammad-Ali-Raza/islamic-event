@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { MapPinned, CalendarDays, Soup, Landmark, LandPlot, ArrowRight } from "lucide-react";
 import { EventCard } from "@/components/events/EventCard";
-import { CityMap } from "@/components/maps/CityMap";
+import { CityMapLazy } from "@/components/maps/CityMapLazy";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchFromApi, fetchList } from "@/lib/server-api";
@@ -161,7 +161,7 @@ async function CityHub({ slug }: { slug: string }) {
         <h2 id="city-map-heading" className="text-xl font-bold text-slate-900 mb-4">
           Map of {city.name}
         </h2>
-        <CityMap
+        <CityMapLazy
           events={data.events}
           dastarkhwans={data.dastarkhwans}
           imambargahs={data.imambargahs}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState, Suspense } from "react";
+import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,6 +17,11 @@ import { useCreateEvent } from "@/hooks/useEvents";
 import { eventService } from "@/services/event.service";
 import { Input, Textarea, Select } from "@/components/ui/FormField";
 import { AuthGuard } from "@/components/auth/AuthGuard";
+
+const EventLocationPicker = dynamic(
+  () => import("@/components/events/EventLocationPicker").then((m) => m.EventLocationPicker),
+  { ssr: false, loading: () => <div className="skeleton h-[260px] w-full rounded-2xl" /> }
+);
 import { clsx } from "clsx";
 
 // ─── Schema (mirrors API CreateEventSchema) ──────────────────────────────────
@@ -30,6 +36,8 @@ const CreateEventFormSchema = z.object({
   venue: z.string().max(300).optional(),
   address: z.string().max(500).optional(),
   cityId: z.string().optional(),
+  latitude: z.number().min(-90).max(90).optional(),
+  longitude: z.number().min(-180).max(180).optional(),
 });
 
 type CreateEventForm = z.infer<typeof CreateEventFormSchema>;
@@ -63,6 +71,7 @@ function CreateEventContent() {
     trigger,
     getValues,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<CreateEventForm>({
     resolver: zodResolver(CreateEventFormSchema),
@@ -77,6 +86,8 @@ function CreateEventContent() {
       venue: "",
       address: "",
       cityId: "",
+      latitude: undefined,
+      longitude: undefined,
     },
   });
 
@@ -133,6 +144,8 @@ function CreateEventContent() {
         venue: data.venue?.trim() || undefined,
         address: data.address?.trim() || undefined,
         cityId: data.cityId || undefined,
+        latitude: data.latitude,
+        longitude: data.longitude,
       };
 
       const result = await createEvent.mutateAsync(payload);
@@ -354,6 +367,18 @@ function CreateEventContent() {
               error={errors.address?.message}
               {...register("address")}
             />
+
+            <EventLocationPicker
+              address={watchedValues.address}
+              venue={watchedValues.venue}
+              cityName={cities?.find((c) => c.id === watchedValues.cityId)?.name}
+              latitude={watchedValues.latitude}
+              longitude={watchedValues.longitude}
+              onChange={(lat, lng) => {
+                setValue("latitude", lat);
+                setValue("longitude", lng);
+              }}
+            />
           </div>
         )}
 
@@ -433,6 +458,14 @@ function CreateEventContent() {
                 }
               />
               <ReviewRow label="Address" value={watchedValues.address || "Not specified"} />
+              <ReviewRow
+                label="Map location"
+                value={
+                  typeof watchedValues.latitude === "number" && typeof watchedValues.longitude === "number"
+                    ? `${watchedValues.latitude.toFixed(5)}, ${watchedValues.longitude.toFixed(5)}`
+                    : "Not set"
+                }
+              />
               <ReviewRow
                 label="Description"
                 value={watchedValues.description || "No description"}

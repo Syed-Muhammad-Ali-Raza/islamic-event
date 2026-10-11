@@ -3,42 +3,43 @@
 import { useState } from "react";
 import { Search, MapPin, ExternalLink, AlertTriangle, Landmark, Clock, Ticket, Building2, Award } from "lucide-react";
 import { clsx } from "clsx";
+import { useTranslation } from "react-i18next";
 import { usePlaces } from "@/hooks/usePlaces";
 import type { PaginatedResponse, Place } from "@/types";
 
 const CATEGORIES = [
-  { value: "", label: "All" },
-  { value: "Historical", label: "Historical" },
-  { value: "Religious", label: "Religious" },
-  { value: "Cultural", label: "Cultural" },
-  { value: "Natural / Tourist", label: "Natural" },
+  { value: "", k: "places.catAll" },
+  { value: "Historical", k: "places.catHistorical" },
+  { value: "Religious", k: "places.catReligious" },
+  { value: "Cultural", k: "places.catCultural" },
+  { value: "Natural / Tourist", k: "places.catNatural" },
 ];
 
 const PROVINCES = [
-  { value: "", label: "All provinces" },
-  { value: "Punjab", label: "Punjab" },
-  { value: "Sindh", label: "Sindh" },
-  { value: "Khyber Pakhtunkhwa", label: "Khyber Pakhtunkhwa" },
-  { value: "Balochistan", label: "Balochistan" },
-  { value: "Gilgit-Baltistan", label: "Gilgit-Baltistan" },
-  { value: "Islamabad Capital Territory", label: "Islamabad (ICT)" },
+  { value: "", k: "directories.allProvinces" },
+  { value: "Punjab", k: "directories.provinces.punjab" },
+  { value: "Sindh", k: "directories.provinces.sindh" },
+  { value: "Khyber Pakhtunkhwa", k: "directories.provinces.kpk" },
+  { value: "Balochistan", k: "directories.provinces.balochistan" },
+  { value: "Gilgit-Baltistan", k: "directories.provinces.gilgit" },
+  { value: "Islamabad Capital Territory", k: "directories.provinces.ict" },
 ];
 
 const clean = (s: string | null | undefined) => (s && s !== "N/A" ? s : null);
 
-function unescoBadge(status: string | null) {
+function unescoBadge(status: string | null, t: (k: string) => string) {
   if (!status || status === "Not inscribed") return null;
   if (status.startsWith("UNESCO World Heritage")) {
     return (
       <span className="inline-flex items-center gap-1 rounded-md bg-emerald-100 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700">
-        <Award size={10} /> UNESCO World Heritage
+        <Award size={10} /> {t("places.unescoHeritage")}
       </span>
     );
   }
   if (status.includes("Tentative")) {
     return (
       <span className="inline-flex items-center gap-1 rounded-md bg-sky-100 px-1.5 py-0.5 text-[10px] font-medium text-sky-700">
-        <Award size={10} /> UNESCO Tentative
+        <Award size={10} /> {t("places.unescoTentative")}
       </span>
     );
   }
@@ -48,6 +49,7 @@ function unescoBadge(status: string | null) {
 }
 
 export function PlacesExplorer({ initialData }: { initialData?: PaginatedResponse<Place> }) {
+  const { t } = useTranslation();
   const [input, setInput] = useState("");
   const [q, setQ] = useState("");
   const [category, setCategory] = useState("");
@@ -75,20 +77,17 @@ export function PlacesExplorer({ initialData }: { initialData?: PaginatedRespons
     <div className="container-page py-10">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-slate-900 mb-2 inline-flex items-center gap-2">
-          <Landmark size={26} className="text-brand-600" /> Pakistan Places
+          <Landmark size={26} className="text-brand-600" /> {t("places.title")}
         </h1>
-        <p className="text-slate-500 text-sm">
-          Historical, religious, cultural and natural places across Pakistan — forts, shrines, museums, valleys &amp;
-          more
-        </p>
+        <p className="text-slate-500 text-sm">{t("places.subtitle")}</p>
       </div>
 
       <div className="mb-6 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
         <AlertTriangle size={15} className="shrink-0 mt-0.5" />
         <p>
-          Community-sourced list built from public encyclopaedia and heritage sources — timings and tickets are{" "}
-          <strong>general guidance only</strong>. Please confirm locally before travelling and respect every site.
-          Know a place we&apos;re missing? Contact support.
+          {t("places.disclaimerPre")}
+          <strong>{t("places.disclaimerStrong")}</strong>
+          {t("places.disclaimerPost")}
         </p>
       </div>
 
@@ -107,7 +106,7 @@ export function PlacesExplorer({ initialData }: { initialData?: PaginatedRespons
                     : "bg-white border border-slate-200 text-slate-600 hover:border-brand-300 hover:text-brand-700"
                 )}
               >
-                {c.label}
+                {t(c.k)}
               </button>
             ))}
           </div>
@@ -116,11 +115,11 @@ export function PlacesExplorer({ initialData }: { initialData?: PaginatedRespons
             value={province}
             onChange={(e) => selectProvince(e.target.value)}
             className="ml-auto input px-3 py-2 text-xs"
-            aria-label="Filter by province"
+            aria-label={t("directories.filterProvince")}
           >
             {PROVINCES.map((p) => (
               <option key={p.value || "all"} value={p.value}>
-                {p.label}
+                {t(p.k)}
               </option>
             ))}
           </select>
@@ -134,13 +133,13 @@ export function PlacesExplorer({ initialData }: { initialData?: PaginatedRespons
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && applySearch()}
-              placeholder="Search name, type, city or description…"
+              placeholder={t("places.searchPlaceholder")}
               className="flex-1 bg-transparent text-slate-900 placeholder-slate-400 text-sm focus:outline-none"
-              aria-label="Search places"
+              aria-label={t("places.searchAria")}
             />
           </div>
           <button onClick={applySearch} className="btn-primary px-4 py-2.5 text-sm">
-            Search
+            {t("directories.search")}
           </button>
         </div>
       </div>
@@ -155,8 +154,8 @@ export function PlacesExplorer({ initialData }: { initialData?: PaginatedRespons
       ) : !data || data.data.length === 0 ? (
         <div className="card-glass text-center py-16 px-6">
           <p className="text-5xl mb-4">🏛️</p>
-          <p className="text-lg font-medium text-slate-900">No matching places</p>
-          <p className="text-slate-500 text-sm mt-1">Try another category, province or clear your search.</p>
+          <p className="text-lg font-medium text-slate-900">{t("places.emptyTitle")}</p>
+          <p className="text-slate-500 text-sm mt-1">{t("directories.tryFilters")}</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -164,7 +163,7 @@ export function PlacesExplorer({ initialData }: { initialData?: PaginatedRespons
             <div key={place.id} className="card-glass p-5 flex flex-col gap-2.5">
               <div className="flex items-start justify-between gap-2">
                 <h3 className="font-semibold text-slate-900 leading-snug">{place.name}</h3>
-                {unescoBadge(place.unescoStatus)}
+                {unescoBadge(place.unescoStatus, t)}
               </div>
 
               <div className="flex flex-wrap items-center gap-1.5">
@@ -182,7 +181,7 @@ export function PlacesExplorer({ initialData }: { initialData?: PaginatedRespons
                 <p className="inline-flex items-start gap-1.5 text-xs text-slate-500">
                   <Building2 size={12} className="text-brand-600 shrink-0 mt-0.5" />
                   <span>
-                    Built: {place.builtYear}
+                    {t("places.built")}: {place.builtYear}
                     {clean(place.builtBuilder) ? ` — ${place.builtBuilder}` : ""}
                   </span>
                 </p>
@@ -208,7 +207,7 @@ export function PlacesExplorer({ initialData }: { initialData?: PaginatedRespons
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 transition-colors"
                   >
-                    <MapPin size={12} /> Open in Google Maps
+                    <MapPin size={12} /> {t("directories.openMaps")}
                   </a>
                 )}
                 {place.sourceLink && (
@@ -218,7 +217,7 @@ export function PlacesExplorer({ initialData }: { initialData?: PaginatedRespons
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-brand-700 transition-colors"
                   >
-                    Source <ExternalLink size={10} />
+                    {t("directories.source")} <ExternalLink size={10} />
                   </a>
                 )}
               </div>
@@ -234,25 +233,26 @@ export function PlacesExplorer({ initialData }: { initialData?: PaginatedRespons
             onClick={() => setPage((p) => p - 1)}
             className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
           >
-            ← Previous
+            {t("directories.prev")}
           </button>
           <span className="text-slate-500 text-sm">
-            Page {data.pagination.page} of {data.pagination.totalPages}
+            {t("directories.pageOf", { page: data.pagination.page, total: data.pagination.totalPages })}
           </span>
           <button
             disabled={page === data.pagination.totalPages}
             onClick={() => setPage((p) => p + 1)}
             className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
           >
-            Next →
+            {t("directories.next")}
           </button>
         </div>
       )}
 
       {data && (
         <p className="text-center text-xs text-slate-400 mt-6">
-          {data.pagination.total} place{data.pagination.total === 1 ? "" : "s"} listed · built from public heritage
-          sources
+          {t(data.pagination.total === 1 ? "places.listedOne" : "places.listedOther", {
+            count: data.pagination.total,
+          })}
         </p>
       )}
     </div>

@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { DastarkhwanExplorer } from "@/components/directories/DastarkhwanExplorer";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
-import { fetchList } from "@/lib/server-api";
+import { fetchList, buildQuery, sanitizePage } from "@/lib/server-api";
 import type { Dastarkhwan } from "@/types";
 
 const title = "Free Dastarkhwan";
@@ -17,12 +17,23 @@ export const metadata: Metadata = {
   openGraph: { title: `${title} | Community Events`, description, url: "/dastarkhwan" },
 };
 
-async function getData() {
-  return fetchList<Dastarkhwan>("/dastarkhwans?page=1&limit=24", 60);
+interface Props {
+  searchParams: Promise<{ q?: string; city?: string; page?: string }>;
 }
 
-export default async function DastarkhwanPage() {
-  const data = await getData();
+async function getData(q: string, city: string, page: number) {
+  return fetchList<Dastarkhwan>(
+    `/dastarkhwans?${buildQuery({ q, city, page, limit: 24 })}`,
+    60
+  );
+}
+
+export default async function DastarkhwanPage({ searchParams }: Props) {
+  const sp = await searchParams;
+  const q = (sp.q ?? "").trim();
+  const city = (sp.city ?? "").trim();
+  const page = sanitizePage(sp.page);
+  const data = await getData(q, city, page);
 
   return (
     <>
@@ -58,7 +69,7 @@ export default async function DastarkhwanPage() {
         </div>
       }
     >
-      <DastarkhwanExplorer initialData={data ?? undefined} />
+      <DastarkhwanExplorer initialData={data ?? undefined} seed={{ q, city, page }} />
       </Suspense>
     </>
   );

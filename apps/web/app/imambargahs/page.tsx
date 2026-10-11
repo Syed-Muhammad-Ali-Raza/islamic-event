@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { ImambargahExplorer } from "@/components/directories/ImambargahExplorer";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
-import { fetchList } from "@/lib/server-api";
+import { fetchList, buildQuery, sanitizePage } from "@/lib/server-api";
 import type { Imambargah } from "@/types";
 
 const title = "Imambargahs";
@@ -17,12 +17,23 @@ export const metadata: Metadata = {
   openGraph: { title: `${title} | Community Events`, description, url: "/imambargahs" },
 };
 
-async function getData() {
-  return fetchList<Imambargah>("/imambargahs?page=1&limit=24", 60);
+interface Props {
+  searchParams: Promise<{ q?: string; city?: string; page?: string }>;
 }
 
-export default async function ImambargahsPage() {
-  const data = await getData();
+async function getData(q: string, city: string, page: number) {
+  return fetchList<Imambargah>(
+    `/imambargahs?${buildQuery({ q, city, page, limit: 24 })}`,
+    60
+  );
+}
+
+export default async function ImambargahsPage({ searchParams }: Props) {
+  const sp = await searchParams;
+  const q = (sp.q ?? "").trim();
+  const city = (sp.city ?? "").trim();
+  const page = sanitizePage(sp.page);
+  const data = await getData(q, city, page);
 
   return (
     <>
@@ -58,7 +69,7 @@ export default async function ImambargahsPage() {
         </div>
       }
     >
-      <ImambargahExplorer initialData={data ?? undefined} />
+      <ImambargahExplorer initialData={data ?? undefined} seed={{ q, city, page }} />
       </Suspense>
     </>
   );

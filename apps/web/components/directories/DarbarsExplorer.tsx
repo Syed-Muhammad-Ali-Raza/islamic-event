@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import {
   Search, MapPin, ExternalLink, AlertTriangle, Sparkles, Clock, CalendarDays, User,
   BookOpen, ListOrdered, ChevronDown, ChevronUp, Info,
@@ -54,34 +55,62 @@ function firstSource(sources: string | null): string | null {
 export function DarbarsExplorer({
   initialDarbars,
   initialUrs,
+  seed,
 }: {
   initialDarbars?: PaginatedResponse<Darbar>;
   initialUrs?: PaginatedResponse<UrsDate>;
+  seed: { q: string; province: string; page: number };
 }) {
   const { t } = useTranslation();
+  const router = useRouter();
   const [tab, setTab] = useState<"shrines" | "urs">("shrines");
 
   // Shrines tab state
-  const [input, setInput] = useState("");
-  const [q, setQ] = useState("");
-  const [province, setProvince] = useState("");
-  const [page, setPage] = useState(1);
+  const [input, setInput] = useState(seed.q);
+  const [q, setQ] = useState(seed.q);
+  const [province, setProvince] = useState(seed.province);
+  const [page, setPage] = useState(seed.page);
 
   // Urs tab state
   const [ursQuery, setUrsQuery] = useState("");
   const [showUnresearched, setShowUnresearched] = useState(false);
 
-  const { data, isLoading } = useDarbars(page, q, "", province, 24, initialDarbars);
+  useEffect(() => {
+    setQ(seed.q);
+    setInput(seed.q);
+    setProvince(seed.province);
+    setPage(seed.page);
+  }, [seed.q, seed.province, seed.page]);
+
+  const seedMatch = page === seed.page && q === seed.q && province === seed.province;
+  const { data, isLoading } = useDarbars(page, q, "", province, 24, seedMatch ? initialDarbars : undefined);
   const { data: ursData, isLoading: ursLoading } = useUrsDates(1, "", "", "", 100, initialUrs);
+
+  const pushUrl = (next: { page: number; q?: string; province?: string }) => {
+    const params = new URLSearchParams();
+    const nq = next.q ?? q;
+    const nprov = next.province ?? province;
+    if (nq) params.set("q", nq);
+    if (nprov) params.set("province", nprov);
+    if (next.page > 1) params.set("page", String(next.page));
+    router.push(`/darbars?${params.toString()}`);
+  };
 
   const applySearch = () => {
     setPage(1);
     setQ(input);
+    pushUrl({ page: 1, q: input });
   };
 
   const selectProvince = (p: string) => {
     setPage(1);
     setProvince(p);
+    pushUrl({ page: 1, province: p });
+  };
+
+  const gotoPage = (np: number) => {
+    setPage(np);
+    pushUrl({ page: np });
   };
 
   const ursAll = useMemo(() => ursData?.data ?? [], [ursData]);
@@ -265,7 +294,7 @@ export function DarbarsExplorer({
             <div className="flex items-center justify-center gap-3 mt-8">
               <button
                 disabled={page === 1}
-                onClick={() => setPage((p) => p - 1)}
+                onClick={() => gotoPage(page - 1)}
               className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
             >
               {t("directories.prev")}
@@ -275,7 +304,7 @@ export function DarbarsExplorer({
             </span>
             <button
               disabled={page === data.pagination.totalPages}
-              onClick={() => setPage((p) => p + 1)}
+              onClick={() => gotoPage(page + 1)}
               className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
             >
               {t("directories.next")}

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Search, MapPin, Clock, ExternalLink, BadgeCheck, AlertTriangle, Soup } from "lucide-react";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
@@ -15,23 +16,56 @@ const CITIES = [
   { v: "Multan", k: "directories.cities.multan" },
 ];
 
-export function DastarkhwanExplorer({ initialData }: { initialData?: PaginatedResponse<Dastarkhwan> }) {
+export function DastarkhwanExplorer({
+  initialData,
+  seed,
+}: {
+  initialData?: PaginatedResponse<Dastarkhwan>;
+  seed: { q: string; city: string; page: number };
+}) {
   const { t } = useTranslation();
-  const [input, setInput] = useState("");
-  const [q, setQ] = useState("");
-  const [city, setCity] = useState("");
-  const [page, setPage] = useState(1);
+  const router = useRouter();
+  const [input, setInput] = useState(seed.q);
+  const [q, setQ] = useState(seed.q);
+  const [city, setCity] = useState(seed.city);
+  const [page, setPage] = useState(seed.page);
 
-  const { data, isLoading } = useDastarkhwans(page, q, city, 24, initialData);
+  // Server navigation (back/forward/share) delivers a new seed — resync local state
+  useEffect(() => {
+    setQ(seed.q);
+    setInput(seed.q);
+    setCity(seed.city);
+    setPage(seed.page);
+  }, [seed.q, seed.city, seed.page]);
+
+  const seedMatch = page === seed.page && q === seed.q && city === seed.city;
+  const { data, isLoading } = useDastarkhwans(page, q, city, 24, seedMatch ? initialData : undefined);
+
+  const pushUrl = (next: { page: number; q?: string; city?: string }) => {
+    const params = new URLSearchParams();
+    const nq = next.q ?? q;
+    const ncity = next.city ?? city;
+    if (nq) params.set("q", nq);
+    if (ncity) params.set("city", ncity);
+    if (next.page > 1) params.set("page", String(next.page));
+    router.push(`/dastarkhwan?${params.toString()}`);
+  };
 
   const applySearch = () => {
     setPage(1);
     setQ(input);
+    pushUrl({ page: 1, q: input });
   };
 
   const selectCity = (c: string) => {
     setPage(1);
     setCity(c);
+    pushUrl({ page: 1, city: c });
+  };
+
+  const gotoPage = (p: number) => {
+    setPage(p);
+    pushUrl({ page: p });
   };
 
   return (
@@ -169,7 +203,7 @@ export function DastarkhwanExplorer({ initialData }: { initialData?: PaginatedRe
         <div className="flex items-center justify-center gap-3 mt-8">
           <button
             disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
+            onClick={() => gotoPage(page - 1)}
             className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
           >
             {t("directories.prev")}
@@ -179,7 +213,7 @@ export function DastarkhwanExplorer({ initialData }: { initialData?: PaginatedRe
           </span>
           <button
             disabled={page === data.pagination.totalPages}
-            onClick={() => setPage((p) => p + 1)}
+            onClick={() => gotoPage(page + 1)}
             className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
           >
             {t("directories.next")}

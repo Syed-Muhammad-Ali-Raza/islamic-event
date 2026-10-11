@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Search, MapPin, History, ExternalLink, BadgeCheck, AlertTriangle, Landmark, Phone, User } from "lucide-react";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
@@ -27,23 +28,55 @@ const CONFIDENCE_STYLE: Record<string, { labelKey: string; className: string }> 
 
 const clean = (s: string | null | undefined) => s && s !== "Not stated" ? s : null;
 
-export function ImambargahExplorer({ initialData }: { initialData?: PaginatedResponse<Imambargah> }) {
+export function ImambargahExplorer({
+  initialData,
+  seed,
+}: {
+  initialData?: PaginatedResponse<Imambargah>;
+  seed: { q: string; city: string; page: number };
+}) {
   const { t } = useTranslation();
-  const [input, setInput] = useState("");
-  const [q, setQ] = useState("");
-  const [city, setCity] = useState("");
-  const [page, setPage] = useState(1);
+  const router = useRouter();
+  const [input, setInput] = useState(seed.q);
+  const [q, setQ] = useState(seed.q);
+  const [city, setCity] = useState(seed.city);
+  const [page, setPage] = useState(seed.page);
 
-  const { data, isLoading } = useImambargahs(page, q, city, 24, initialData);
+  useEffect(() => {
+    setQ(seed.q);
+    setInput(seed.q);
+    setCity(seed.city);
+    setPage(seed.page);
+  }, [seed.q, seed.city, seed.page]);
+
+  const seedMatch = page === seed.page && q === seed.q && city === seed.city;
+  const { data, isLoading } = useImambargahs(page, q, city, 24, seedMatch ? initialData : undefined);
+
+  const pushUrl = (next: { page: number; q?: string; city?: string }) => {
+    const params = new URLSearchParams();
+    const nq = next.q ?? q;
+    const ncity = next.city ?? city;
+    if (nq) params.set("q", nq);
+    if (ncity) params.set("city", ncity);
+    if (next.page > 1) params.set("page", String(next.page));
+    router.push(`/imambargahs?${params.toString()}`);
+  };
 
   const applySearch = () => {
     setPage(1);
     setQ(input);
+    pushUrl({ page: 1, q: input });
   };
 
   const selectCity = (c: string) => {
     setPage(1);
     setCity(c);
+    pushUrl({ page: 1, city: c });
+  };
+
+  const gotoPage = (p: number) => {
+    setPage(p);
+    pushUrl({ page: p });
   };
 
   return (
@@ -204,7 +237,7 @@ export function ImambargahExplorer({ initialData }: { initialData?: PaginatedRes
         <div className="flex items-center justify-center gap-3 mt-8">
           <button
             disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
+            onClick={() => gotoPage(page - 1)}
             className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
           >
             {t("directories.prev")}
@@ -214,7 +247,7 @@ export function ImambargahExplorer({ initialData }: { initialData?: PaginatedRes
           </span>
           <button
             disabled={page === data.pagination.totalPages}
-            onClick={() => setPage((p) => p + 1)}
+            onClick={() => gotoPage(page + 1)}
             className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
           >
             {t("directories.next")}

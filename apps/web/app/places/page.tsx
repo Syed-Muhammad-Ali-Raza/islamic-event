@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { PlacesExplorer } from "@/components/directories/PlacesExplorer";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
-import { fetchList } from "@/lib/server-api";
+import { fetchList, buildQuery, sanitizePage } from "@/lib/server-api";
 import type { Place } from "@/types";
 
 const title = "Pakistan Places";
@@ -17,12 +17,24 @@ export const metadata: Metadata = {
   openGraph: { title: `${title} | Community Events`, description, url: "/places" },
 };
 
-async function getData() {
-  return fetchList<Place>("/places?page=1&limit=24", 60);
+interface Props {
+  searchParams: Promise<{ q?: string; category?: string; province?: string; page?: string }>;
 }
 
-export default async function PlacesPage() {
-  const data = await getData();
+async function getData(q: string, category: string, province: string, page: number) {
+  return fetchList<Place>(
+    `/places?${buildQuery({ q, category, province, page, limit: 24 })}`,
+    60
+  );
+}
+
+export default async function PlacesPage({ searchParams }: Props) {
+  const sp = await searchParams;
+  const q = (sp.q ?? "").trim();
+  const category = (sp.category ?? "").trim();
+  const province = (sp.province ?? "").trim();
+  const page = sanitizePage(sp.page);
+  const data = await getData(q, category, province, page);
 
   return (
     <>
@@ -58,7 +70,7 @@ export default async function PlacesPage() {
         </div>
       }
     >
-      <PlacesExplorer initialData={data ?? undefined} />
+      <PlacesExplorer initialData={data ?? undefined} seed={{ q, category, province, page }} />
       </Suspense>
     </>
   );

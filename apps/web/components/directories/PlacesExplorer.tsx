@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Search, MapPin, ExternalLink, AlertTriangle, Landmark, Clock, Ticket, Building2, Award } from "lucide-react";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
@@ -48,29 +49,66 @@ function unescoBadge(status: string | null, t: (k: string) => string) {
   );
 }
 
-export function PlacesExplorer({ initialData }: { initialData?: PaginatedResponse<Place> }) {
+export function PlacesExplorer({
+  initialData,
+  seed,
+}: {
+  initialData?: PaginatedResponse<Place>;
+  seed: { q: string; category: string; province: string; page: number };
+}) {
   const { t } = useTranslation();
-  const [input, setInput] = useState("");
-  const [q, setQ] = useState("");
-  const [category, setCategory] = useState("");
-  const [province, setProvince] = useState("");
-  const [page, setPage] = useState(1);
+  const router = useRouter();
+  const [input, setInput] = useState(seed.q);
+  const [q, setQ] = useState(seed.q);
+  const [category, setCategory] = useState(seed.category);
+  const [province, setProvince] = useState(seed.province);
+  const [page, setPage] = useState(seed.page);
 
-  const { data, isLoading } = usePlaces(page, q, category, province, 24, initialData);
+  useEffect(() => {
+    setQ(seed.q);
+    setInput(seed.q);
+    setCategory(seed.category);
+    setProvince(seed.province);
+    setPage(seed.page);
+  }, [seed.q, seed.category, seed.province, seed.page]);
+
+  const seedMatch =
+    page === seed.page && q === seed.q && category === seed.category && province === seed.province;
+  const { data, isLoading } = usePlaces(page, q, category, province, 24, seedMatch ? initialData : undefined);
+
+  const pushUrl = (next: { page: number; q?: string; category?: string; province?: string }) => {
+    const params = new URLSearchParams();
+    const nq = next.q ?? q;
+    const ncat = next.category ?? category;
+    const nprov = next.province ?? province;
+    if (nq) params.set("q", nq);
+    if (ncat) params.set("category", ncat);
+    if (nprov) params.set("province", nprov);
+    if (next.page > 1) params.set("page", String(next.page));
+    router.push(`/places?${params.toString()}`);
+  };
 
   const applySearch = () => {
     setPage(1);
     setQ(input);
+    pushUrl({ page: 1, q: input });
   };
 
   const selectCategory = (c: string) => {
     setPage(1);
     setCategory(c);
+    pushUrl({ page: 1, category: c });
   };
 
   const selectProvince = (p: string) => {
     setPage(1);
     setProvince(p);
+    pushUrl({ page: 1, province: p });
+  };
+
+  const gotoPage = (np: number) => {
+    setPage(np);
+    pushUrl({ page: np });
   };
 
   return (
@@ -230,7 +268,7 @@ export function PlacesExplorer({ initialData }: { initialData?: PaginatedRespons
         <div className="flex items-center justify-center gap-3 mt-8">
           <button
             disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
+            onClick={() => gotoPage(page - 1)}
             className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
           >
             {t("directories.prev")}
@@ -240,7 +278,7 @@ export function PlacesExplorer({ initialData }: { initialData?: PaginatedRespons
           </span>
           <button
             disabled={page === data.pagination.totalPages}
-            onClick={() => setPage((p) => p + 1)}
+            onClick={() => gotoPage(page + 1)}
             className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
           >
             {t("directories.next")}

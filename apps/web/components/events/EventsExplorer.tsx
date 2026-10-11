@@ -1,7 +1,7 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Search, Filter, X, LayoutGrid, CalendarDays, MapPinned } from "lucide-react";
 import { clsx } from "clsx";
@@ -23,56 +23,85 @@ const EventMap = dynamic(
 interface Props {
   initialData?: PaginatedResponse<EventSummary>;
   categories: Category[];
+  seed: { search: string; category: string; city: string; page: number };
 }
 
-export function EventsExplorer({ initialData, categories: categoryList }: Props) {
-  const searchParams = useSearchParams();
+export function EventsExplorer({ initialData, categories: categoryList, seed }: Props) {
   const router = useRouter();
 
-  const [search, setSearch] = useState(searchParams.get("search") ?? "");
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") ?? "");
+  const [search, setSearch] = useState(seed.search);
+  const [selectedCategory, setSelectedCategory] = useState(seed.category);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(seed.page);
   const [view, setView] = useState<"list" | "calendar" | "map">("list");
 
-  const cityFilter = searchParams.get("city") ?? "";
+  const cityFilter = seed.city;
+
+  // Server navigation (back/forward/link) delivers a new seed — resync inputs
+  useEffect(() => {
+    setSearch(seed.search);
+    setSelectedCategory(seed.category);
+    setPage(seed.page);
+  }, [seed.search, seed.category, seed.page]);
 
   const filters = {
-    search: searchParams.get("search") ?? undefined,
-    category: searchParams.get("category") ?? undefined,
-    city: searchParams.get("city") ?? undefined,
+    search: seed.search || undefined,
+    category: seed.category || undefined,
+    city: seed.city || undefined,
     page: view === "map" ? 1 : page,
     limit: view === "map" ? 100 : 12,
   };
 
-  const { data, isLoading } = useEvents(filters, initialData);
+  const seedMatch = view === "list" && page === seed.page;
+  const { data, isLoading } = useEvents(filters, seedMatch ? initialData : undefined);
 
   useCategories(categoryList);
 
+  const pushEvents = useCallback(
+    (next: { search?: string; category?: string; city?: string; page?: number }) => {
+      const params = new URLSearchParams();
+      const s = next.search ?? "";
+      const cat = next.category ?? "";
+      const cty = next.city ?? "";
+      const pg = next.page ?? 1;
+      if (s) params.set("search", s);
+      if (cat) params.set("category", cat);
+      if (cty) params.set("city", cty);
+      if (pg > 1) params.set("page", String(pg));
+      router.push(`/events?${params.toString()}`);
+    },
+    [router]
+  );
+
   const applyFilters = useCallback(() => {
-    const params = new URLSearchParams();
-    if (search) params.set("search", search);
-    if (selectedCategory) params.set("category", selectedCategory);
-    if (cityFilter) params.set("city", cityFilter);
     setPage(1);
-    router.push(`/events?${params.toString()}`);
-  }, [search, selectedCategory, cityFilter, router]);
+    pushEvents({ search, category: selectedCategory, page: 1 });
+  }, [search, selectedCategory, pushEvents]);
+
+  const clearSearch = useCallback(() => {
+    setSearch("");
+    setPage(1);
+    pushEvents({ search: "", category: selectedCategory, page: 1 });
+  }, [selectedCategory, pushEvents]);
 
   const clearFilters = () => {
     setSearch("");
     setSelectedCategory("");
     setPage(1);
-    router.push("/events");
+    pushEvents({});
   };
 
   const clearCity = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("city");
     setPage(1);
-    router.push(`/events?${params.toString()}`);
+    pushEvents({ search: seed.search, category: seed.category, page: 1 });
   };
 
-  const hasFilters = Boolean(search || selectedCategory || cityFilter);
+  const gotoPage = (p: number) => {
+    setPage(p);
+    pushEvents({ search: seed.search, category: seed.category, city: seed.city, page: p });
+  };
+
+  const hasFilters = Boolean(seed.search || seed.category || cityFilter);
 
   return (
     <div className="container-page py-8">
@@ -142,7 +171,7 @@ export function EventsExplorer({ initialData, categories: categoryList }: Props)
             className="flex-1 bg-transparent text-slate-900 placeholder-slate-400 text-sm focus:outline-none"
           />
           {search && (
-            <button onClick={() => { setSearch(""); applyFilters(); }} className="text-slate-500 hover:text-slate-900 transition-colors">
+            <button onClick={clearSearch} className="text-slate-500 hover:text-slate-900 transition-colors">
               <X size={14} />
             </button>
           )}
@@ -210,8 +239,8 @@ export function EventsExplorer({ initialData, categories: categoryList }: Props)
       {/* Results */}
       {view === "calendar" ? (
         <EventCalendar
-          search={searchParams.get("search") ?? undefined}
-          category={searchParams.get("category") ?? undefined}
+          search={seed.search || undefined}
+          category={seed.category || undefined}
           city={cityFilter || undefined}
         />
       ) : view === "map" ? (
@@ -247,7 +276,7 @@ export function EventsExplorer({ initialData, categories: categoryList }: Props)
               <button
                 id="events-prev-page"
                 disabled={page === 1}
-                onClick={() => setPage((p) => p - 1)}
+                onClick={() => gotoPage(page - 1)}
                 className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
               >
                 ← Previous
@@ -258,7 +287,7 @@ export function EventsExplorer({ initialData, categories: categoryList }: Props)
               <button
                 id="events-next-page"
                 disabled={page === data.pagination.totalPages}
-                onClick={() => setPage((p) => p + 1)}
+                onClick={() => gotoPage(page + 1)}
                 className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
               >
                 Next →

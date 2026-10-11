@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { DarbarsExplorer } from "@/components/directories/DarbarsExplorer";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
-import { fetchList } from "@/lib/server-api";
+import { fetchList, buildQuery, sanitizePage } from "@/lib/server-api";
 import type { Darbar, UrsDate } from "@/types";
 
 const title = "Darbars & Urs Calendar";
@@ -17,16 +17,24 @@ export const metadata: Metadata = {
   openGraph: { title: `${title} | Community Events`, description, url: "/darbars" },
 };
 
-async function getData() {
+interface Props {
+  searchParams: Promise<{ q?: string; province?: string; page?: string }>;
+}
+
+async function getData(q: string, province: string, page: number) {
   const [darbars, ursDates] = await Promise.all([
-    fetchList<Darbar>("/darbars?page=1&limit=24", 60),
+    fetchList<Darbar>(`/darbars?${buildQuery({ q, province, page, limit: 24 })}`, 60),
     fetchList<UrsDate>("/urs-dates?page=1&limit=100", 60),
   ]);
   return { darbars, ursDates };
 }
 
-export default async function DarbarsPage() {
-  const { darbars, ursDates } = await getData();
+export default async function DarbarsPage({ searchParams }: Props) {
+  const sp = await searchParams;
+  const q = (sp.q ?? "").trim();
+  const province = (sp.province ?? "").trim();
+  const page = sanitizePage(sp.page);
+  const { darbars, ursDates } = await getData(q, province, page);
 
   return (
     <>
@@ -62,7 +70,11 @@ export default async function DarbarsPage() {
         </div>
       }
     >
-      <DarbarsExplorer initialDarbars={darbars ?? undefined} initialUrs={ursDates ?? undefined} />
+      <DarbarsExplorer
+        initialDarbars={darbars ?? undefined}
+        initialUrs={ursDates ?? undefined}
+        seed={{ q, province, page }}
+      />
       </Suspense>
     </>
   );

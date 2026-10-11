@@ -56,4 +56,20 @@ export async function fetchList<T>(
   }
 }
 
+export function sanitizePage(v: string | undefined): number {
+  if (!v || !/^\d+$/.test(v)) return 1;
+  const n = parseInt(v, 10);
+  return n > 1 ? n : 1;
+}
+
+export function buildQuery(
+  values: Record<string, string | number | undefined>
+): string {
+  const p = new URLSearchParams();
+  for (const [key, value] of Object.entries(values)) {
+    if (value !== undefined && value !== "") p.set(key, String(value));
+  }
+  return p.toString();
+}
+
 export { API_URL };

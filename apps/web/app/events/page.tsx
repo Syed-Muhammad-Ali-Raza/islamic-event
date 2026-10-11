@@ -4,7 +4,7 @@ import { EventsExplorer } from "@/components/events/EventsExplorer";
 import { EventCardSkeleton } from "@/components/ui/Skeleton";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
-import { fetchFromApi, fetchList } from "@/lib/server-api";
+import { fetchFromApi, fetchList, buildQuery, sanitizePage } from "@/lib/server-api";
 import type { Category, EventSummary } from "@/types";
 
 interface Props {
@@ -44,14 +44,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-async function getData(search?: string, category?: string, city?: string) {
-  const params = new URLSearchParams();
-  if (search) params.set("search", search);
-  if (category) params.set("category", category);
-  if (city) params.set("city", city);
-  params.set("page", "1");
-  params.set("limit", "12");
-  const qs = params.toString();
+async function getData(search?: string, category?: string, city?: string, page = 1) {
+  const qs = buildQuery({
+    search,
+    category,
+    city,
+    page,
+    limit: 12,
+  });
 
   const [events, categories] = await Promise.all([
     fetchList<EventSummary>(`/events?${qs}`, 60),
@@ -61,8 +61,9 @@ async function getData(search?: string, category?: string, city?: string) {
 }
 
 export default async function EventsPage({ searchParams }: Props) {
-  const { search, category, city } = await searchParams;
-  const { events, categories } = await getData(search, category, city);
+  const { search, category, city, page: pageRaw } = await searchParams;
+  const page = sanitizePage(pageRaw);
+  const { events, categories } = await getData(search, category, city, page);
 
   const eventEntries = (events?.data ?? []).map((e) => ({
     name: e.title,
@@ -95,7 +96,11 @@ export default async function EventsPage({ searchParams }: Props) {
         </div>
       }
     >
-      <EventsExplorer initialData={events ?? undefined} categories={categories} />
+      <EventsExplorer
+        initialData={events ?? undefined}
+        categories={categories}
+        seed={{ search: search ?? "", category: category ?? "", city: city ?? "", page }}
+      />
       </Suspense>
     </>
   );

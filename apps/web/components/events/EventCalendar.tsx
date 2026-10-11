@@ -22,13 +22,14 @@ import type { EventSummary } from "@/types";
 interface Props {
   search?: string;
   category?: string;
+  city?: string;
 }
 
 function toISODate(date: Date): string {
   return format(date, "yyyy-MM-dd");
 }
 
-export function EventCalendar({ search, category }: Props) {
+export function EventCalendar({ search, category, city }: Props) {
   const [cursor, setCursor] = useState(() => startOfMonth(new Date()));
 
   const fromDate = toISODate(startOfWeek(startOfMonth(cursor), { weekStartsOn: 1 }));
@@ -39,6 +40,7 @@ export function EventCalendar({ search, category }: Props) {
     toDate,
     search: search || undefined,
     category: category || undefined,
+    city: city || undefined,
     limit: 100,
   });
 

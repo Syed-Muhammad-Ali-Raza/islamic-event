@@ -8,24 +8,29 @@ import { fetchFromApi, fetchList } from "@/lib/server-api";
 import type { Category, EventSummary } from "@/types";
 
 interface Props {
-  searchParams: Promise<{ search?: string; category?: string; page?: string }>;
+  searchParams: Promise<{ search?: string; category?: string; city?: string; page?: string }>;
 }
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  const { search, category } = await searchParams;
+  const { search, category, city } = await searchParams;
   const qs = new URLSearchParams();
   if (search) qs.set("search", search);
   if (category) qs.set("category", category);
+  if (city) qs.set("city", city);
   const suffix = qs.toString() ? `?${qs.toString()}` : "";
 
   const title = search
     ? `Events matching “${search}”`
-    : category
-      ? `Events — ${category}`
-      : "Discover Events";
+    : city
+      ? `Events in ${city}`
+      : category
+        ? `Events — ${category}`
+        : "Discover Events";
   const description = search
     ? `Browse religious and community events matching “${search}” — Majlis, Milad, Dars and more.`
-    : "Search and filter religious and community events — Majlis, Milad, Dars, Quran Khwani, Iftar, Urs and more, near you.";
+    : city
+      ? `Browse upcoming religious and community events in ${city} — Majlis, Milad, Dars, Urs and more.`
+      : "Search and filter religious and community events — Majlis, Milad, Dars, Quran Khwani, Iftar, Urs and more, near you.";
 
   return {
     title,
@@ -39,10 +44,11 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-async function getData(search?: string, category?: string) {
+async function getData(search?: string, category?: string, city?: string) {
   const params = new URLSearchParams();
   if (search) params.set("search", search);
   if (category) params.set("category", category);
+  if (city) params.set("city", city);
   params.set("page", "1");
   params.set("limit", "12");
   const qs = params.toString();
@@ -55,8 +61,8 @@ async function getData(search?: string, category?: string) {
 }
 
 export default async function EventsPage({ searchParams }: Props) {
-  const { search, category } = await searchParams;
-  const { events, categories } = await getData(search, category);
+  const { search, category, city } = await searchParams;
+  const { events, categories } = await getData(search, category, city);
 
   const eventEntries = (events?.data ?? []).map((e) => ({
     name: e.title,

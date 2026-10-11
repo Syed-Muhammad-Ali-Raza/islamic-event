@@ -74,11 +74,12 @@ export function Textarea({ label, error, hint, className, id, ...props }: Textar
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   error?: string;
+  hint?: string;
   options: { value: string; label: string }[];
   placeholder?: string;
 }
 
-export function Select({ label, error, options, placeholder, className, id, ...props }: SelectProps) {
+export function Select({ label, error, hint, options, placeholder, className, id, ...props }: SelectProps) {
   return (
     <div className="w-full">
       {label && (
@@ -100,6 +101,7 @@ export function Select({ label, error, options, placeholder, className, id, ...p
           </option>
         ))}
       </select>
+      {hint && !error && <p className="text-slate-500 text-xs mt-1">{hint}</p>}
       {error && <p className="form-error">{error}</p>}
     </div>
   );

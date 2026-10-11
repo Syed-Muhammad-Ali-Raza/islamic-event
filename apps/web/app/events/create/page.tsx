@@ -11,6 +11,7 @@ import {
   ClipboardList, PartyPopper, X, Loader2,
 } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
+import { useCities } from "@/hooks/useCities";
 import { useCreateEvent } from "@/hooks/useEvents";
 import { eventService } from "@/services/event.service";
 import { Input, Textarea, Select } from "@/components/ui/FormField";
@@ -28,13 +29,14 @@ const CreateEventFormSchema = z.object({
   endTime: z.string().optional(),
   venue: z.string().max(300).optional(),
   address: z.string().max(500).optional(),
+  cityId: z.string().optional(),
 });
 
 type CreateEventForm = z.infer<typeof CreateEventFormSchema>;
 
 const STEPS = [
   { id: "basics", label: "Basics", icon: ClipboardList, fields: ["title", "categoryId", "description"] as const },
-  { id: "when-where", label: "When & Where", icon: CalendarDays, fields: ["date", "startTime", "endTime", "venue", "address"] as const },
+  { id: "when-where", label: "When & Where", icon: CalendarDays, fields: ["date", "startTime", "endTime", "cityId", "venue", "address"] as const },
   { id: "poster", label: "Poster", icon: ImagePlus, fields: [] as const },
   { id: "review", label: "Review", icon: PartyPopper, fields: [] as const },
 ];
@@ -43,6 +45,7 @@ function CreateEventContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: categories } = useCategories();
+  const { data: cities } = useCities();
   const createEvent = useCreateEvent();
 
   const [step, setStep] = useState(0);
@@ -73,6 +76,7 @@ function CreateEventContent() {
       endTime: "",
       venue: "",
       address: "",
+      cityId: "",
     },
   });
 
@@ -81,6 +85,11 @@ function CreateEventContent() {
   const categoryOptions = useMemo(
     () => (categories ?? []).map((c) => ({ value: c.id, label: c.name })),
     [categories]
+  );
+
+  const cityOptions = useMemo(
+    () => (cities ?? []).map((c) => ({ value: c.id, label: `${c.name}, ${c.state}` })),
+    [cities]
   );
 
   const goNext = async () => {
@@ -123,6 +132,7 @@ function CreateEventContent() {
         endTime: data.endTime ? data.endTime.slice(0, 5) : undefined,
         venue: data.venue?.trim() || undefined,
         address: data.address?.trim() || undefined,
+        cityId: data.cityId || undefined,
       };
 
       const result = await createEvent.mutateAsync(payload);
@@ -325,6 +335,16 @@ function CreateEventContent() {
               {...register("venue")}
             />
 
+            <Select
+              id="event-city"
+              label="City"
+              options={cityOptions}
+              placeholder={cityOptions.length ? "Choose your city (optional)" : "Loading cities…"}
+              hint="Recommended — lists your event on city pages and the map"
+              error={errors.cityId?.message}
+              {...register("cityId")}
+            />
+
             <Textarea
               id="event-address"
               label="Full Address"
@@ -406,6 +426,12 @@ function CreateEventContent() {
                 }
               />
               <ReviewRow label="Venue" value={watchedValues.venue || "Not specified"} />
+              <ReviewRow
+                label="City"
+                value={
+                  cityOptions.find((c) => c.value === watchedValues.cityId)?.label ?? "Not specified"
+                }
+              />
               <ReviewRow label="Address" value={watchedValues.address || "Not specified"} />
               <ReviewRow
                 label="Description"

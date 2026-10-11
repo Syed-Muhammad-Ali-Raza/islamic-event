@@ -18,6 +18,7 @@ const resources = {
       nav: {
         events: "Events",
         categories: "Categories",
+        cities: "Cities",
         organizers: "Organizers",
         dastarkhwan: "Free Food",
         imambargahs: "Imambargahs",
@@ -80,6 +81,7 @@ const resources = {
       nav: {
         events: "واقعات",
         categories: "زمرے",
+        cities: "مدنور",
         organizers: "منتظمین",
         dastarkhwan: "دسترخوان",
         imambargahs: "امام بارگاہ",
@@ -142,6 +144,7 @@ const resources = {
       nav: {
         events: "इवेंट्स",
         categories: "श्रेणियाँ",
+        cities: "ضشر",
         organizers: "आयोजक",
         dastarkhwan: "मुफ़्त भोजन",
         imambargahs: "इमाम बरगाह",
@@ -204,6 +207,7 @@ const resources = {
       nav: {
         events: "الفعاليات",
         categories: "الفئات",
+        cities: "مدن",
         organizers: "المنظّمون",
         dastarkhwan: "دسترخوان",
         imambargahs: "امام بارگاه",

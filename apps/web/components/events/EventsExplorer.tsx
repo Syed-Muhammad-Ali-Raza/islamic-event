@@ -35,9 +35,12 @@ export function EventsExplorer({ initialData, categories: categoryList }: Props)
   const [page, setPage] = useState(1);
   const [view, setView] = useState<"list" | "calendar" | "map">("list");
 
+  const cityFilter = searchParams.get("city") ?? "";
+
   const filters = {
     search: searchParams.get("search") ?? undefined,
     category: searchParams.get("category") ?? undefined,
+    city: searchParams.get("city") ?? undefined,
     page: view === "map" ? 1 : page,
     limit: view === "map" ? 100 : 12,
   };
@@ -50,9 +53,10 @@ export function EventsExplorer({ initialData, categories: categoryList }: Props)
     const params = new URLSearchParams();
     if (search) params.set("search", search);
     if (selectedCategory) params.set("category", selectedCategory);
+    if (cityFilter) params.set("city", cityFilter);
     setPage(1);
     router.push(`/events?${params.toString()}`);
-  }, [search, selectedCategory, router]);
+  }, [search, selectedCategory, cityFilter, router]);
 
   const clearFilters = () => {
     setSearch("");
@@ -61,7 +65,14 @@ export function EventsExplorer({ initialData, categories: categoryList }: Props)
     router.push("/events");
   };
 
-  const hasFilters = Boolean(search || selectedCategory);
+  const clearCity = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("city");
+    setPage(1);
+    router.push(`/events?${params.toString()}`);
+  };
+
+  const hasFilters = Boolean(search || selectedCategory || cityFilter);
 
   return (
     <div className="container-page py-8">
@@ -127,7 +138,7 @@ export function EventsExplorer({ initialData, categories: categoryList }: Props)
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && applyFilters()}
-            placeholder="Search events…"
+            placeholder={cityFilter ? `Search events in ${cityFilter}…` : "Search events…"}
             className="flex-1 bg-transparent text-slate-900 placeholder-slate-400 text-sm focus:outline-none"
           />
           {search && (
@@ -151,6 +162,21 @@ export function EventsExplorer({ initialData, categories: categoryList }: Props)
           Search
         </button>
       </div>
+
+      {/* Active filters */}
+      {cityFilter && (
+        <div className="flex flex-wrap items-center gap-2 mb-6">
+          <span className="text-xs text-slate-400">Filtered by:</span>
+          <button
+            onClick={clearCity}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-brand-300 bg-brand-50 px-2.5 py-1.5 text-xs font-medium text-brand-700 hover:bg-brand-100 transition-colors"
+          >
+            <MapPinned size={12} />
+            {cityFilter}
+            <X size={12} />
+          </button>
+        </div>
+      )}
 
       {/* Expandable filters */}
       {filtersOpen && (
@@ -186,6 +212,7 @@ export function EventsExplorer({ initialData, categories: categoryList }: Props)
         <EventCalendar
           search={searchParams.get("search") ?? undefined}
           category={searchParams.get("category") ?? undefined}
+          city={cityFilter || undefined}
         />
       ) : view === "map" ? (
         isLoading ? (

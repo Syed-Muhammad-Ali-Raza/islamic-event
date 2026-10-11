@@ -21,6 +21,7 @@ export function Navbar() {
   const navLinks = [
     { href: "/events", label: t("nav.events") },
     { href: "/categories", label: t("nav.categories") },
+    { href: "/cities", label: t("nav.cities") },
     { href: "/organizers", label: t("nav.organizers") },
     { href: "/dastarkhwan", label: t("nav.dastarkhwan") },
     { href: "/imambargahs", label: t("nav.imambargahs") },

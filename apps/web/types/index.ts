@@ -26,6 +26,23 @@ export interface PaginatedResponse<T> {
   pagination: PaginationMeta;
 }
 
+// ─── City directory ───────────────────────────────────────────────────────────
+
+export interface CitySummary {
+  id: string;
+  name: string;
+  slug: string;
+  state: string;
+  eventCount: number;
+}
+
+export interface CityDetail extends CitySummary {
+  categoryCounts: {
+    category: { id: string; name: string; slug: string };
+    count: number;
+  }[];
+}
+
 // ─── Domain types ─────────────────────────────────────────────────────────────
 
 export type UserRole = "USER" | "ORGANIZER" | "ADMIN";

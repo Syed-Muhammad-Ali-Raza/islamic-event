@@ -8,6 +8,11 @@ import { useTranslation } from "react-i18next";
 import { useDastarkhwans } from "@/hooks/useDastarkhwans";
 import type { Dastarkhwan, PaginatedResponse } from "@/types";
 
+/*
+  Tokens (shared with Imambargahs)
+  ink #17211D · alam #1F5C46 · azadar #7A2530 · amber #A8660F · mist #EEF2EF · line #D5DDD8
+*/
+
 const CITIES = [
   { v: "", k: "directories.allCities" },
   { v: "Lahore", k: "directories.cities.lahore" },
@@ -15,6 +20,29 @@ const CITIES = [
   { v: "Faisalabad", k: "directories.cities.faisalabad" },
   { v: "Multan", k: "directories.cities.multan" },
 ];
+
+const TYPE_STYLE: Record<string, { labelKey: string; chip: string; rule: string }> = {
+  langar: {
+    labelKey: "dastarkhwan.typeLangar",
+    chip: "bg-[#1F5C46]/[0.08] text-[#1F5C46]",
+    rule: "border-l-[#1F5C46]/60",
+  },
+  dastarkhwan: {
+    labelKey: "dastarkhwan.typeDastarkhwan",
+    chip: "bg-[#A8660F]/10 text-[#8A520A]",
+    rule: "border-l-[#A8660F]",
+  },
+  both: {
+    labelKey: "dastarkhwan.typeBoth",
+    chip: "bg-[#7A2530]/[0.08] text-[#7A2530]",
+    rule: "border-l-[#7A2530]",
+  },
+};
+
+const clean = (s: string | null | undefined) => (s && s !== "Not stated" ? s : null);
+
+const focusRing =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F5C46]";
 
 export function DastarkhwanExplorer({
   initialData,
@@ -30,7 +58,6 @@ export function DastarkhwanExplorer({
   const [city, setCity] = useState(seed.city);
   const [page, setPage] = useState(seed.page);
 
-  // Server navigation (back/forward/share) delivers a new seed — resync local state
   useEffect(() => {
     setQ(seed.q);
     setInput(seed.q);
@@ -68,161 +95,243 @@ export function DastarkhwanExplorer({
     pushUrl({ page: p });
   };
 
-  return (
-    <div className="container-page py-10">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2 inline-flex items-center gap-2">
-          <Soup size={26} className="text-brand-600" /> {t("dastarkhwan.title")}
-        </h1>
-        <p className="text-slate-500 text-sm">{t("dastarkhwan.subtitle")}</p>
-      </div>
+  const pagerBtn = clsx(
+    "cursor-pointer rounded-md border border-[#C3CEC8] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-[#1F5C46] hover:text-[#1F5C46] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[#C3CEC8] disabled:hover:text-inherit",
+    focusRing
+  );
 
-      <div className="mb-6 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-        <AlertTriangle size={15} className="shrink-0 mt-0.5" />
-        <p>
+  return (
+    <div className="container-page py-10 sm:py-14 text-[#17211D]">
+      {/* Header */}
+      <header className="max-w-2xl">
+        <h1 className="font-serif text-3xl font-semibold tracking-tight sm:text-5xl inline-flex items-center gap-2">
+          <Soup size={26} className="text-[#1F5C46]" aria-hidden />
+          {t("dastarkhwan.title")}
+        </h1>
+        <p className="mt-3 text-base leading-relaxed text-[#44524B]">{t("dastarkhwan.subtitle")}</p>
+      </header>
+
+      {/* Disclaimer */}
+      <aside
+        role="note"
+        className="mt-8 flex max-w-3xl items-start gap-3 rounded-md border-l-4 border-[#A8660F] bg-[#A8660F]/[0.08] px-4 py-3.5 text-sm text-[#5E3A06]"
+      >
+        <AlertTriangle size={18} className="mt-0.5 shrink-0 text-[#A8660F]" aria-hidden />
+        <p className="leading-relaxed">
           {t("dastarkhwan.disclaimerPre")}
-          <strong>{t("dastarkhwan.disclaimerStrong")}</strong>
+          <strong className="font-semibold">{t("dastarkhwan.disclaimerStrong")}</strong>
           {t("dastarkhwan.disclaimerPost")}
         </p>
-      </div>
+      </aside>
 
-      {/* City tabs + search */}
-      <div className="mb-6 flex flex-wrap items-center gap-3">
-        <div className="flex flex-wrap gap-1.5">
-          {CITIES.map((c) => (
-            <button
-              key={c.v || "all"}
-              onClick={() => selectCity(c.v)}
-              className={clsx(
-                "px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
-                city === c.v
-                  ? "bg-brand-600 text-white"
-                  : "bg-white border border-slate-200 text-slate-600 hover:border-brand-300 hover:text-brand-700"
-              )}
-            >
-              {t(c.k)}
-            </button>
-          ))}
+      {/* Filters */}
+      <div className="mt-8 space-y-4 border-y border-[#D5DDD8] py-4">
+        <div
+          role="tablist"
+          aria-label="Filter by city"
+          className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1"
+        >
+          {CITIES.map((c) => {
+            const active = city === c.v;
+            return (
+              <button
+                key={c.v || "all"}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => selectCity(c.v)}
+                className={clsx(
+                  "shrink-0 cursor-pointer rounded-md px-3.5 py-2 text-sm font-medium transition-colors",
+                  focusRing,
+                  active
+                    ? "bg-[#17211D] text-white"
+                    : "text-[#44524B] hover:bg-[#EEF2EF] hover:text-[#17211D]"
+                )}
+              >
+                {t(c.k)}
+              </button>
+            );
+          })}
         </div>
 
-        <div className="flex gap-3 ml-auto w-full sm:w-auto max-w-sm">
-          <div className="flex-1 flex items-center gap-3 input px-4 py-2.5">
-            <Search size={15} className="text-brand-600 shrink-0" />
+        <div className="flex max-w-md gap-2">
+          <label className="flex flex-1 items-center gap-2.5 rounded-md border border-[#C3CEC8] bg-white px-3.5 py-2.5 focus-within:border-[#1F5C46] focus-within:ring-2 focus-within:ring-[#1F5C46]/20">
+            <Search size={16} className="shrink-0 text-[#1F5C46]" aria-hidden />
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && applySearch()}
               placeholder={t("dastarkhwan.searchPlaceholder")}
-              className="flex-1 bg-transparent text-slate-900 placeholder-slate-400 text-sm focus:outline-none"
+              className="flex-1 bg-transparent text-sm text-[#17211D] placeholder-[#7B8882] focus:outline-none"
               aria-label={t("dastarkhwan.searchAria")}
             />
-          </div>
-          <button onClick={applySearch} className="btn-primary px-4 py-2.5 text-sm">
+          </label>
+          <button
+            type="button"
+            onClick={applySearch}
+            className={clsx(
+              "cursor-pointer rounded-md bg-[#1F5C46] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#184a39]",
+              focusRing
+            )}
+          >
             {t("directories.search")}
           </button>
         </div>
       </div>
 
       {/* Results */}
-      {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="skeleton h-44 w-full rounded-2xl" />
-          ))}
-        </div>
-      ) : !data || data.data.length === 0 ? (
-        <div className="card-glass text-center py-16 px-6">
-          <p className="text-5xl mb-4">🍽️</p>
-          <p className="text-lg font-medium text-slate-900">{t("dastarkhwan.emptyTitle")}</p>
-          <p className="text-slate-500 text-sm mt-1">{t("directories.tryCity")}</p>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {data.data.map((point) => (
-            <div key={point.id} className="card-glass p-5 flex flex-col gap-2.5">
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="font-semibold text-slate-900 leading-snug">{point.name}</h3>
-                {point.verified ? (
-                  <span className="inline-flex items-center gap-1 rounded-md bg-emerald-100 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 shrink-0">
-                    <BadgeCheck size={11} /> {t("directories.verified")}
-                  </span>
-                ) : (
-                  <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500 shrink-0">
-                    {t("directories.notVerified")}
-                  </span>
-                )}
-              </div>
+      <div className="mt-8">
+        {isLoading ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-64 animate-pulse rounded-lg border border-[#D5DDD8] bg-[#EEF2EF]" />
+            ))}
+          </div>
+        ) : !data || data.data.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-[#C3CEC8] bg-[#EEF2EF]/60 px-6 py-14 text-center">
+            <Soup size={28} className="mx-auto mb-3 text-[#1F5C46]" aria-hidden />
+            <p className="font-serif text-xl font-semibold">{t("dastarkhwan.emptyTitle")}</p>
+            <p className="mx-auto mt-2 max-w-sm text-sm text-[#44524B]">{t("directories.tryCity")}</p>
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {data.data.map((point) => {
+              const typeStyle = TYPE_STYLE[point.type?.toLowerCase()] ?? {
+                labelKey: point.type,
+                chip: "bg-[#EEF2EF] text-[#44524B]",
+                rule: "border-l-[#9AA9A1]",
+              };
+              const ruleCls = point.verified ? "border-l-[#1F5C46]" : typeStyle.rule;
 
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="badge-brand text-[10px]">{point.type}</span>
-                <span className="rounded-md bg-white border border-slate-200 px-1.5 py-0.5 text-[10px] text-slate-500">
-                  {point.city}
-                  {point.area ? ` · ${point.area}` : ""}
-                </span>
-              </div>
+              return (
+                <article
+                  key={point.id}
+                  className={clsx(
+                    "flex flex-col justify-between rounded-lg border border-[#D5DDD8] border-l-4 bg-white p-5 sm:p-6",
+                    ruleCls
+                  )}
+                >
+                  <div>
+                    {/* Location + trust badge */}
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="inline-flex min-w-0 items-center gap-1.5 text-sm text-[#44524B]">
+                        <MapPin size={14} className="shrink-0 text-[#1F5C46]" aria-hidden />
+                        <span className="truncate">
+                          {point.city}
+                          {point.area && clean(point.area) && `, ${point.area}`}
+                        </span>
+                      </p>
 
-              <p className="text-xs text-slate-600 leading-relaxed">{point.address}</p>
+                      {point.verified ? (
+                        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#1F5C46] px-2.5 py-1 text-xs font-medium text-white">
+                          <BadgeCheck size={13} aria-hidden /> {t("directories.verified")}
+                        </span>
+                      ) : (
+                        <span
+                          className={clsx(
+                            "shrink-0 rounded-full px-2.5 py-1 text-xs font-medium",
+                            typeStyle.chip
+                          )}
+                        >
+                          {t(typeStyle.labelKey)}
+                        </span>
+                      )}
+                    </div>
 
-              {point.schedule && point.schedule !== "Not stated" && (
-                <p className="inline-flex items-center gap-1.5 text-xs text-slate-500">
-                  <Clock size={12} className="text-brand-600 shrink-0" /> {point.schedule}
-                </p>
-              )}
+                    {/* Name */}
+                    <h3 className="mt-3 font-serif text-xl font-semibold leading-snug">{point.name}</h3>
 
-              {point.notes && <p className="text-[11px] italic text-slate-400 leading-relaxed">{point.notes}</p>}
+                    {clean(point.type) && (
+                      <p className="mt-2 inline-flex items-center gap-1.5 text-sm text-[#44524B]">
+                        <Soup size={14} className="text-[#A8660F]" aria-hidden />
+                        {t(typeStyle.labelKey)}
+                      </p>
+                    )}
 
-              <div className="mt-auto pt-2 flex items-center gap-2">
-                {point.googleMapsUrl && (
-                  <a
-                    href={point.googleMapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 transition-colors"
-                  >
-                    <MapPin size={12} /> {t("directories.openMaps")}
-                  </a>
-                )}
-                {point.sourceUrl && (
-                  <a
-                    href={point.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-brand-700 transition-colors"
-                  >
-                    {t("directories.source")} <ExternalLink size={10} />
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+                    {clean(point.schedule) && (
+                      <p className="mt-2 inline-flex items-center gap-1.5 text-sm text-[#44524B]">
+                        <Clock size={14} className="text-[#A8660F]" aria-hidden />
+                        {point.schedule}
+                      </p>
+                    )}
 
+                    {clean(point.address) && (
+                      <p className="mt-3 text-sm leading-relaxed text-[#44524B]">{point.address}</p>
+                    )}
+
+                    {clean(point.notes) && (
+                      <blockquote className="mt-4 border-l-2 border-[#C3CEC8] pl-3.5 text-sm italic leading-relaxed text-[#44524B]">
+                        {point.notes}
+                      </blockquote>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  {(point.googleMapsUrl || point.sourceUrl) && (
+                    <div className="mt-5 flex items-center gap-2 pt-1">
+                      {point.googleMapsUrl && (
+                        <a
+                          href={point.googleMapsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={clsx(
+                            "inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-[#1F5C46] px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#184a39]",
+                            focusRing
+                          )}
+                        >
+                          <MapPin size={15} aria-hidden />
+                          {t("directories.openMaps")}
+                        </a>
+                      )}
+                      {point.sourceUrl && (
+                        <a
+                          href={point.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={t("directories.source")}
+                          className={clsx(
+                            "inline-flex items-center justify-center gap-1.5 rounded-md border border-[#C3CEC8] bg-white px-3.5 py-2 text-sm font-medium text-[#44524B] transition-colors hover:border-[#1F5C46] hover:text-[#1F5C46]",
+                            focusRing
+                          )}
+                        >
+                          {t("directories.source")}
+                          <ExternalLink size={13} aria-hidden />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Pagination */}
       {data && data.pagination.totalPages > 1 && (
-        <div className="flex items-center justify-center gap-3 mt-8">
-          <button
-            disabled={page === 1}
-            onClick={() => gotoPage(page - 1)}
-            className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
-          >
+        <nav
+          aria-label="Pagination"
+          className="mt-12 flex items-center justify-between border-t border-[#D5DDD8] pt-5"
+        >
+          <button disabled={page === 1} onClick={() => gotoPage(page - 1)} className={pagerBtn}>
             {t("directories.prev")}
           </button>
-          <span className="text-slate-500 text-sm">
+          <span className="text-sm text-[#5B6962]">
             {t("directories.pageOf", { page: data.pagination.page, total: data.pagination.totalPages })}
           </span>
           <button
             disabled={page === data.pagination.totalPages}
             onClick={() => gotoPage(page + 1)}
-            className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
+            className={pagerBtn}
           >
             {t("directories.next")}
           </button>
-        </div>
+        </nav>
       )}
 
       {data && (
-        <p className="text-center text-xs text-slate-400 mt-6">
+        <p className="mt-6 text-center text-xs text-[#6C7973]">
           {t(data.pagination.total === 1 ? "dastarkhwan.listedOne" : "dastarkhwan.listedOther", {
             count: data.pagination.total,
           })}

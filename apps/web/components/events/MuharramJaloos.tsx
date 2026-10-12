@@ -2,69 +2,140 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { Search, MapPin, Clock, ChevronDown } from "lucide-react";
 import { clsx } from "clsx";
 import { useProcessions } from "@/hooks/useProcessions";
 import type { PaginatedResponse, Procession } from "@/types";
 
-const KIND_BADGE: Record<string, { label: string; cls: string }> = {
-  procession: { label: "Procession", cls: "bg-rose-50 text-rose-700 border border-rose-200" },
-  road_closure: { label: "Road Closure", cls: "bg-amber-50 text-amber-700 border border-amber-200" },
-  summary: { label: "Overview", cls: "bg-sky-50 text-sky-700 border border-sky-200" },
+/*
+  Design tokens (self-contained, no custom Tailwind theme needed)
+  ink     #17211D   text
+  alam    #1F5C46   primary (green of the alam flags)
+  azadar  #7A2530   procession accent (deep crimson)
+  closure #A8660F   road closure accent (amber)
+  mist    #EEF2EF   panels
+  line    #D5DDD8   borders
+*/
+
+const KIND_META: Record<
+  string,
+  { label: string; rule: string; chip: string; dot: string }
+> = {
+  procession: {
+    label: "Procession",
+    rule: "border-l-[#7A2530]",
+    chip: "text-[#7A2530] bg-[#7A2530]/[0.07]",
+    dot: "bg-[#7A2530]",
+  },
+  road_closure: {
+    label: "Road closure",
+    rule: "border-l-[#A8660F]",
+    chip: "text-[#8A520A] bg-[#A8660F]/10",
+    dot: "bg-[#A8660F]",
+  },
+  summary: {
+    label: "Overview",
+    rule: "border-l-[#1F5C46]",
+    chip: "text-[#1F5C46] bg-[#1F5C46]/[0.08]",
+    dot: "bg-[#1F5C46]",
+  },
 };
 
 const CITIES = ["All", "Lahore", "Islamabad", "Faisalabad", "Rawalpindi", "Multan"];
-const MONTHS = ["", "Muharram", "Safar"];
+const MONTHS: { value: string; label: string }[] = [
+  { value: "", label: "All months" },
+  { value: "Muharram", label: "Muharram" },
+  { value: "Safar", label: "Safar" },
+];
 
 function dayLabel(day: string) {
   if (day === "1-10") return "1st – 10th Muharram";
-  const suffix =
-    day === "1" ? "st" : day === "2" ? "nd" : day === "3" ? "rd" : "th";
+  const suffix = day === "1" ? "st" : day === "2" ? "nd" : day === "3" ? "rd" : "th";
   return `${day}${suffix} Muharram`;
 }
 
 function ProcessionCard({ p }: { p: Procession }) {
   const [open, setOpen] = useState(false);
-  const badge = KIND_BADGE[p.kind] ?? KIND_BADGE.procession;
+  const meta = KIND_META[p.kind] ?? KIND_META.procession;
   const highlights = p.routeHighlights?.split("\n").filter(Boolean) ?? [];
+  const routeLines = p.route?.split("\n").filter(Boolean) ?? [];
   const longDesc = (p.description?.length ?? 0) > 280;
 
   return (
-    <div className="card-glass p-5">
-      <div className="flex items-start justify-between gap-3 mb-2">
-        <div>
-          <h4 className="font-semibold text-slate-900 leading-snug">{p.name}</h4>
-          {p.type && <p className="text-xs text-brand-700 font-medium mt-0.5">{p.type}</p>}
+    <article
+      className={clsx(
+        "bg-white rounded-lg border border-[#D5DDD8] border-l-4 p-5 sm:p-6 flex flex-col",
+        meta.rule
+      )}
+    >
+      {/* Title row */}
+      <header className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h4 className="font-serif text-lg font-semibold leading-snug text-[#17211D]">
+            {p.name}
+          </h4>
+          {p.type && <p className="mt-0.5 text-sm text-[#1F5C46]">{p.type}</p>}
         </div>
-        <span className={`badge border text-[10px] px-2 py-0.5 whitespace-nowrap ${badge.cls}`}>
-          {badge.label}
-        </span>
-      </div>
-
-      {(p.start || p.end) && (
-        <p className="text-sm text-slate-600 mb-1">
-          <span className="text-slate-400">Start:</span> {p.start ?? "—"}
-          {p.end && (
-            <>
-              {" "}
-              <span className="text-slate-400">→ End:</span> {p.end}
-            </>
+        <span
+          className={clsx(
+            "inline-flex items-center gap-1.5 shrink-0 rounded-full px-2.5 py-1 text-xs font-medium",
+            meta.chip
           )}
-        </p>
-      )}
+        >
+          <span className={clsx("h-1.5 w-1.5 rounded-full", meta.dot)} />
+          {meta.label}
+        </span>
+      </header>
+
       {p.time && (
-        <p className="text-sm text-slate-600 mb-1">
-          <span className="text-slate-400">Time:</span> {p.time}
+        <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-[#44524B]">
+          <Clock size={14} className="text-[#1F5C46]" aria-hidden />
+          {p.time}
         </p>
       )}
 
-      {p.route && (
-        <div className="text-sm text-slate-700 mb-2">
-          <span className="text-slate-400">Route / closures:</span>
-          <ul className="mt-1 space-y-0.5">
-            {p.route.split("\n").filter(Boolean).map((r, i) => (
-              <li key={i} className="flex gap-1.5">
-                <span className="text-rose-400 mt-0.5">•</span>
+      {/* Start → end drawn as a connected line */}
+      {(p.start || p.end) && (
+        <div className="mt-4 rounded-md bg-[#EEF2EF] px-4 py-3">
+          <ol className="relative space-y-3 text-sm text-[#17211D]">
+            {p.start && p.end && (
+              <span
+                aria-hidden
+                className="absolute left-[5px] top-2 bottom-2 w-px bg-[#1F5C46]/40"
+              />
+            )}
+            {p.start && (
+              <li className="relative flex gap-3">
+                <span className="relative mt-1.5 h-[11px] w-[11px] shrink-0 rounded-full border-2 border-[#1F5C46] bg-white" />
+                <div>
+                  <p className="text-xs text-[#5B6962]">Starting point</p>
+                  <p className="font-medium">{p.start}</p>
+                </div>
+              </li>
+            )}
+            {p.end && (
+              <li className="relative flex gap-3">
+                <span className="relative mt-1.5 h-[11px] w-[11px] shrink-0 rounded-full bg-[#7A2530]" />
+                <div>
+                  <p className="text-xs text-[#5B6962]">Culmination</p>
+                  <p className="font-medium">{p.end}</p>
+                </div>
+              </li>
+            )}
+          </ol>
+        </div>
+      )}
+
+      {routeLines.length > 0 && (
+        <div className="mt-4 text-sm">
+          <p className="font-medium text-[#17211D]">Route and key intersections</p>
+          <ul className="mt-2 space-y-1.5 text-[#44524B]">
+            {routeLines.map((r, i) => (
+              <li key={i} className="flex gap-2.5">
+                <span
+                  aria-hidden
+                  className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-[#7A2530]"
+                />
                 <span>{r}</span>
               </li>
             ))}
@@ -73,11 +144,14 @@ function ProcessionCard({ p }: { p: Procession }) {
       )}
 
       {highlights.length > 0 && (
-        <div className="text-sm text-slate-700 mb-2">
-          <span className="text-slate-400">Route highlights:</span>
-          <div className="flex flex-wrap gap-1.5 mt-1.5">
+        <div className="mt-4 text-sm">
+          <p className="font-medium text-[#17211D]">Route highlights</p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
             {highlights.map((h) => (
-              <span key={h} className="badge-brand text-[10px] px-2 py-0.5">
+              <span
+                key={h}
+                className="rounded-md bg-[#1F5C46]/[0.08] px-2.5 py-1 text-xs font-medium text-[#1F5C46]"
+              >
                 {h}
               </span>
             ))}
@@ -86,43 +160,46 @@ function ProcessionCard({ p }: { p: Procession }) {
       )}
 
       {p.description && (
-        <div className="mt-2">
-          <p
-            className={`text-sm text-slate-600 leading-relaxed ${
-              !open && longDesc ? "line-clamp-3" : ""
-            }`}
-          >
-            {p.description}
-          </p>
+        <div className="mt-4 text-sm leading-relaxed text-[#44524B]">
+          <p className={!open && longDesc ? "line-clamp-3" : ""}>{p.description}</p>
           {longDesc && (
             <button
               type="button"
               onClick={() => setOpen(!open)}
-              className="text-xs text-brand-700 font-medium mt-1 hover:underline"
+              aria-expanded={open}
+              className="mt-1.5 inline-flex cursor-pointer items-center gap-1 text-sm font-medium text-[#1F5C46] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F5C46] rounded"
             >
               {open ? "Show less" : "Read more"}
+              <ChevronDown
+                size={14}
+                className={clsx("transition-transform", open && "rotate-180")}
+                aria-hidden
+              />
             </button>
           )}
         </div>
       )}
 
       {p.notes && (
-        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-1.5 mt-3">
+        <p className="mt-4 rounded-md border-l-2 border-[#A8660F] bg-[#A8660F]/[0.08] px-3.5 py-2.5 text-sm text-[#5E3A06]">
           {p.notes}
         </p>
       )}
 
       {p.googleMaps && (
-        <a
-          href={p.googleMaps}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-xs text-brand-700 font-medium mt-3 hover:underline"
-        >
-          📍 Open starting point on Google Maps
-        </a>
+        <div className="mt-auto pt-5">
+          <a
+            href={p.googleMaps}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-md bg-[#1F5C46] px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#184a39] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F5C46]"
+          >
+            <MapPin size={15} aria-hidden />
+            Open starting point in Google Maps
+          </a>
+        </div>
       )}
-    </div>
+    </article>
   );
 }
 
@@ -156,7 +233,14 @@ export function MuharramJaloos({
     q === seed.q &&
     apiCity === seed.city &&
     month === seed.month;
-  const { data, isLoading } = useProcessions(page, q, apiCity, month, 24, seedMatch ? initialData : undefined);
+  const { data, isLoading } = useProcessions(
+    page,
+    q,
+    apiCity,
+    month,
+    24,
+    seedMatch ? initialData : undefined
+  );
 
   const pushUrl = (next: { page: number; q?: string; city?: string; month?: string }) => {
     const params = new URLSearchParams(currentQuery);
@@ -214,165 +298,224 @@ export function MuharramJaloos({
     });
   }, [items]);
 
+  const focusRing =
+    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F5C46]";
+
   return (
-    <section className="mt-12" id="jaloos">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-slate-900">🕯️ Muharram Jaloos (Processions)</h2>
-        <p className="text-slate-500 text-sm mt-1 max-w-2xl mx-auto">
-          Traditional procession routes, timings and road closures for Muharram &amp; Safar
-          across major cities. Routes may change every year — always confirm locally.
+    <section className="mt-12 text-[#17211D]" id="jaloos">
+      {/* Header */}
+      <div className="max-w-2xl">
+        <h2 className="font-serif text-3xl font-semibold tracking-tight sm:text-4xl">
+          Muharram jaloos
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-[#44524B]">
+          Procession routes, timings and road closures for Muharram and Safar in major
+          cities. Routes can change every year, so confirm locally before you travel.
         </p>
       </div>
 
-      {/* Controls: city tabs + month + search */}
-      <div className="mb-6 flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex flex-wrap gap-1.5">
-            {CITIES.map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => selectCity(c)}
-                className={clsx(
-                  "px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
-                  city === c
-                    ? "bg-brand-600 text-white"
-                    : "bg-white border border-slate-200 text-slate-600 hover:border-brand-300 hover:text-brand-700"
-                )}
-              >
-                {c}
-              </button>
-            ))}
+      {/* Controls */}
+      <div className="mt-8 space-y-4 border-y border-[#D5DDD8] py-4">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          {/* City tabs */}
+          <div
+            role="tablist"
+            aria-label="Filter by city"
+            className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1 lg:pb-0"
+          >
+            {CITIES.map((c) => {
+              const active = city === c;
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => selectCity(c)}
+                  className={clsx(
+                    "shrink-0 cursor-pointer rounded-md px-3.5 py-2 text-sm font-medium transition-colors",
+                    focusRing,
+                    active
+                      ? "bg-[#17211D] text-white"
+                      : "text-[#44524B] hover:bg-[#EEF2EF] hover:text-[#17211D]"
+                  )}
+                >
+                  {c}
+                </button>
+              );
+            })}
           </div>
 
-          <select
-            value={month}
-            onChange={(e) => selectMonth(e.target.value)}
-            className="ml-auto input w-auto px-3 py-2 text-xs"
+          {/* Month segmented control */}
+          <div
+            role="group"
             aria-label="Filter by month"
+            className="inline-flex self-start rounded-md border border-[#D5DDD8] bg-white p-0.5"
           >
-            <option value="">All months</option>
-            <option value="Muharram">Muharram</option>
-            <option value="Safar">Safar</option>
-          </select>
+            {MONTHS.map((m) => {
+              const active = month === m.value;
+              return (
+                <button
+                  key={m.value || "all"}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => selectMonth(m.value)}
+                  className={clsx(
+                    "cursor-pointer rounded px-3 py-1.5 text-sm font-medium transition-colors",
+                    focusRing,
+                    active
+                      ? "bg-[#1F5C46] text-white"
+                      : "text-[#44524B] hover:text-[#17211D]"
+                  )}
+                >
+                  {m.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="flex gap-3 w-full sm:w-auto max-w-sm">
-          <div className="flex-1 flex items-center gap-3 input px-4 py-2.5">
-            <Search size={15} className="text-brand-600 shrink-0" />
+        {/* Search */}
+        <div className="flex max-w-md gap-2">
+          <label className="flex flex-1 items-center gap-2.5 rounded-md border border-[#C3CEC8] bg-white px-3.5 py-2.5 focus-within:border-[#1F5C46] focus-within:ring-2 focus-within:ring-[#1F5C46]/20">
+            <Search size={16} className="shrink-0 text-[#1F5C46]" aria-hidden />
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && applySearch()}
-              placeholder="Search processions…"
-              className="flex-1 bg-transparent text-slate-900 placeholder-slate-400 text-sm focus:outline-none"
+              placeholder="Search by name, route or place"
+              className="flex-1 bg-transparent text-sm text-[#17211D] placeholder-[#7B8882] focus:outline-none"
               aria-label="Search processions"
             />
-          </div>
-          <button type="button" onClick={applySearch} className="btn-primary px-4 py-2.5 text-sm">
+          </label>
+          <button
+            type="button"
+            onClick={applySearch}
+            className={clsx(
+              "cursor-pointer rounded-md bg-[#1F5C46] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#184a39]",
+              focusRing
+            )}
+          >
             Search
           </button>
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="space-y-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="skeleton h-40 w-full rounded-2xl" />
-          ))}
-        </div>
-      ) : items.length === 0 ? (
-        <div className="card-glass text-center py-16 px-6">
-          <p className="text-5xl mb-4">🕯️</p>
-          <p className="text-lg font-medium text-slate-900">No processions match your filters</p>
-          <p className="text-slate-500 text-sm mt-1">
-            Try a different city, month or search term.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-10">
-          {grouped.map(([key, groupItems]) => {
-            const [cityName, monthName] = key.split("|");
-            const processionsOnly = groupItems.filter((p) => p.kind === "procession");
-            const others = groupItems.filter((p) => p.kind !== "procession");
-            const days = Array.from(
-              new Set(processionsOnly.map((p) => p.day))
-            ).sort((a, b) => {
-              const na = parseInt(a, 10);
-              const nb = parseInt(b, 10);
-              if (!Number.isNaN(na) && !Number.isNaN(nb)) return na - nb;
-              return a.localeCompare(b);
-            });
+      {/* Results */}
+      <div className="mt-8">
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2" aria-busy="true">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-56 w-full animate-pulse rounded-lg border border-[#D5DDD8] bg-[#EEF2EF]"
+              />
+            ))}
+          </div>
+        ) : items.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-[#C3CEC8] bg-[#EEF2EF]/60 px-6 py-14 text-center">
+            <p className="font-serif text-xl font-semibold">No processions match these filters</p>
+            <p className="mx-auto mt-2 max-w-sm text-sm text-[#44524B]">
+              Try another city or month, or clear the search to see everything.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-14">
+            {grouped.map(([key, groupItems]) => {
+              const [cityName, monthName] = key.split("|");
+              const processionsOnly = groupItems.filter((p) => p.kind === "procession");
+              const others = groupItems.filter((p) => p.kind !== "procession");
+              const days = Array.from(new Set(processionsOnly.map((p) => p.day))).sort(
+                (a, b) => {
+                  const na = parseInt(a, 10);
+                  const nb = parseInt(b, 10);
+                  if (!Number.isNaN(na) && !Number.isNaN(nb)) return na - nb;
+                  return a.localeCompare(b);
+                }
+              );
 
-            return (
-              <div key={key}>
-                <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                  <span className="w-1.5 h-5 bg-brand-500 rounded-full" />
-                  {cityName} — {monthName}
-                </h3>
-
-                {days.map((day) => (
-                  <div key={day} className="mb-6">
-                    <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
-                      {dayLabel(day)}
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {processionsOnly
-                        .filter((p) => p.day === day)
-                        .map((p) => (
-                          <ProcessionCard key={p.id} p={p} />
-                        ))}
-                    </div>
+              return (
+                <div key={key}>
+                  <div className="mb-6 flex items-baseline gap-3 border-b-2 border-[#17211D] pb-2">
+                    <h3 className="font-serif text-2xl font-semibold">{cityName}</h3>
+                    <span className="text-base text-[#5B6962]">{monthName}</span>
                   </div>
-                ))}
 
-                {others.length > 0 && (
-                  <div className="mt-4">
-                    <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
-                      Closures &amp; overview
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {others.map((p) => (
-                        <ProcessionCard key={p.id} p={p} />
-                      ))}
-                    </div>
+                  <div className="space-y-10">
+                    {days.map((day) => (
+                      <div key={day} className="grid gap-4 md:grid-cols-[150px_1fr] md:gap-8">
+                        <h4 className="font-serif text-lg font-semibold text-[#7A2530] md:sticky md:top-4 md:self-start">
+                          {dayLabel(day)}
+                        </h4>
+                        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+                          {processionsOnly
+                            .filter((p) => p.day === day)
+                            .map((p) => (
+                              <ProcessionCard key={p.id} p={p} />
+                            ))}
+                        </div>
+                      </div>
+                    ))}
+
+                    {others.length > 0 && (
+                      <div className="grid gap-4 md:grid-cols-[150px_1fr] md:gap-8">
+                        <h4 className="font-serif text-lg font-semibold text-[#A8660F] md:sticky md:top-4 md:self-start">
+                          Closures and overview
+                        </h4>
+                        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+                          {others.map((p) => (
+                            <ProcessionCard key={p.id} p={p} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
+      {/* Pagination */}
       {data && data.pagination.totalPages > 1 && (
-        <div className="flex items-center justify-center gap-3 mt-8">
+        <nav
+          aria-label="Pagination"
+          className="mt-12 flex items-center justify-between border-t border-[#D5DDD8] pt-5"
+        >
           <button
             type="button"
             disabled={page === 1}
             onClick={() => gotoPage(page - 1)}
-            className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
+            className={clsx(
+              "cursor-pointer rounded-md border border-[#C3CEC8] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-[#1F5C46] hover:text-[#1F5C46] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[#C3CEC8] disabled:hover:text-inherit",
+              focusRing
+            )}
           >
             ← Previous
           </button>
-          <span className="text-slate-500 text-sm">
+          <span className="text-sm text-[#5B6962]">
             Page {data.pagination.page} of {data.pagination.totalPages}
           </span>
           <button
             type="button"
             disabled={page === data.pagination.totalPages}
             onClick={() => gotoPage(page + 1)}
-            className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
+            className={clsx(
+              "cursor-pointer rounded-md border border-[#C3CEC8] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-[#1F5C46] hover:text-[#1F5C46] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[#C3CEC8] disabled:hover:text-inherit",
+              focusRing
+            )}
           >
             Next →
           </button>
-        </div>
+        </nav>
       )}
 
-      <p className="text-xs text-slate-400 text-center mt-8 max-w-2xl mx-auto">
-        Disclaimer: procession dates and routes are subject to local moon sighting and
-        administration decisions. Google Maps links point to starting-point names only.
-        Data compiled from official traffic advisories and police reports.
+      <p className="mx-auto mt-10 max-w-2xl text-center text-xs leading-relaxed text-[#6C7973]">
+        Dates and routes depend on moon sighting and local administration decisions. Google Maps
+        links point to starting-point names only. Data is compiled from official traffic
+        advisories and police reports.
       </p>
     </section>
   );

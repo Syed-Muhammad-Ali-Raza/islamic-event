@@ -26,6 +26,59 @@ const PROVINCES = [
   { value: "Islamabad Capital Territory", k: "directories.provinces.ict" },
 ];
 
+const TYPE_STYLE: Record<string, { labelKey: string; chip: string; rule: string }> = {
+  Fort: {
+    labelKey: "places.typeFort",
+    chip: "bg-[#1F5C46]/[0.08] text-[#1F5C46]",
+    rule: "border-l-[#1F5C46]/60",
+  },
+  Shrine: {
+    labelKey: "places.typeShrine",
+    chip: "bg-[#A8660F]/10 text-[#8A520A]",
+    rule: "border-l-[#A8660F]",
+  },
+  Museum: {
+    labelKey: "places.typeMuseum",
+    chip: "bg-[#7A2530]/[0.08] text-[#7A2530]",
+    rule: "border-l-[#7A2530]",
+  },
+  Valley: {
+    labelKey: "places.typeValley",
+    chip: "bg-[#1F5C46]/[0.08] text-[#1F5C46]",
+    rule: "border-l-[#1F5C46]/60",
+  },
+  "National Park": {
+    labelKey: "places.typeNationalPark",
+    chip: "bg-[#A8660F]/10 text-[#8A520A]",
+    rule: "border-l-[#A8660F]",
+  },
+  Mosque: {
+    labelKey: "places.typeMosque",
+    chip: "bg-[#7A2530]/[0.08] text-[#7A2530]",
+    rule: "border-l-[#7A2530]",
+  },
+  Temple: {
+    labelKey: "places.typeTemple",
+    chip: "bg-[#1F5C46]/[0.08] text-[#1F5C46]",
+    rule: "border-l-[#1F5C46]/60",
+  },
+  Church: {
+    labelKey: "places.typeChurch",
+    chip: "bg-[#A8660F]/10 text-[#8A520A]",
+    rule: "border-l-[#A8660F]",
+  },
+  "Historic Site": {
+    labelKey: "places.typeHistoricSite",
+    chip: "bg-[#7A2530]/[0.08] text-[#7A2530]",
+    rule: "border-l-[#7A2530]",
+  },
+  "Archaeological Site": {
+    labelKey: "places.typeArchaeological",
+    chip: "bg-[#1F5C46]/[0.08] text-[#1F5C46]",
+    rule: "border-l-[#1F5C46]/60",
+  },
+};
+
 const clean = (s: string | null | undefined) => (s && s !== "N/A" ? s : null);
 
 function unescoBadge(status: string | null, t: (k: string) => string) {
@@ -48,6 +101,9 @@ function unescoBadge(status: string | null, t: (k: string) => string) {
     <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600">{status}</span>
   );
 }
+
+const focusRing =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F5C46]";
 
 export function PlacesExplorer({
   initialData,
@@ -111,48 +167,82 @@ export function PlacesExplorer({
     pushUrl({ page: np });
   };
 
-  return (
-    <div className="container-page py-10">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2 inline-flex items-center gap-2">
-          <Landmark size={26} className="text-brand-600" /> {t("places.title")}
-        </h1>
-        <p className="text-slate-500 text-sm">{t("places.subtitle")}</p>
-      </div>
+  const pagerBtn = clsx(
+    "cursor-pointer rounded-md border border-[#C3CEC8] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-[#1F5C46] hover:text-[#1F5C46] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[#C3CEC8] disabled:hover:text-inherit",
+    focusRing
+  );
 
-      <div className="mb-6 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-        <AlertTriangle size={15} className="shrink-0 mt-0.5" />
-        <p>
+  return (
+    <div className="container-page py-10 sm:py-14 text-[#17211D]">
+      {/* Header */}
+      <header className="max-w-2xl">
+        <h1 className="font-serif text-3xl font-semibold tracking-tight sm:text-5xl inline-flex items-center gap-2">
+          <Landmark size={26} className="text-[#1F5C46]" aria-hidden />
+          {t("places.title")}
+        </h1>
+        <p className="mt-3 text-base leading-relaxed text-[#44524B]">{t("places.subtitle")}</p>
+      </header>
+
+      {/* Disclaimer */}
+      <aside
+        role="note"
+        className="mt-8 flex max-w-3xl items-start gap-3 rounded-md border-l-4 border-[#A8660F] bg-[#A8660F]/[0.08] px-4 py-3.5 text-sm text-[#5E3A06]"
+      >
+        <AlertTriangle size={18} className="mt-0.5 shrink-0 text-[#A8660F]" aria-hidden />
+        <p className="leading-relaxed">
           {t("places.disclaimerPre")}
-          <strong>{t("places.disclaimerStrong")}</strong>
+          <strong className="font-semibold">{t("places.disclaimerStrong")}</strong>
           {t("places.disclaimerPost")}
         </p>
-      </div>
+      </aside>
 
-      {/* Category tabs + province + search */}
-      <div className="mb-6 flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex flex-wrap gap-1.5">
-            {CATEGORIES.map((c) => (
+      {/* Filters */}
+      <div className="mt-8 space-y-4 border-y border-[#D5DDD8] py-4">
+        <div
+          role="tablist"
+          aria-label="Filter by category"
+          className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1"
+        >
+          {CATEGORIES.map((c) => {
+            const active = category === c.value;
+            return (
               <button
                 key={c.value || "all"}
+                type="button"
+                role="tab"
+                aria-selected={active}
                 onClick={() => selectCategory(c.value)}
                 className={clsx(
-                  "px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
-                  category === c.value
-                    ? "bg-brand-600 text-white"
-                    : "bg-white border border-slate-200 text-slate-600 hover:border-brand-300 hover:text-brand-700"
+                  "shrink-0 cursor-pointer rounded-md px-3.5 py-2 text-sm font-medium transition-colors",
+                  focusRing,
+                  active
+                    ? "bg-[#17211D] text-white"
+                    : "text-[#44524B] hover:bg-[#EEF2EF] hover:text-[#17211D]"
                 )}
               >
                 {t(c.k)}
               </button>
-            ))}
-          </div>
+            );
+          })}
+        </div>
 
+        <div className="flex flex-col sm:flex-row gap-3 items-stretch max-w-4xl">
+          <div className="flex-1 flex items-center gap-2.5 rounded-md border border-[#C3CEC8] bg-white px-3.5 py-2.5 focus-within:border-[#1F5C46] focus-within:ring-2 focus-within:ring-[#1F5C46]/20">
+            <Search size={16} className="shrink-0 text-[#1F5C46]" aria-hidden />
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && applySearch()}
+              placeholder={t("places.searchPlaceholder")}
+              className="flex-1 bg-transparent text-sm text-[#17211D] placeholder-[#7B8882] focus:outline-none"
+              aria-label={t("places.searchAria")}
+            />
+          </div>
           <select
             value={province}
             onChange={(e) => selectProvince(e.target.value)}
-            className="ml-auto input w-auto px-3 py-2 text-xs"
+            className="w-full sm:w-auto shrink-0 rounded-md border border-[#C3CEC8] bg-white px-3.5 py-2.5 text-sm font-medium text-[#44524B] focus:border-[#1F5C46] focus:outline-none focus:ring-2 focus:ring-[#1F5C46]/20 appearance-none cursor-pointer"
             aria-label={t("directories.filterProvince")}
           >
             {PROVINCES.map((p) => (
@@ -161,133 +251,164 @@ export function PlacesExplorer({
               </option>
             ))}
           </select>
-        </div>
-
-        <div className="flex gap-3 w-full sm:w-auto max-w-sm">
-          <div className="flex-1 flex items-center gap-3 input px-4 py-2.5">
-            <Search size={15} className="text-brand-600 shrink-0" />
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && applySearch()}
-              placeholder={t("places.searchPlaceholder")}
-              className="flex-1 bg-transparent text-slate-900 placeholder-slate-400 text-sm focus:outline-none"
-              aria-label={t("places.searchAria")}
-            />
-          </div>
-          <button onClick={applySearch} className="btn-primary px-4 py-2.5 text-sm">
+          <button
+            type="button"
+            onClick={applySearch}
+            className={clsx(
+              "shrink-0 cursor-pointer rounded-md bg-[#1F5C46] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#184a39]",
+              focusRing
+            )}
+          >
             {t("directories.search")}
           </button>
         </div>
       </div>
 
       {/* Results */}
-      {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="skeleton h-52 w-full rounded-2xl" />
-          ))}
-        </div>
-      ) : !data || data.data.length === 0 ? (
-        <div className="card-glass text-center py-16 px-6">
-          <p className="text-5xl mb-4">🏛️</p>
-          <p className="text-lg font-medium text-slate-900">{t("places.emptyTitle")}</p>
-          <p className="text-slate-500 text-sm mt-1">{t("directories.tryFilters")}</p>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {data.data.map((place) => (
-            <div key={place.id} className="card-glass p-5 flex flex-col gap-2.5">
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="font-semibold text-slate-900 leading-snug">{place.name}</h3>
-                {unescoBadge(place.unescoStatus, t)}
-              </div>
+      <div className="mt-8">
+        {isLoading ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-64 animate-pulse rounded-lg border border-[#D5DDD8] bg-[#EEF2EF]" />
+            ))}
+          </div>
+        ) : !data || data.data.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-[#C3CEC8] bg-[#EEF2EF]/60 px-6 py-14 text-center">
+            <Landmark size={28} className="mx-auto mb-3 text-[#1F5C46]" aria-hidden />
+            <p className="font-serif text-xl font-semibold">{t("places.emptyTitle")}</p>
+            <p className="mx-auto mt-2 max-w-sm text-sm text-[#44524B]">{t("directories.tryFilters")}</p>
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {data.data.map((place) => {
+              const typeStyle = TYPE_STYLE[place.type] ?? {
+                labelKey: place.type,
+                chip: "bg-[#EEF2EF] text-[#44524B]",
+                rule: "border-l-[#9AA9A1]",
+              };
+              const ruleCls = place.verified ? "border-l-[#1F5C46]" : typeStyle.rule;
 
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="badge-brand text-[10px]">{place.type}</span>
-                <span className="rounded-md bg-white border border-slate-200 px-1.5 py-0.5 text-[10px] text-slate-500">
-                  {place.city} · {place.province}
-                </span>
-              </div>
+              return (
+                <article
+                  key={place.id}
+                  className={clsx(
+                    "flex flex-col justify-between rounded-lg border border-[#D5DDD8] border-l-4 bg-white p-5 sm:p-6",
+                    ruleCls
+                  )}
+                >
+                  <div>
+                    {/* Location + UNESCO badge */}
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="inline-flex min-w-0 items-center gap-1.5 text-sm text-[#44524B]">
+                        <MapPin size={14} className="shrink-0 text-[#1F5C46]" aria-hidden />
+                        <span className="truncate">{place.city} · {place.province}</span>
+                      </p>
+                      {unescoBadge(place.unescoStatus, t)}
+                    </div>
 
-              {place.description && (
-                <p className="text-xs text-slate-600 leading-relaxed">{place.description}</p>
-              )}
+                    {/* Name */}
+                    <h3 className="mt-3 font-serif text-xl font-semibold leading-snug">{place.name}</h3>
 
-              {clean(place.builtYear) && (
-                <p className="inline-flex items-start gap-1.5 text-xs text-slate-500">
-                  <Building2 size={12} className="text-brand-600 shrink-0 mt-0.5" />
-                  <span>
-                    {t("places.built")}: {place.builtYear}
-                    {clean(place.builtBuilder) ? ` — ${place.builtBuilder}` : ""}
-                  </span>
-                </p>
-              )}
+                    {/* Type badge */}
+                    <p className="mt-2 inline-flex items-center gap-1.5 text-sm text-[#44524B]">
+                      <Landmark size={14} className="text-[#A8660F]" aria-hidden />
+                      {t(typeStyle.labelKey)}
+                    </p>
 
-              {clean(place.timings) && (
-                <p className="inline-flex items-start gap-1.5 text-xs text-slate-500">
-                  <Clock size={12} className="text-brand-600 shrink-0 mt-0.5" /> {place.timings}
-                </p>
-              )}
+                    {clean(place.description) && (
+                      <p className="mt-3 text-sm leading-relaxed text-[#44524B]">{place.description}</p>
+                    )}
 
-              {clean(place.ticket) && (
-                <p className="inline-flex items-start gap-1.5 text-xs text-slate-500">
-                  <Ticket size={12} className="text-brand-600 shrink-0 mt-0.5" /> {place.ticket}
-                </p>
-              )}
+                    {clean(place.builtYear) && (
+                      <p className="mt-2 inline-flex items-center gap-1.5 text-sm text-[#44524B]">
+                        <Building2 size={14} className="text-[#A8660F]" aria-hidden />
+                        <span>
+                          {t("places.built")}: {place.builtYear}
+                          {clean(place.builtBuilder) ? ` — ${place.builtBuilder}` : ""}
+                        </span>
+                      </p>
+                    )}
 
-              <div className="mt-auto pt-2 flex items-center gap-2">
-                {place.mapLink && (
-                  <a
-                    href={place.mapLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 transition-colors"
-                  >
-                    <MapPin size={12} /> {t("directories.openMaps")}
-                  </a>
-                )}
-                {place.sourceLink && (
-                  <a
-                    href={place.sourceLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-brand-700 transition-colors"
-                  >
-                    {t("directories.source")} <ExternalLink size={10} />
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+                    {clean(place.timings) && (
+                      <p className="mt-2 inline-flex items-center gap-1.5 text-sm text-[#44524B]">
+                        <Clock size={14} className="text-[#A8660F]" aria-hidden />
+                        {place.timings}
+                      </p>
+                    )}
 
+                    {clean(place.ticket) && (
+                      <p className="mt-2 inline-flex items-center gap-1.5 text-sm text-[#44524B]">
+                        <Ticket size={14} className="text-[#A8660F]" aria-hidden />
+                        {place.ticket}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  {(place.mapLink || place.sourceLink) && (
+                    <div className="mt-5 flex items-center gap-2 pt-1">
+                      {place.mapLink && (
+                        <a
+                          href={place.mapLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={clsx(
+                            "inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-[#1F5C46] px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#184a39]",
+                            focusRing
+                          )}
+                        >
+                          <MapPin size={15} aria-hidden />
+                          {t("directories.openMaps")}
+                        </a>
+                      )}
+                      {place.sourceLink && (
+                        <a
+                          href={place.sourceLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={t("directories.source")}
+                          className={clsx(
+                            "inline-flex items-center justify-center gap-1.5 rounded-md border border-[#C3CEC8] bg-white px-3.5 py-2 text-sm font-medium text-[#44524B] transition-colors hover:border-[#1F5C46] hover:text-[#1F5C46]",
+                            focusRing
+                          )}
+                        >
+                          {t("directories.source")}
+                          <ExternalLink size={13} aria-hidden />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Pagination */}
       {data && data.pagination.totalPages > 1 && (
-        <div className="flex items-center justify-center gap-3 mt-8">
-          <button
-            disabled={page === 1}
-            onClick={() => gotoPage(page - 1)}
-            className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
-          >
+        <nav
+          aria-label="Pagination"
+          className="mt-12 flex items-center justify-between border-t border-[#D5DDD8] pt-5"
+        >
+          <button disabled={page === 1} onClick={() => gotoPage(page - 1)} className={pagerBtn}>
             {t("directories.prev")}
           </button>
-          <span className="text-slate-500 text-sm">
+          <span className="text-sm text-[#5B6962]">
             {t("directories.pageOf", { page: data.pagination.page, total: data.pagination.totalPages })}
           </span>
           <button
             disabled={page === data.pagination.totalPages}
             onClick={() => gotoPage(page + 1)}
-            className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
+            className={pagerBtn}
           >
             {t("directories.next")}
           </button>
-        </div>
+        </nav>
       )}
 
       {data && (
-        <p className="text-center text-xs text-slate-400 mt-6">
+        <p className="mt-6 text-center text-xs text-[#6C7973]">
           {t(data.pagination.total === 1 ? "places.listedOne" : "places.listedOther", {
             count: data.pagination.total,
           })}

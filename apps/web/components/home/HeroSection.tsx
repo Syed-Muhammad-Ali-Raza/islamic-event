@@ -4,26 +4,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Search, MapPin, Star, Calendar, Users, Soup, ArrowRight } from "lucide-react";
+import { useCities } from "@/hooks/useCities";
 
 const QUICK_SEARCHES = ["Milad", "Majlis", "Mehfil-e-Naat", "Dars", "Iftar", "Quran Khwani"];
-
-const TOP_CITIES = [
-  { name: "All Cities", value: "" },
-  { name: "Lahore", value: "lahore" },
-  { name: "Karachi", value: "karachi" },
-  { name: "Islamabad", value: "islamabad" },
-  { name: "Rawalpindi", value: "rawalpindi" },
-  { name: "Multan", value: "multan" },
-  { name: "Faisalabad", value: "faisalabad" },
-  { name: "Peshawar", value: "peshawar" },
-  { name: "Quetta", value: "quetta" },
-];
 
 export function HeroSection() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const { t } = useTranslation();
+  const { data: cities } = useCities();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,8 +92,9 @@ export function HeroSection() {
                   onChange={(e) => setSelectedCity(e.target.value)}
                   className="w-full bg-transparent text-emerald-100 text-xs sm:text-sm focus:outline-none cursor-pointer [&>option]:bg-emerald-950 [&>option]:text-white"
                 >
-                  {TOP_CITIES.map((c) => (
-                    <option key={c.name} value={c.value}>
+                  <option value="">{t("directories.allCities")}</option>
+                  {(cities ?? []).map((c) => (
+                    <option key={c.id} value={c.slug}>
                       {c.name}
                     </option>
                   ))}

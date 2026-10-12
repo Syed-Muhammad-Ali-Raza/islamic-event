@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { State, City } from "country-state-city";
+import slugify from "slugify";
 import fs from "fs";
 import path from "path";
 
@@ -36,18 +38,8 @@ async function main() {
   }
   console.log(`  ✓ ${categories.length} categories seeded`);
 
-  // ─── Countries ────────────────────────────────────────────────────────────────
-  const countries = [
-    { name: "Pakistan", code: "PK", dialCode: "+92" },
-    { name: "India", code: "IN", dialCode: "+91" },
-    { name: "United Kingdom", code: "GB", dialCode: "+44" },
-    { name: "United States", code: "US", dialCode: "+1" },
-    { name: "Canada", code: "CA", dialCode: "+1" },
-    { name: "United Arab Emirates", code: "AE", dialCode: "+971" },
-    { name: "Saudi Arabia", code: "SA", dialCode: "+966" },
-    { name: "Australia", code: "AU", dialCode: "+61" },
-    { name: "Bangladesh", code: "BD", dialCode: "+880" },
-  ];
+  // ─── Countries (Pakistan-only platform) ─────────────────────────────────────
+  const countries = [{ name: "Pakistan", code: "PK", dialCode: "+92" }];
 
   for (const country of countries) {
     await prisma.country.upsert({
@@ -57,47 +49,66 @@ async function main() {
     });
   }
   console.log(`  ✓ ${countries.length} countries seeded`);
+  // Platform is Pakistan-only: deactivate anything seeded earlier
+  await prisma.country.updateMany({ where: { code: { not: "PK" } }, data: { isActive: false } });
 
-  // ─── Pakistan cities ───────────────────────────────────────────────────────
+  // ─── Pakistan states + all cities (from country-state-city) ─────────────────
   const pakistan = await prisma.country.findUnique({ where: { code: "PK" } });
   if (pakistan) {
-    const punjabState = await prisma.state.upsert({
-      where: { name_countryId: { name: "Punjab", countryId: pakistan.id } },
-      update: {},
-      create: { name: "Punjab", countryId: pakistan.id },
-    });
-
-    const sindState = await prisma.state.upsert({
-      where: { name_countryId: { name: "Sindh", countryId: pakistan.id } },
-      update: {},
-      create: { name: "Sindh", countryId: pakistan.id },
-    });
-
-    const kpkState = await prisma.state.upsert({
-      where: { name_countryId: { name: "Khyber Pakhtunkhwa", countryId: pakistan.id } },
-      update: {},
-      create: { name: "Khyber Pakhtunkhwa", countryId: pakistan.id },
-    });
-
-    const cities = [
-      { name: "Lahore", slug: "lahore", stateId: punjabState.id },
-      { name: "Karachi", slug: "karachi", stateId: sindState.id },
-      { name: "Islamabad", slug: "islamabad", stateId: punjabState.id },
-      { name: "Rawalpindi", slug: "rawalpindi", stateId: punjabState.id },
-      { name: "Faisalabad", slug: "faisalabad", stateId: punjabState.id },
-      { name: "Multan", slug: "multan", stateId: punjabState.id },
-      { name: "Peshawar", slug: "peshawar", stateId: kpkState.id },
-      { name: "Quetta", slug: "quetta", stateId: kpkState.id },
-    ];
-
-    for (const city of cities) {
-      await prisma.city.upsert({
-        where: { slug_stateId: { slug: city.slug, stateId: city.stateId } },
-        update: {},
-        create: city,
+    const stateIdByCode = new Map<string, string>();
+    for (const s of State.getStatesOfCountry("PK")) {
+      const row = await prisma.state.upsert({
+        where: { name_countryId: { name: s.name, countryId: pakistan.id } },
+        update: { code: s.isoCode },
+        create: { name: s.name, code: s.isoCode, countryId: pakistan.id },
       });
+      stateIdByCode.set(s.isoCode, row.id);
     }
-    console.log(`  ✓ Pakistan cities seeded`);
+
+    const pkCities = City.getCitiesOfCountry("PK");
+    const slugCounts = new Map<string, number>();
+    for (const c of pkCities) {
+      const slug = slugify(c.name, { lower: true, strict: true });
+      slugCounts.set(slug, (slugCounts.get(slug) ?? 0) + 1);
+    }
+
+    for (const c of pkCities) {
+      const slug = slugify(c.name, { lower: true, strict: true });
+      const stateId = stateIdByCode.get(c.stateCode);
+      if (!stateId) continue;
+
+      if (slugCounts.get(slug) === 1) {
+        // Unique slug: re-home any legacy row seeded under the wrong state
+        const existing = await prisma.city.findFirst({ where: { slug } });
+        if (existing) {
+          if (existing.stateId !== stateId || existing.name !== c.name) {
+            const clash = await prisma.city.findFirst({
+              where: { slug, stateId, NOT: { id: existing.id } },
+            });
+            if (!clash) {
+              await prisma.city.update({
+                where: { id: existing.id },
+                data: { stateId, name: c.name },
+              });
+            }
+          }
+        } else {
+          await prisma.city.upsert({
+            where: { slug_stateId: { slug, stateId } },
+            update: {},
+            create: { name: c.name, slug, stateId },
+          });
+        }
+      } else {
+        // Same name in multiple states (e.g. Shorkot): upsert per state
+        await prisma.city.upsert({
+          where: { slug_stateId: { slug, stateId } },
+          update: {},
+          create: { name: c.name, slug, stateId },
+        });
+      }
+    }
+    console.log(`  ✓ Pakistan states (${stateIdByCode.size}) + cities (${pkCities.length}) seeded`);
   }
 
   // ─── Admin user ───────────────────────────────────────────────────────────────

@@ -19,6 +19,11 @@ async function main() {
     console.log(`  API prefix:  ${config.apiPrefix}`);
   });
 
+  // Keep-alive: must exceed the client (undici/Next fetch) idle timeout (~5s),
+  // otherwise the server closes sockets the client is about to reuse → ECONNRESET.
+  server.keepAliveTimeout = 65_000;
+  server.headersTimeout = 66_000;
+
   // Phase 22: event reminder sweep (24h window), hourly + once shortly after boot
   if (config.nodeEnv !== "test") {
     const sweep = async () => {

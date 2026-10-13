@@ -330,7 +330,7 @@ export function Navbar() {
             ) : (
               <div className="flex items-center gap-2">
                 <Link href="/login" className="btn-ghost text-xs sm:text-sm py-1.5 px-3 hidden sm:inline-flex whitespace-nowrap">{t("nav.signIn")}</Link>
-                <Link href="/register" className="btn-primary py-1.5 sm:py-2 px-3 sm:px-4 text-xs sm:text-sm whitespace-nowrap shadow-xs">{t("nav.getStarted")}</Link>
+                <Link href="/register" className="btn-primary hidden sm:inline-flex py-1.5 sm:py-2 px-3 sm:px-4 text-xs sm:text-sm whitespace-nowrap shadow-xs">{t("nav.getStarted")}</Link>
               </div>
             )}
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { MapPinned, CalendarDays, Soup, Landmark, LandPlot, Ticket, ArrowRight } from "lucide-react";
+import { MapPinned, Soup, Landmark, LandPlot, Ticket, ArrowRight } from "lucide-react";
 import { EventCard } from "@/components/events/EventCard";
 import { CityMapLazy } from "@/components/maps/CityMapLazy";
 import { JsonLdScript } from "@/components/seo/JsonLd";
@@ -123,42 +123,48 @@ async function CityHub({ slug }: { slug: string }) {
         <span className="text-slate-600">{city.name}</span>
       </nav>
 
-      {/* Hero */}
-      <div className="card-glass p-6 sm:p-8 mb-8">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 inline-flex items-center gap-2.5">
-              <MapPinned size={28} className="text-brand-600" /> Events in {city.name}
-            </h1>
-            <p className="text-slate-500 text-sm mt-2">{city.state}</p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <span className="inline-flex items-center gap-1.5 rounded-xl bg-brand-50 border border-brand-200 px-3.5 py-2 text-sm font-medium text-brand-700">
-              <CalendarDays size={15} />
-              {city.eventCount} event{city.eventCount === 1 ? "" : "s"}
-            </span>
-            <Link href={`/events?city=${encodeURIComponent(city.slug)}`} className="btn-primary py-2 px-4 text-sm">
-              Browse all events <ArrowRight size={14} />
-            </Link>
-          </div>
+      {/* Hero — plain page header, not a card */}
+      <div className="flex flex-wrap items-end justify-between gap-4 mb-4">
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 inline-flex items-center gap-2.5">
+            <MapPinned size={28} className="text-brand-600" /> Events in {city.name}
+          </h1>
+          <p className="text-slate-500 text-sm mt-2">
+            {city.state} · {city.eventCount} event{city.eventCount === 1 ? "" : "s"}
+            {data.dastarkhwans.length > 0 &&
+              ` · ${data.dastarkhwans.length} dastarkhwan point${data.dastarkhwans.length === 1 ? "" : "s"}`}
+            {data.imambargahs.length > 0 &&
+              ` · ${data.imambargahs.length} imambargah${data.imambargahs.length === 1 ? "" : "s"}`}
+            {data.darbars.length > 0 &&
+              ` · ${data.darbars.length} shrine${data.darbars.length === 1 ? "" : "s"}`}
+            {data.places.length > 0 &&
+              ` · ${data.places.length} place${data.places.length === 1 ? "" : "s"}`}
+            {data.melas.length > 0 && ` · ${data.melas.length} mela${data.melas.length === 1 ? "" : "s"}`}
+          </p>
         </div>
-
-        {/* Category breakdown */}
-        {city.categoryCounts.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-5 pt-5 border-t border-slate-200/70">
-            {city.categoryCounts.map((cc) => (
-              <Link
-                key={cc.category.id}
-                href={`/events?category=${encodeURIComponent(cc.category.slug)}&city=${encodeURIComponent(city.slug)}`}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-600 hover:border-brand-300 hover:text-brand-700 transition-colors"
-              >
-                {cc.category.name}
-                <span className="text-brand-700 font-semibold">{cc.count}</span>
-              </Link>
-            ))}
-          </div>
-        )}
+        <Link
+          href={`/events?city=${encodeURIComponent(city.slug)}`}
+          className="btn-primary py-2 px-4 text-sm shrink-0"
+        >
+          Browse all events <ArrowRight size={14} />
+        </Link>
       </div>
+
+      {/* Category breakdown */}
+      {city.categoryCounts.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-8 pb-6 border-b border-slate-200/70">
+          {city.categoryCounts.map((cc) => (
+            <Link
+              key={cc.category.id}
+              href={`/events?category=${encodeURIComponent(cc.category.slug)}&city=${encodeURIComponent(city.slug)}`}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-600 hover:border-brand-300 hover:text-brand-700 transition-colors"
+            >
+              {cc.category.name}
+              <span className="text-brand-700 font-semibold">{cc.count}</span>
+            </Link>
+          ))}
+        </div>
+      )}
 
       {/* Map */}
       <section aria-labelledby="city-map-heading" className="mb-10">
@@ -208,90 +214,97 @@ async function CityHub({ slug }: { slug: string }) {
         )}
       </section>
 
-      {/* Directory links */}
+      {/* Directory links — compact index rows, not cards */}
       <section aria-labelledby="city-explore-heading">
         <h2 id="city-explore-heading" className="text-xl font-bold text-slate-900 mb-4">
           Explore {city.name}
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link
-            href="/dastarkhwan"
-            className="card-glass p-5 hover:border-brand-600/50 hover:-translate-y-1 transition-all"
-          >
-            <Soup size={20} className="text-amber-600 mb-2" />
-            <p className="font-semibold text-slate-900 text-sm">Free Dastarkhwan</p>
-            <p className="text-slate-500 text-xs mt-1">
-              {data.dastarkhwans.length > 0
-                ? `${data.dastarkhwans.length} point${data.dastarkhwans.length === 1 ? "" : "s"} in ${city.name}`
-                : "Free food points"}
-            </p>
-          </Link>
-          <Link
-            href="/imambargahs"
-            className="card-glass p-5 hover:border-brand-600/50 hover:-translate-y-1 transition-all"
-          >
-            <Landmark size={20} className="text-rose-600 mb-2" />
-            <p className="font-semibold text-slate-900 text-sm">Imambargahs</p>
-            <p className="text-slate-500 text-xs mt-1">
-              {data.imambargahs.length > 0
-                ? `${data.imambargahs.length} listed in ${city.name}`
-                : "Historic imambargahs"}
-            </p>
-          </Link>
-          <Link
-            href="/darbars"
-            className="card-glass p-5 hover:border-brand-600/50 hover:-translate-y-1 transition-all"
-          >
-            <Landmark size={20} className="text-teal-600 mb-2" />
-            <p className="font-semibold text-slate-900 text-sm">Darbars & Urs</p>
-            <p className="text-slate-500 text-xs mt-1">
-              {data.darbars.length > 0
-                ? `${data.darbars.length} shrine${data.darbars.length === 1 ? "" : "s"} in ${city.name}`
-                : "Shrines & urs calendar"}
-            </p>
-          </Link>
-          <Link
-            href="/places"
-            className="card-glass p-5 hover:border-brand-600/50 hover:-translate-y-1 transition-all"
-          >
-            <LandPlot size={20} className="text-sky-600 mb-2" />
-            <p className="font-semibold text-slate-900 text-sm">Places</p>
-            <p className="text-slate-500 text-xs mt-1">
-              {data.places.length > 0
-                ? `${data.places.length} place${data.places.length === 1 ? "" : "s"} in ${city.name}`
-                : "Historical & cultural places"}
-            </p>
-          </Link>
-          <Link
-            href={`/melas?city=${encodeURIComponent(city.name)}`}
-            className="card-glass p-5 hover:border-brand-600/50 hover:-translate-y-1 transition-all"
-          >
-            <Ticket size={20} className="text-gold-400 mb-2" />
-            <p className="font-semibold text-slate-900 text-sm">Melas & Festivals</p>
-            <p className="text-slate-500 text-xs mt-1">
-              {data.melas.length > 0
-                ? `${data.melas.length} mela${data.melas.length === 1 ? "" : "s"} in ${city.name}`
-                : "Melas & seasonal festivals"}
-            </p>
-          </Link>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 border-t border-slate-100">
+          {[
+            {
+              href: "/dastarkhwan",
+              icon: Soup,
+              iconCls: "text-amber-600",
+              label: "Free Dastarkhwan",
+              meta:
+                data.dastarkhwans.length > 0
+                  ? `${data.dastarkhwans.length} point${data.dastarkhwans.length === 1 ? "" : "s"} in ${city.name}`
+                  : "Free food points",
+            },
+            {
+              href: "/imambargahs",
+              icon: Landmark,
+              iconCls: "text-rose-600",
+              label: "Imambargahs",
+              meta:
+                data.imambargahs.length > 0
+                  ? `${data.imambargahs.length} listed in ${city.name}`
+                  : "Historic imambargahs",
+            },
+            {
+              href: "/darbars",
+              icon: Landmark,
+              iconCls: "text-teal-600",
+              label: "Darbars & Urs",
+              meta:
+                data.darbars.length > 0
+                  ? `${data.darbars.length} shrine${data.darbars.length === 1 ? "" : "s"} in ${city.name}`
+                  : "Shrines & urs calendar",
+            },
+            {
+              href: "/places",
+              icon: LandPlot,
+              iconCls: "text-sky-600",
+              label: "Places",
+              meta:
+                data.places.length > 0
+                  ? `${data.places.length} place${data.places.length === 1 ? "" : "s"} in ${city.name}`
+                  : "Historical & cultural places",
+            },
+            {
+              href: `/melas?city=${encodeURIComponent(city.name)}`,
+              icon: Ticket,
+              iconCls: "text-gold-400",
+              label: "Melas & Festivals",
+              meta:
+                data.melas.length > 0
+                  ? `${data.melas.length} mela${data.melas.length === 1 ? "" : "s"} in ${city.name}`
+                  : "Melas & seasonal festivals",
+            },
+          ].map(({ href, icon: Icon, iconCls, label, meta }) => (
+            <Link
+              key={label}
+              href={href}
+              className="group flex items-center justify-between gap-3 py-3.5 border-b border-slate-100 text-slate-700 hover:text-brand-700 transition-colors"
+            >
+              <span className="flex items-center gap-3 min-w-0">
+                <Icon size={17} className={iconCls} />
+                <span className="min-w-0">
+                  <span className="block text-sm font-semibold truncate">{label}</span>
+                  <span className="block text-xs text-slate-500 truncate">{meta}</span>
+                </span>
+              </span>
+              <ArrowRight size={15} className="shrink-0 text-slate-300 group-hover:text-brand-600 transition-colors" />
+            </Link>
+          ))}
         </div>
 
         {/* Processions notice — Muharram city */}
         {data.processions.length > 0 && (
           <Link
             href="/categories/muharram"
-            className="mt-4 card-glass p-5 flex items-center justify-between hover:border-brand-600/50 transition-all"
+            className="mt-4 flex items-center justify-between gap-3 rounded-xl bg-emerald-50 border border-emerald-200/70 px-4 py-3.5 hover:border-brand-600/50 transition-all"
           >
-            <div>
-              <p className="font-semibold text-slate-900 text-sm">
+            <span className="min-w-0">
+              <span className="block text-sm font-semibold text-slate-900">
                 Muharram jaloos in {city.name}
-              </p>
-              <p className="text-slate-500 text-xs mt-1">
+              </span>
+              <span className="block text-xs text-slate-500">
                 {data.processions.length} procession{data.processions.length === 1 ? "" : "s"} with
                 routes &amp; timings
-              </p>
-            </div>
-            <ArrowRight size={16} className="text-brand-600" />
+              </span>
+            </span>
+            <ArrowRight size={16} className="shrink-0 text-brand-600" />
           </Link>
         )}
 

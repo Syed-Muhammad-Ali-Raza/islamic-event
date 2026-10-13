@@ -33,7 +33,7 @@ export function CommunityCallout() {
             href="/cities"
             className="text-xs font-semibold text-brand-600 hover:text-brand-700 flex items-center gap-1 group"
           >
-            <span>View all 50+ cities</span>
+            <span>View all cities</span>
             <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>

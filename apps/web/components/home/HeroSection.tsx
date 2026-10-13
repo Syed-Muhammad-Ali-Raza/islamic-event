@@ -145,7 +145,9 @@ export function HeroSection() {
                 <MapPin size={18} />
               </div>
               <div>
-                <p className="text-xl font-bold text-white tracking-tight">50+</p>
+                <p className="text-xl font-bold text-white tracking-tight">
+                  {cities?.length ?? "450+"}
+                </p>
                 <p className="text-emerald-200/60 text-xs">{t("hero.cities")}</p>
               </div>
             </div>

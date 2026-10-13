@@ -58,13 +58,14 @@ export function ScholarsExplorer({
   seed,
 }: {
   initialScholars?: PaginatedResponse<Scholar>;
-  seed: { q: string; sect: string; category: string; page: number };
+  seed: { q: string; city: string; sect: string; category: string; page: number };
 }) {
   const { t } = useTranslation();
   const router = useRouter();
 
   const [input, setInput] = useState(seed.q);
   const [q, setQ] = useState(seed.q);
+  const [city, setCity] = useState(seed.city);
   const [sect, setSect] = useState(seed.sect);
   const [category, setCategory] = useState(seed.category);
   const [page, setPage] = useState(seed.page);
@@ -72,28 +73,38 @@ export function ScholarsExplorer({
   useEffect(() => {
     setQ(seed.q);
     setInput(seed.q);
+    setCity(seed.city);
     setSect(seed.sect);
     setCategory(seed.category);
     setPage(seed.page);
-  }, [seed.q, seed.sect, seed.category, seed.page]);
+  }, [seed.q, seed.city, seed.sect, seed.category, seed.page]);
 
   const seedMatch =
-    page === seed.page && q === seed.q && sect === seed.sect && category === seed.category;
+    page === seed.page && q === seed.q && city === seed.city &&
+    sect === seed.sect && category === seed.category;
   const { data, isLoading } = useScholars(
-    page, q, sect, category, "", 24,
+    page, q, sect, category, city, 24,
     seedMatch ? initialScholars : undefined
   );
 
-  const pushUrl = (next: { page: number; q?: string; sect?: string; category?: string }) => {
+  const pushUrl = (next: { page: number; q?: string; city?: string; sect?: string; category?: string }) => {
     const params = new URLSearchParams();
     const nq = next.q ?? q;
+    const ncity = next.city ?? city;
     const nsect = next.sect ?? sect;
     const ncat = next.category ?? category;
     if (nq) params.set("q", nq);
+    if (ncity) params.set("city", ncity);
     if (nsect) params.set("sect", nsect);
     if (ncat) params.set("category", ncat);
     if (next.page > 1) params.set("page", String(next.page));
     router.push(`/scholars?${params.toString()}`);
+  };
+
+  const clearCity = () => {
+    setPage(1);
+    setCity("");
+    pushUrl({ page: 1, city: "" });
   };
 
   const applySearch = () => {
@@ -147,6 +158,22 @@ export function ScholarsExplorer({
 
       {/* Filter Bar */}
       <div className="mb-8 bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+        {city && (
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-xs sm:text-sm font-semibold">
+              <MapPin size={13} className="text-brand-600" />
+              {city}
+            </span>
+            <button
+              onClick={clearCity}
+              className="px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/70 transition-all cursor-pointer"
+              aria-label={`Clear city filter: ${city}`}
+            >
+              ×
+            </button>
+          </div>
+        )}
+
         <div className="flex flex-wrap items-center gap-2">
           {SECTS.map((s) => (
             <button

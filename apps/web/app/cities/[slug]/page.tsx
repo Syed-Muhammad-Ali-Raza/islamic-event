@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { MapPinned, Soup, Landmark, LandPlot, Ticket, ArrowRight } from "lucide-react";
+import { MapPinned, Soup, Landmark, LandPlot, Ticket, ArrowRight, BookOpen } from "lucide-react";
 import { EventCard } from "@/components/events/EventCard";
 import { CityMapLazy } from "@/components/maps/CityMapLazy";
 import { JsonLdScript } from "@/components/seo/JsonLd";
@@ -17,6 +17,7 @@ import type {
   Mela,
   Place,
   Procession,
+  Scholar,
 } from "@/types";
 
 interface Props {
@@ -28,7 +29,7 @@ async function getCity(slug: string) {
 }
 
 async function getDirectoryData(cityName: string, slug: string) {
-  const [events, dastarkhwans, imambargahs, places, darbars, processions, melas] = await Promise.all([
+  const [events, dastarkhwans, imambargahs, places, darbars, processions, melas, scholars] = await Promise.all([
     fetchList<EventSummary>(`/events?city=${encodeURIComponent(slug)}&limit=12`, 60),
     fetchList<Dastarkhwan>(`/dastarkhwans?city=${encodeURIComponent(cityName)}&limit=50`, 300),
     fetchList<Imambargah>(`/imambargahs?city=${encodeURIComponent(cityName)}&limit=50`, 300),
@@ -36,6 +37,7 @@ async function getDirectoryData(cityName: string, slug: string) {
     fetchList<Darbar>(`/darbars?city=${encodeURIComponent(cityName)}&limit=50`, 300),
     fetchList<Procession>(`/processions?city=${encodeURIComponent(cityName)}&limit=50`, 300),
     fetchList<Mela>(`/melas?city=${encodeURIComponent(cityName)}&limit=50`, 300),
+    fetchList<Scholar>(`/scholars?city=${encodeURIComponent(cityName)}&limit=50`, 300),
   ]);
   return {
     events: events?.data ?? [],
@@ -46,6 +48,7 @@ async function getDirectoryData(cityName: string, slug: string) {
     darbars: darbars?.data ?? [],
     processions: processions?.data ?? [],
     melas: melas?.data ?? [],
+    scholars: scholars?.data ?? [],
   };
 }
 
@@ -92,7 +95,8 @@ async function CityHub({ slug }: { slug: string }) {
     data.places.length > 0 ||
     data.darbars.length > 0 ||
     data.processions.length > 0 ||
-    data.melas.length > 0;
+    data.melas.length > 0 ||
+    data.scholars.length > 0;
 
   return (
     <div className="container-page py-10">
@@ -140,6 +144,8 @@ async function CityHub({ slug }: { slug: string }) {
             {data.places.length > 0 &&
               ` · ${data.places.length} place${data.places.length === 1 ? "" : "s"}`}
             {data.melas.length > 0 && ` · ${data.melas.length} mela${data.melas.length === 1 ? "" : "s"}`}
+            {data.scholars.length > 0 &&
+              ` · ${data.scholars.length} scholar${data.scholars.length === 1 ? "" : "s"}`}
           </p>
         </div>
         <Link
@@ -270,6 +276,16 @@ async function CityHub({ slug }: { slug: string }) {
                 data.melas.length > 0
                   ? `${data.melas.length} mela${data.melas.length === 1 ? "" : "s"} in ${city.name}`
                   : "Melas & seasonal festivals",
+            },
+            {
+              href: `/scholars?city=${encodeURIComponent(city.name)}`,
+              icon: BookOpen,
+              iconCls: "text-sky-600",
+              label: "Scholars",
+              meta:
+                data.scholars.length > 0
+                  ? `${data.scholars.length} scholar${data.scholars.length === 1 ? "" : "s"} in ${city.name}`
+                  : "Shia & Sunni scholars",
             },
           ].map(({ href, icon: Icon, iconCls, label, meta }) => (
             <Link

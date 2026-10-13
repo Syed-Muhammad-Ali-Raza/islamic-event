@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Soup, Star, Landmark, Ticket, ArrowUpRight, ShieldCheck, HeartHandshake } from "lucide-react";
+import { Soup, Star, Landmark, Ticket, ArrowUpRight, ShieldCheck, HeartHandshake, BookOpen } from "lucide-react";
 
 export function DirectoryShowcase() {
   const directories = [
@@ -49,6 +49,17 @@ export function DirectoryShowcase() {
       accent: "text-purple-700 bg-purple-100/70 border-purple-200",
       cta: "Browse Melas",
     },
+    {
+      title: "Shia & Sunni Scholars",
+      subtitle: "96 Biographies & Works",
+      description: "Marja, khateebs, writers and teachers with bios, works and source links — both sects in one directory.",
+      href: "/scholars",
+      icon: BookOpen,
+      tag: "Directory",
+      gradient: "from-sky-500/10 via-sky-500/5 to-transparent",
+      accent: "text-sky-700 bg-sky-100/70 border-sky-200",
+      cta: "Browse Scholars",
+    },
   ];
 
   return (
@@ -68,7 +79,7 @@ export function DirectoryShowcase() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
         {directories.map((dir) => {
           const Icon = dir.icon;
           return (

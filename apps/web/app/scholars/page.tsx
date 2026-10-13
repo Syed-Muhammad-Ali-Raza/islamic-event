@@ -18,12 +18,12 @@ export const metadata: Metadata = {
 };
 
 interface Props {
-  searchParams: Promise<{ q?: string; sect?: string; category?: string; page?: string }>;
+  searchParams: Promise<{ q?: string; city?: string; sect?: string; category?: string; page?: string }>;
 }
 
-async function getData(q: string, sect: string, category: string, page: number) {
+async function getData(q: string, city: string, sect: string, category: string, page: number) {
   return fetchList<Scholar>(
-    `/scholars?${buildQuery({ q, sect, category, page, limit: 24 })}`,
+    `/scholars?${buildQuery({ q, city, sect, category, page, limit: 24 })}`,
     60
   );
 }
@@ -31,10 +31,11 @@ async function getData(q: string, sect: string, category: string, page: number) 
 export default async function ScholarsPage({ searchParams }: Props) {
   const sp = await searchParams;
   const q = (sp.q ?? "").trim();
+  const city = (sp.city ?? "").trim();
   const sect = (sp.sect ?? "").trim();
   const category = (sp.category ?? "").trim();
   const page = sanitizePage(sp.page);
-  const scholars = await getData(q, sect, category, page);
+  const scholars = await getData(q, city, sect, category, page);
 
   return (
     <>
@@ -72,7 +73,7 @@ export default async function ScholarsPage({ searchParams }: Props) {
       >
         <ScholarsExplorer
           initialScholars={scholars ?? undefined}
-          seed={{ q, sect, category, page }}
+          seed={{ q, city, sect, category, page }}
         />
       </Suspense>
     </>

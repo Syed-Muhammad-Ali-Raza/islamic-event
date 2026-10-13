@@ -65,7 +65,7 @@ async function main() {
       stateIdByCode.set(s.isoCode, row.id);
     }
 
-    const pkCities = City.getCitiesOfCountry("PK");
+    const pkCities = City.getCitiesOfCountry("PK") ?? [];
     const slugCounts = new Map<string, number>();
     for (const c of pkCities) {
       const slug = slugify(c.name, { lower: true, strict: true });

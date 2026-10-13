@@ -60,7 +60,7 @@ npx prisma generate --schema apps/api/prisma/schema.prisma
 src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, .routes.ts
 ```
 - Prisma model: `sourceId String @unique`, `isActive Boolean @default(true)`, `@@map("<snake_case>")`.
-- Seed: idempotent `upsert` on `sourceId` with `update: {}`, reading JSON from `apps/api/prisma/data/`.
+- Seed: idempotent `upsert` on `sourceId` with `update: {}`, reading JSON from `apps/api/prisma/data/`. `seed.ts` has its own project `apps/api/prisma/tsconfig.json` — standalone (not `extends`), `types: ["node"]`, `module: node16`, `noEmit`; don't merge it into the api tsconfig (`rootDir: ./src`) or extend the api one (its `baseUrl`/`moduleResolution: node` deprecate under editors' bundled TS 6.x).
 - Public list routes use `validateQuery` + `sendPaginated`; `q` search is case-insensitive (`mode: "insensitive"`).
 - Mount in `src/app.ts`; rate-limit public GETs with the existing public limiter.
 
@@ -72,7 +72,7 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 
 ### Verify batch (run before calling a phase done)
 
-1. `npx tsc --noEmit -p apps/api` and `-p apps/web` (from repo root)
+1. `npx tsc --noEmit -p apps/api`, `-p apps/api/prisma` and `-p apps/web` (from repo root)
 2. `npm run lint --workspace apps/web`
 3. `npm run test --workspace apps/api` (expect ~144+ tests) + web vitest
 4. Kill servers → `npm run build` (check `$LASTEXITCODE`) → restart via full path

@@ -1,0 +1,3057 @@
+{
+  "title": "Islamic Scholars (Sunni & Shia)",
+  "scholars": [
+    {
+      "sourceId": "sunni-0001",
+      "slug": "imam-abu-hanifa",
+      "name": "Imam Abu Hanifa",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "699",
+      "deathDate": "767",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Founder of the Hanafi school of Sunni jurisprudence, born in Kufa.",
+      "education": null,
+      "works": [
+        "Al-Fiqh al-Akbar (attributed)"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Abu_Hanifa"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0002",
+      "slug": "imam-malik",
+      "name": "Imam Malik ibn Anas",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 711",
+      "deathDate": "795",
+      "city": "Medina",
+      "country": "Saudi Arabia",
+      "bio": "Founder of the Maliki school; compiled the Muwatta.",
+      "education": null,
+      "works": [
+        "Al-Muwatta"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Malik_ibn_Anas"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0003",
+      "slug": "imam-shafii",
+      "name": "Imam al-Shafi'i",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "767",
+      "deathDate": "820",
+      "city": "Cairo",
+      "country": "Egypt",
+      "bio": "Founder of the Shafi'i school; wrote foundational works on legal theory.",
+      "education": null,
+      "works": [
+        "Al-Risala",
+        "Kitab al-Umm"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Al-Shafi%CA%BDi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0004",
+      "slug": "imam-ahmad-ibn-hanbal",
+      "name": "Imam Ahmad ibn Hanbal",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "780",
+      "deathDate": "855",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Founder of the Hanbali school and hadith scholar.",
+      "education": null,
+      "works": [
+        "Musnad Ahmad"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ahmad_ibn_Hanbal"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0005",
+      "slug": "imam-bukhari",
+      "name": "Imam al-Bukhari",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "810",
+      "deathDate": "870",
+      "city": "Samarkand",
+      "country": "Uzbekistan",
+      "bio": "Hadith scholar born in Bukhara; compiler of Sahih al-Bukhari.",
+      "education": null,
+      "works": [
+        "Sahih al-Bukhari"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Muhammad_al-Bukhari"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0006",
+      "slug": "imam-muslim",
+      "name": "Imam Muslim ibn al-Hajjaj",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 815",
+      "deathDate": "875",
+      "city": "Nishapur",
+      "country": "Iran",
+      "bio": "Hadith scholar, compiler of Sahih Muslim.",
+      "education": null,
+      "works": [
+        "Sahih Muslim"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Muslim_ibn_al-Hajjaj"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0007",
+      "slug": "imam-ghazali",
+      "name": "Imam Abu Hamid al-Ghazali",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 1058",
+      "deathDate": "1111",
+      "city": "Tus",
+      "country": "Iran",
+      "bio": "Shafi'i jurist, theologian and Sufi thinker.",
+      "education": null,
+      "works": [
+        "Ihya Ulum al-Din",
+        "Tahafut al-Falasifa"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Al-Ghazali"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0008",
+      "slug": "ibn-taymiyyah",
+      "name": "Ibn Taymiyyah",
+      "nameUrdu": "",
+      "honorific": "Sheikh al-Islam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1263",
+      "deathDate": "1328",
+      "city": "Damascus",
+      "country": "Syria",
+      "bio": "Hanbali theologian and jurist, born in Harran.",
+      "education": null,
+      "works": [
+        "Majmu' al-Fatawa"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ibn_Taymiyyah"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0009",
+      "slug": "ahmad-raza-khan",
+      "name": "Imam Ahmad Raza Khan Barelvi",
+      "nameUrdu": "",
+      "honorific": "Ala Hazrat",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1856",
+      "deathDate": "1921",
+      "city": "Bareilly",
+      "country": "India",
+      "bio": "Hanafi scholar and Sufi, key figure of the Barelvi movement in South Asia.",
+      "education": null,
+      "works": [
+        "Kanz al-Iman",
+        "Fatawa-e-Razaviyya"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ahmed_Raza_Khan_Barelvi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0010",
+      "slug": "ashraf-ali-thanwi",
+      "name": "Maulana Ashraf Ali Thanwi",
+      "nameUrdu": "",
+      "honorific": "Hakim al-Ummat",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1863",
+      "deathDate": "1943",
+      "city": "Thana Bhawan",
+      "country": "India",
+      "bio": "Deobandi scholar and Sufi, prolific author in Urdu.",
+      "education": null,
+      "works": [
+        "Bahishti Zewar",
+        "Bayan al-Quran"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ashraf_Ali_Thanwi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0011",
+      "slug": "abul-ala-maududi",
+      "name": "Syed Abul A'la Maududi",
+      "nameUrdu": "",
+      "honorific": "Syed",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1903",
+      "deathDate": "1979",
+      "city": "Lahore",
+      "country": "Pakistan",
+      "bio": "Islamic scholar and founder of Jamaat-e-Islami; author of Tafheem-ul-Quran.",
+      "education": null,
+      "works": [
+        "Tafheem-ul-Quran"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Abul_A%27la_Maududi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0012",
+      "slug": "abul-hasan-ali-nadwi",
+      "name": "Maulana Syed Abul Hasan Ali Nadwi",
+      "nameUrdu": "",
+      "honorific": "Syed",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1914",
+      "deathDate": "1999",
+      "city": "Rae Bareli",
+      "country": "India",
+      "bio": "Indian Islamic scholar associated with Nadwatul Ulama, Lucknow.",
+      "education": null,
+      "works": [
+        "Islam and the World"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Abul_Hasan_Ali_Hasani_Nadwi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0013",
+      "slug": "mufti-muhammad-shafi",
+      "name": "Mufti Muhammad Shafi",
+      "nameUrdu": "",
+      "honorific": "Mufti",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1897",
+      "deathDate": "1976",
+      "city": "Karachi",
+      "country": "Pakistan",
+      "bio": "Deobandi Grand Mufti of Pakistan and founder of Darul Uloom Karachi; author of Ma'ariful Quran.",
+      "education": null,
+      "works": [
+        "Ma'ariful Quran"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Muhammad_Shafi_Deobandi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0014",
+      "slug": "dr-israr-ahmed",
+      "name": "Dr. Israr Ahmed",
+      "nameUrdu": "",
+      "honorific": "Dr.",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1932",
+      "deathDate": "2010",
+      "city": "Lahore",
+      "country": "Pakistan",
+      "bio": "Pakistani Islamic scholar and Quran teacher; founded Tanzeem-e-Islami.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Israr_Ahmed"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0015",
+      "slug": "pir-meher-ali-shah",
+      "name": "Pir Meher Ali Shah",
+      "nameUrdu": "",
+      "honorific": "Pir",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1859",
+      "deathDate": "1937",
+      "city": "Golra Sharif",
+      "country": "Pakistan",
+      "bio": "Chishti Sufi saint and scholar of Golra Sharif, Islamabad.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Pir_Meher_Ali_Shah"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0016",
+      "slug": "imam-tirmidhi",
+      "name": "Imam al-Tirmidhi",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "824",
+      "deathDate": "892",
+      "city": "Termez",
+      "country": "Uzbekistan",
+      "bio": "Hadith scholar, compiler of Jami' al-Tirmidhi.",
+      "education": null,
+      "works": [
+        "Jami' al-Tirmidhi"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20al-Tirmidhi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0017",
+      "slug": "imam-abu-dawud",
+      "name": "Imam Abu Dawud",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "817",
+      "deathDate": "889",
+      "city": "Basra",
+      "country": "Iraq",
+      "bio": "Hadith scholar, compiler of Sunan Abi Dawud.",
+      "education": null,
+      "works": [
+        "Sunan Abi Dawud"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20Abu%20Dawud"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0018",
+      "slug": "imam-nasai",
+      "name": "Imam al-Nasa'i",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 829",
+      "deathDate": "915",
+      "city": "Ramla",
+      "country": "Palestine",
+      "bio": "Hadith scholar, compiler of Sunan al-Nasa'i.",
+      "education": null,
+      "works": [
+        "Sunan al-Nasa'i"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20al-Nasa%27i"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0019",
+      "slug": "imam-ibn-majah",
+      "name": "Imam Ibn Majah",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "824",
+      "deathDate": "887",
+      "city": "Qazvin",
+      "country": "Iran",
+      "bio": "Hadith scholar, compiler of Sunan Ibn Majah.",
+      "education": null,
+      "works": [
+        "Sunan Ibn Majah"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20Ibn%20Majah"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0020",
+      "slug": "imam-al-tabari",
+      "name": "Imam al-Tabari",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "839",
+      "deathDate": "923",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Born in Amol; Quran commentator and historian.",
+      "education": null,
+      "works": [
+        "Jami' al-Bayan",
+        "Tarikh al-Rusul wa al-Muluk"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20al-Tabari"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0021",
+      "slug": "ibn-kathir",
+      "name": "Ibn Kathir",
+      "nameUrdu": "",
+      "honorific": "Hafiz",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1300",
+      "deathDate": "1373",
+      "city": "Damascus",
+      "country": "Syria",
+      "bio": "Shafi'i scholar, Quran commentator and historian.",
+      "education": null,
+      "works": [
+        "Tafsir Ibn Kathir",
+        "Al-Bidaya wa al-Nihaya"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ibn%20Kathir"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0022",
+      "slug": "imam-nawawi",
+      "name": "Imam al-Nawawi",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1233",
+      "deathDate": "1277",
+      "city": "Nawa",
+      "country": "Syria",
+      "bio": "Shafi'i jurist and hadith scholar.",
+      "education": null,
+      "works": [
+        "Riyad al-Salihin",
+        "Forty Hadith"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20al-Nawawi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0023",
+      "slug": "ibn-hajar-asqalani",
+      "name": "Ibn Hajar al-Asqalani",
+      "nameUrdu": "",
+      "honorific": "Hafiz",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1372",
+      "deathDate": "1449",
+      "city": "Cairo",
+      "country": "Egypt",
+      "bio": "Shafi'i hadith scholar, author of Fath al-Bari.",
+      "education": null,
+      "works": [
+        "Fath al-Bari"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ibn%20Hajar%20al-Asqalani"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0024",
+      "slug": "jalaluddin-suyuti",
+      "name": "Jalal al-Din al-Suyuti",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1445",
+      "deathDate": "1505",
+      "city": "Cairo",
+      "country": "Egypt",
+      "bio": "Prolific Shafi'i polymath.",
+      "education": null,
+      "works": [
+        "Tafsir al-Jalalayn (part)",
+        "Al-Itqan"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Jalal%20al-Din%20al-Suyuti"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0025",
+      "slug": "ibn-qayyim",
+      "name": "Ibn Qayyim al-Jawziyya",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1292",
+      "deathDate": "1350",
+      "city": "Damascus",
+      "country": "Syria",
+      "bio": "Hanbali scholar, student of Ibn Taymiyyah.",
+      "education": null,
+      "works": [
+        "Zad al-Ma'ad"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ibn%20Qayyim%20al-Jawziyya"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0026",
+      "slug": "ibn-khaldun",
+      "name": "Ibn Khaldun",
+      "nameUrdu": "",
+      "honorific": "Abd al-Rahman",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1332",
+      "deathDate": "1406",
+      "city": "Cairo",
+      "country": "Egypt",
+      "bio": "Born in Tunis; Maliki jurist and historian.",
+      "education": null,
+      "works": [
+        "Muqaddimah"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ibn%20Khaldun"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0027",
+      "slug": "imam-tahawi",
+      "name": "Imam al-Tahawi",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "853",
+      "deathDate": "933",
+      "city": "Cairo",
+      "country": "Egypt",
+      "bio": "Hanafi jurist and hadith scholar.",
+      "education": null,
+      "works": [
+        "Al-Aqida al-Tahawiyya"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20al-Tahawi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0028",
+      "slug": "imam-ashari",
+      "name": "Imam Abu al-Hasan al-Ash'ari",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 874",
+      "deathDate": "936",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Founder of the Ash'ari school of theology.",
+      "education": null,
+      "works": [
+        "Maqalat al-Islamiyyin"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20Abu%20al-Hasan%20al-Ash%27ari"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0029",
+      "slug": "imam-maturidi",
+      "name": "Imam Abu Mansur al-Maturidi",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 853",
+      "deathDate": "944",
+      "city": "Samarkand",
+      "country": "Uzbekistan",
+      "bio": "Founder of the Maturidi school of theology.",
+      "education": null,
+      "works": [
+        "Kitab al-Tawhid"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20Abu%20Mansur%20al-Maturidi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0030",
+      "slug": "ibn-qudamah",
+      "name": "Ibn Qudamah al-Maqdisi",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1147",
+      "deathDate": "1223",
+      "city": "Damascus",
+      "country": "Syria",
+      "bio": "Hanbali jurist, author of al-Mughni.",
+      "education": null,
+      "works": [
+        "Al-Mughni"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ibn%20Qudamah%20al-Maqdisi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0031",
+      "slug": "abdul-qadir-jilani",
+      "name": "Sheikh Abdul Qadir Jilani",
+      "nameUrdu": "",
+      "honorific": "Ghaus-e-Azam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1077",
+      "deathDate": "1166",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Hanbali scholar and Sufi, namesake of the Qadiriyya order.",
+      "education": null,
+      "works": [
+        "Ghunyat al-Talibin"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Sheikh%20Abdul%20Qadir%20Jilani"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0032",
+      "slug": "shah-waliullah",
+      "name": "Shah Waliullah Dehlawi",
+      "nameUrdu": "",
+      "honorific": "Shah",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1703",
+      "deathDate": "1762",
+      "city": "Delhi",
+      "country": "India",
+      "bio": "Hadith scholar and reformer of South Asia.",
+      "education": null,
+      "works": [
+        "Hujjat Allah al-Balighah"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Shah%20Waliullah%20Dehlawi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0033",
+      "slug": "mujaddid-alf-thani",
+      "name": "Sheikh Ahmad Sirhindi (Mujaddid Alf Thani)",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1564",
+      "deathDate": "1624",
+      "city": "Sirhind",
+      "country": "India",
+      "bio": "Naqshbandi Sufi scholar.",
+      "education": null,
+      "works": [
+        "Maktubat"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Sheikh%20Ahmad%20Sirhindi%20%28Mujaddid%20Alf%20Thani%29"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0034",
+      "slug": "ali-hujwiri",
+      "name": "Ali Hujwiri (Data Ganj Bakhsh)",
+      "nameUrdu": "",
+      "honorific": "Data Sahib",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 990",
+      "deathDate": "c. 1077",
+      "city": "Lahore",
+      "country": "Pakistan",
+      "bio": "Sufi scholar buried in Lahore.",
+      "education": null,
+      "works": [
+        "Kashf al-Mahjub"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ali%20Hujwiri%20%28Data%20Ganj%20Bakhsh%29"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0035",
+      "slug": "qasim-nanotvi",
+      "name": "Maulana Muhammad Qasim Nanotvi",
+      "nameUrdu": "",
+      "honorific": "Maulana",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1832",
+      "deathDate": "1880",
+      "city": "Deoband",
+      "country": "India",
+      "bio": "Co-founder of Darul Uloom Deoband.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Maulana%20Muhammad%20Qasim%20Nanotvi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0036",
+      "slug": "rashid-ahmad-gangohi",
+      "name": "Maulana Rashid Ahmad Gangohi",
+      "nameUrdu": "",
+      "honorific": "Maulana",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1829",
+      "deathDate": "1905",
+      "city": "Gangoh",
+      "country": "India",
+      "bio": "Deobandi scholar and Sufi.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Maulana%20Rashid%20Ahmad%20Gangohi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0037",
+      "slug": "mahmud-hasan-deobandi",
+      "name": "Maulana Mahmud al-Hasan (Shaykh al-Hind)",
+      "nameUrdu": "",
+      "honorific": "Shaykh al-Hind",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1851",
+      "deathDate": "1920",
+      "city": "Deoband",
+      "country": "India",
+      "bio": "Deobandi scholar and independence activist.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Maulana%20Mahmud%20al-Hasan%20%28Shaykh%20al-Hind%29"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0038",
+      "slug": "anwar-shah-kashmiri",
+      "name": "Maulana Anwar Shah Kashmiri",
+      "nameUrdu": "",
+      "honorific": "Maulana",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1875",
+      "deathDate": "1933",
+      "city": "Deoband",
+      "country": "India",
+      "bio": "Deobandi hadith scholar.",
+      "education": null,
+      "works": [
+        "Fayd al-Bari"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Maulana%20Anwar%20Shah%20Kashmiri"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0039",
+      "slug": "shabbir-ahmad-usmani",
+      "name": "Maulana Shabbir Ahmad Usmani",
+      "nameUrdu": "",
+      "honorific": "Allama",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1887",
+      "deathDate": "1949",
+      "city": "Karachi",
+      "country": "Pakistan",
+      "bio": "Deobandi scholar; Quran commentator.",
+      "education": null,
+      "works": [
+        "Fath al-Mulhim"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Maulana%20Shabbir%20Ahmad%20Usmani"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0040",
+      "slug": "hussain-ahmad-madani",
+      "name": "Maulana Hussain Ahmad Madani",
+      "nameUrdu": "",
+      "honorific": "Shaykh al-Islam",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1879",
+      "deathDate": "1957",
+      "city": "Deoband",
+      "country": "India",
+      "bio": "Deobandi scholar and head of Darul Uloom Deoband.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Maulana%20Hussain%20Ahmad%20Madani"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0041",
+      "slug": "syed-sulaiman-nadvi",
+      "name": "Syed Sulaiman Nadvi",
+      "nameUrdu": "",
+      "honorific": "Syed",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1884",
+      "deathDate": "1953",
+      "city": "Karachi",
+      "country": "Pakistan",
+      "bio": "Seerah scholar and historian.",
+      "education": null,
+      "works": [
+        "Seerat-un-Nabi (completed)"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Syed%20Sulaiman%20Nadvi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0042",
+      "slug": "shibli-nomani",
+      "name": "Allama Shibli Nomani",
+      "nameUrdu": "",
+      "honorific": "Allama",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1857",
+      "deathDate": "1914",
+      "city": "Azamgarh",
+      "country": "India",
+      "bio": "Historian and scholar, founder of Nadwatul Ulama activity.",
+      "education": null,
+      "works": [
+        "Seerat-un-Nabi (begun)"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Allama%20Shibli%20Nomani"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0043",
+      "slug": "naeemuddin-muradabadi",
+      "name": "Maulana Syed Naeemuddin Muradabadi",
+      "nameUrdu": "",
+      "honorific": "Syed",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1882",
+      "deathDate": "1948",
+      "city": "Moradabad",
+      "country": "India",
+      "bio": "Hanafi Sunni scholar of the Barelvi tradition.",
+      "education": null,
+      "works": [
+        "Khaza'in al-Irfan"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Maulana%20Syed%20Naeemuddin%20Muradabadi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0044",
+      "slug": "zafar-ahmad-usmani",
+      "name": "Maulana Zafar Ahmad Usmani",
+      "nameUrdu": "",
+      "honorific": "Maulana",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1892",
+      "deathDate": "1974",
+      "city": "Tando Allahyar",
+      "country": "Pakistan",
+      "bio": "Deobandi hadith scholar.",
+      "education": null,
+      "works": [
+        "I'la al-Sunan"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Maulana%20Zafar%20Ahmad%20Usmani"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0045",
+      "slug": "muhammad-hamidullah",
+      "name": "Dr. Muhammad Hamidullah",
+      "nameUrdu": "",
+      "honorific": "Dr.",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1908",
+      "deathDate": "2002",
+      "city": "Paris",
+      "country": "France",
+      "bio": "Hyderabad-born scholar of Islamic law and history.",
+      "education": null,
+      "works": [
+        "Introduction to Islam"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Dr.%20Muhammad%20Hamidullah"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0046",
+      "slug": "abdul-aziz-ibn-baz",
+      "name": "Sheikh Abdul Aziz ibn Baz",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1910",
+      "deathDate": "1999",
+      "city": "Taif",
+      "country": "Saudi Arabia",
+      "bio": "Grand Mufti of Saudi Arabia.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Sheikh%20Abdul%20Aziz%20ibn%20Baz"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0047",
+      "slug": "ibn-uthaymeen",
+      "name": "Sheikh Muhammad ibn Salih al-Uthaymeen",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1925",
+      "deathDate": "2001",
+      "city": "Unaizah",
+      "country": "Saudi Arabia",
+      "bio": "Saudi scholar.",
+      "education": null,
+      "works": [
+        "Sharh Riyad al-Salihin"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Sheikh%20Muhammad%20ibn%20Salih%20al-Uthaymeen"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0048",
+      "slug": "nasiruddin-albani",
+      "name": "Sheikh Nasiruddin al-Albani",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1914",
+      "deathDate": "1999",
+      "city": "Amman",
+      "country": "Jordan",
+      "bio": "Hadith scholar born in Albania.",
+      "education": null,
+      "works": [
+        "Silsilat al-Ahadith al-Sahiha"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Sheikh%20Nasiruddin%20al-Albani"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0049",
+      "slug": "yusuf-al-qaradawi",
+      "name": "Sheikh Yusuf al-Qaradawi",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1926",
+      "deathDate": "2022",
+      "city": "Doha",
+      "country": "Qatar",
+      "bio": "Egyptian-born scholar.",
+      "education": null,
+      "works": [
+        "Al-Halal wa al-Haram fi al-Islam"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Sheikh%20Yusuf%20al-Qaradawi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0050",
+      "slug": "muhammad-abduh",
+      "name": "Sheikh Muhammad Abduh",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1849",
+      "deathDate": "1905",
+      "city": "Cairo",
+      "country": "Egypt",
+      "bio": "Egyptian scholar and Grand Mufti.",
+      "education": null,
+      "works": [
+        "Risalat al-Tawhid"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Sheikh%20Muhammad%20Abduh"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0051",
+      "slug": "muhammad-ilyas-kandhlawi",
+      "name": "Maulana Muhammad Ilyas Kandhlawi",
+      "nameUrdu": "",
+      "honorific": "Maulana",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1885",
+      "deathDate": "1944",
+      "city": "Delhi",
+      "country": "India",
+      "bio": "Founder of Tablighi Jamaat.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Maulana%20Muhammad%20Ilyas%20Kandhlawi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0052",
+      "slug": "muhammad-zakariyya-kandhlawi",
+      "name": "Maulana Muhammad Zakariyya Kandhlawi",
+      "nameUrdu": "",
+      "honorific": "Shaykh al-Hadith",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1898",
+      "deathDate": "1982",
+      "city": "Medina",
+      "country": "Saudi Arabia",
+      "bio": "Hadith scholar, author of Fazail-e-Amaal.",
+      "education": null,
+      "works": [
+        "Fazail-e-Amaal"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Maulana%20Muhammad%20Zakariyya%20Kandhlawi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "sunni-0053",
+      "slug": "yusuf-banuri",
+      "name": "Maulana Muhammad Yusuf Banuri",
+      "nameUrdu": "",
+      "honorific": "Maulana",
+      "sect": "SUNNI",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1908",
+      "deathDate": "1977",
+      "city": "Karachi",
+      "country": "Pakistan",
+      "bio": "Founder of Jamia Binoria Karachi.",
+      "education": null,
+      "works": [
+        "Ma'arif al-Sunan"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Maulana%20Muhammad%20Yusuf%20Banuri"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0001",
+      "slug": "al-kulayni",
+      "name": "Muhammad ibn Ya'qub al-Kulayni",
+      "nameUrdu": "",
+      "honorific": "Thiqat al-Islam",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": null,
+      "deathDate": "c. 941",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Early Twelver Shia hadith scholar, compiler of al-Kafi, one of the Four Books of Shia hadith.",
+      "education": null,
+      "works": [
+        "Al-Kafi"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Muhammad_ibn_Ya%CA%BFqub_al-Kulayni"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0002",
+      "slug": "sheikh-saduq",
+      "name": "Sheikh Saduq (Ibn Babawayh)",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 923",
+      "deathDate": "991",
+      "city": "Ray",
+      "country": "Iran",
+      "bio": "Twelver Shia scholar from Qom, author of Man la yahduruhu al-faqih, one of the Four Books.",
+      "education": null,
+      "works": [
+        "Man la yahduruhu al-faqih"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ibn_Babawayh"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0003",
+      "slug": "sheikh-mufid",
+      "name": "Sheikh al-Mufid",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 948",
+      "deathDate": "1022",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Leading Baghdad theologian and jurist of the Twelver Shia school; teacher of al-Sharif al-Radi and al-Murtada.",
+      "education": null,
+      "works": [
+        "Kitab al-Irshad",
+        "Awa'il al-Maqalat"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Al-Shaykh_al-Mufid"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0004",
+      "slug": "sharif-al-radi",
+      "name": "Al-Sharif al-Radi",
+      "nameUrdu": "",
+      "honorific": "Syed",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "970",
+      "deathDate": "1015",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Syed, poet and scholar, traditionally credited with compiling Nahj al-Balagha.",
+      "education": null,
+      "works": [
+        "Nahj al-Balagha (compilation)"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Al-Sharif_al-Radi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0005",
+      "slug": "sheikh-tusi",
+      "name": "Sheikh al-Tusi",
+      "nameUrdu": "",
+      "honorific": "Sheikh al-Ta'ifa",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "995",
+      "deathDate": "1067",
+      "city": "Najaf",
+      "country": "Iraq",
+      "bio": "Major Twelver Shia jurist and hadith scholar; compiler of two of the Four Books; credited with founding the Najaf hawza.",
+      "education": null,
+      "works": [
+        "Tahdhib al-Ahkam",
+        "Al-Istibsar"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Muhammad_ibn_al-Hasan_al-Tusi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0006",
+      "slug": "allama-al-hilli",
+      "name": "Allama al-Hilli",
+      "nameUrdu": "",
+      "honorific": "Allama",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1250",
+      "deathDate": "1325",
+      "city": "Hillah",
+      "country": "Iraq",
+      "bio": "Prominent Twelver Shia theologian and jurist, a major figure in systematizing Shia theology and law.",
+      "education": null,
+      "works": [
+        "Kashf al-Murad",
+        "Tadhkirat al-Fuqaha"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Al-%CA%BFAll%C4%81mah_al-%E1%B8%A4ill%C4%AB"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0007",
+      "slug": "allama-majlisi",
+      "name": "Allama Muhammad Baqir Majlisi",
+      "nameUrdu": "",
+      "honorific": "Allama",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1627",
+      "deathDate": "1698",
+      "city": "Isfahan",
+      "country": "Iran",
+      "bio": "Safavid-era Twelver Shia scholar, compiler of the encyclopedic hadith collection Bihar al-Anwar.",
+      "education": null,
+      "works": [
+        "Bihar al-Anwar",
+        "Mir'at al-Uqul"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Muhammad-Baqir_Majlisi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0008",
+      "slug": "ayatollah-khomeini",
+      "name": "Ayatollah Ruhollah Khomeini",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1902",
+      "deathDate": "1989",
+      "city": "Qom",
+      "country": "Iran",
+      "bio": "Shia marja' and political leader; Supreme Leader of Iran from 1979 until his death.",
+      "education": null,
+      "works": [
+        "Wilayat al-Faqih"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ruhollah_Khomeini"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0009",
+      "slug": "ayatollah-al-khoei",
+      "name": "Ayatollah Abu al-Qasim al-Khoei",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1899",
+      "deathDate": "1992",
+      "city": "Najaf",
+      "country": "Iraq",
+      "bio": "Born in Khoy, Iran; one of the most widely followed Shia marja' of the 20th century, based in Najaf.",
+      "education": null,
+      "works": [
+        "Mu'jam Rijal al-Hadith",
+        "Al-Bayan fi Tafsir al-Quran"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Abu_al-Qasim_al-Khoei"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0010",
+      "slug": "allama-tabatabai",
+      "name": "Allama Muhammad Husayn Tabatabai",
+      "nameUrdu": "",
+      "honorific": "Allama",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1903",
+      "deathDate": "1981",
+      "city": "Qom",
+      "country": "Iran",
+      "bio": "Philosopher, theologian and Quran commentator, author of Tafsir al-Mizan.",
+      "education": null,
+      "works": [
+        "Tafsir al-Mizan",
+        "Usul-e Falsafeh"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Muhammad_Husayn_Tabataba%27i"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0011",
+      "slug": "murtaza-mutahhari",
+      "name": "Ayatollah Murtaza Mutahhari",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1919",
+      "deathDate": "1979",
+      "city": "Tehran",
+      "country": "Iran",
+      "bio": "Iranian cleric, philosopher and prolific author; student of Khomeini and Tabatabai.",
+      "education": null,
+      "works": [
+        "Man and Universe",
+        "The Martyr"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Morteza_Motahhari"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0012",
+      "slug": "baqir-al-sadr",
+      "name": "Ayatollah Muhammad Baqir al-Sadr",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1935",
+      "deathDate": "1980",
+      "city": "Najaf",
+      "country": "Iraq",
+      "bio": "Iraqi Shia cleric, philosopher and economist; executed by the Ba'ath regime in 1980.",
+      "education": null,
+      "works": [
+        "Falsafatuna",
+        "Iqtisaduna"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Muhammad_Baqir_al-Sadr"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0013",
+      "slug": "allama-rasheed-turabi",
+      "name": "Allama Rasheed Turabi",
+      "nameUrdu": "",
+      "honorific": "Allama",
+      "sect": "SHIA",
+      "category": "KHATEEB",
+      "status": "DECEASED",
+      "birthDate": "1908",
+      "deathDate": "1973",
+      "city": "Karachi",
+      "country": "Pakistan",
+      "bio": "Renowned Urdu khateeb and scholar, born in Hyderabad Deccan, settled in Karachi after Partition.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Rasheed_Turabi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0014",
+      "slug": "allama-ali-naqi-naqvi",
+      "name": "Allama Syed Ali Naqi Naqvi (Naqqan Sahib)",
+      "nameUrdu": "",
+      "honorific": "Allama",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1905",
+      "deathDate": "1988",
+      "city": "Karachi",
+      "country": "Pakistan",
+      "bio": "Lucknow-born Shia mujtahid and author who migrated to Karachi; widely known for Urdu religious writing.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ali_Naqi_Naqvi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0015",
+      "slug": "allama-arif-hussain-hussaini",
+      "name": "Allama Syed Arif Hussain Al-Hussaini",
+      "nameUrdu": "",
+      "honorific": "Allama",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1946",
+      "deathDate": "1988",
+      "city": "Peshawar",
+      "country": "Pakistan",
+      "bio": "Pakistani Shia religious and community leader from Kurram; assassinated in Peshawar in August 1988.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Arif_Hussain_Al-Hussaini"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0016",
+      "slug": "ayatollah-borujerdi",
+      "name": "Ayatollah Seyyed Hossein Borujerdi",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1875",
+      "deathDate": "1961",
+      "city": "Qom",
+      "country": "Iran",
+      "bio": "Sole widely recognised Shia marja' of his era; revived and led the Qom hawza from 1946.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ayatollah%20Seyyed%20Hossein%20Borujerdi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0017",
+      "slug": "ayatollah-haeri-yazdi",
+      "name": "Ayatollah Abdul Karim Haeri Yazdi",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "c. 1859",
+      "deathDate": "1937",
+      "city": "Qom",
+      "country": "Iran",
+      "bio": "Founder of the modern Qom seminary (hawza) in 1922.",
+      "education": null,
+      "works": [
+        "Durar al-Fawa'id"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ayatollah%20Abdul%20Karim%20Haeri%20Yazdi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0018",
+      "slug": "ayatollah-muhsin-al-hakim",
+      "name": "Ayatollah Muhsin al-Hakim",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1889",
+      "deathDate": "1970",
+      "city": "Najaf",
+      "country": "Iraq",
+      "bio": "Leading Shia marja' of Najaf in the mid-20th century.",
+      "education": null,
+      "works": [
+        "Mustamsak al-Urwa al-Wuthqa"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ayatollah%20Muhsin%20al-Hakim"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0019",
+      "slug": "ayatollah-abul-hasan-isfahani",
+      "name": "Ayatollah Abul Hasan Isfahani",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1867",
+      "deathDate": "1946",
+      "city": "Najaf",
+      "country": "Iraq",
+      "bio": "Supreme Shia marja' of Najaf in the first half of the 20th century.",
+      "education": null,
+      "works": [
+        "Wasilat al-Najat"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ayatollah%20Abul%20Hasan%20Isfahani"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0020",
+      "slug": "ayatollah-kazim-yazdi",
+      "name": "Ayatollah Sayyid Muhammad Kazim Yazdi",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1831",
+      "deathDate": "1919",
+      "city": "Najaf",
+      "country": "Iraq",
+      "bio": "Najaf marja' and author of the widely followed legal manual al-Urwa al-Wuthqa.",
+      "education": null,
+      "works": [
+        "Al-Urwa al-Wuthqa"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ayatollah%20Sayyid%20Muhammad%20Kazim%20Yazdi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0021",
+      "slug": "sheikh-murtadha-ansari",
+      "name": "Sheikh Murtadha Ansari",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1799",
+      "deathDate": "1864",
+      "city": "Najaf",
+      "country": "Iraq",
+      "bio": "Foremost Shia jurist of the 19th century, reformer of usul al-fiqh.",
+      "education": null,
+      "works": [
+        "Fara'id al-Usul",
+        "Al-Makasib"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Sheikh%20Murtadha%20Ansari"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0022",
+      "slug": "sharif-al-murtada",
+      "name": "Al-Sharif al-Murtada",
+      "nameUrdu": "",
+      "honorific": "Syed",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "965",
+      "deathDate": "1044",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Shia theologian, jurist and poet; brother of al-Sharif al-Radi.",
+      "education": null,
+      "works": [
+        "Al-Amali",
+        "Al-Shafi fi al-Imama"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Al-Sharif%20al-Murtada"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0023",
+      "slug": "nasir-al-din-tusi",
+      "name": "Khwaja Nasir al-Din Tusi",
+      "nameUrdu": "",
+      "honorific": "Khwaja",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1201",
+      "deathDate": "1274",
+      "city": "Baghdad",
+      "country": "Iraq",
+      "bio": "Polymath: Shia theologian, philosopher and astronomer.",
+      "education": null,
+      "works": [
+        "Tajrid al-I'tiqad",
+        "Akhlaq-i Nasiri"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Khwaja%20Nasir%20al-Din%20Tusi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0024",
+      "slug": "mulla-sadra",
+      "name": "Mulla Sadra (Sadr al-Din Shirazi)",
+      "nameUrdu": "",
+      "honorific": "Mulla",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "c. 1571",
+      "deathDate": "1640",
+      "city": "Shiraz",
+      "country": "Iran",
+      "bio": "Persian Shia philosopher, founder of the school of Transcendent Theosophy.",
+      "education": null,
+      "works": [
+        "Al-Asfar al-Arba'a"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Mulla%20Sadra%20%28Sadr%20al-Din%20Shirazi%29"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0025",
+      "slug": "allama-muhammad-taqi-majlisi",
+      "name": "Allama Muhammad Taqi Majlisi",
+      "nameUrdu": "",
+      "honorific": "Allama",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1594",
+      "deathDate": "1659",
+      "city": "Isfahan",
+      "country": "Iran",
+      "bio": "Safavid-era Shia scholar; father of Muhammad Baqir Majlisi.",
+      "education": null,
+      "works": [
+        "Rawdat al-Muttaqin"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Allama%20Muhammad%20Taqi%20Majlisi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0026",
+      "slug": "sheikh-baha-i",
+      "name": "Sheikh Baha al-Din al-Amili (Sheikh Bahai)",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1547",
+      "deathDate": "1621",
+      "city": "Isfahan",
+      "country": "Iran",
+      "bio": "Born in Baalbek; polymath, jurist, architect and mathematician under Shah Abbas.",
+      "education": null,
+      "works": [
+        "Jami'-i Abbasi",
+        "Kashkul"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Sheikh%20Baha%20al-Din%20al-Amili%20%28Sheikh%20Bahai%29"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0027",
+      "slug": "muhaqqiq-al-hilli",
+      "name": "Muhaqqiq al-Hilli",
+      "nameUrdu": "",
+      "honorific": "Muhaqqiq",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1205",
+      "deathDate": "1277",
+      "city": "Hillah",
+      "country": "Iraq",
+      "bio": "Twelver Shia jurist, author of the influential Shara'i al-Islam.",
+      "education": null,
+      "works": [
+        "Shara'i al-Islam"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Muhaqqiq%20al-Hilli"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0028",
+      "slug": "shahid-al-awwal",
+      "name": "Shahid al-Awwal (Muhammad ibn Makki al-Amili)",
+      "nameUrdu": "",
+      "honorific": "Shahid",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1334",
+      "deathDate": "1384",
+      "city": "Damascus",
+      "country": "Syria",
+      "bio": "Jurist from Jabal Amil, executed in Damascus in 1384.",
+      "education": null,
+      "works": [
+        "Al-Lum'a al-Dimashqiyya"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Shahid%20al-Awwal%20%28Muhammad%20ibn%20Makki%20al-Amili%29"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0029",
+      "slug": "shahid-al-thani",
+      "name": "Shahid al-Thani (Zayn al-Din al-Amili)",
+      "nameUrdu": "",
+      "honorific": "Shahid",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1506",
+      "deathDate": "1557",
+      "city": "Istanbul",
+      "country": "Turkey",
+      "bio": "Jabal Amil jurist, killed in the Ottoman realm in 1557.",
+      "education": null,
+      "works": [
+        "Al-Rawda al-Bahiyya"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Shahid%20al-Thani%20%28Zayn%20al-Din%20al-Amili%29"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0030",
+      "slug": "ayatollah-mirza-shirazi",
+      "name": "Ayatollah Mirza Muhammad Hasan Shirazi",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1815",
+      "deathDate": "1895",
+      "city": "Samarra",
+      "country": "Iraq",
+      "bio": "Marja' known for the 1891 tobacco fatwa.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ayatollah%20Mirza%20Muhammad%20Hasan%20Shirazi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0031",
+      "slug": "ayatollah-amini",
+      "name": "Allama Abdul Hussain Amini",
+      "nameUrdu": "",
+      "honorific": "Allama",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1902",
+      "deathDate": "1970",
+      "city": "Tehran",
+      "country": "Iran",
+      "bio": "Born in Tabriz; author of the multi-volume work al-Ghadir.",
+      "education": null,
+      "works": [
+        "Al-Ghadir"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Allama%20Abdul%20Hussain%20Amini"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0032",
+      "slug": "kashif-al-ghita",
+      "name": "Sheikh Muhammad Husayn Kashif al-Ghita",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1877",
+      "deathDate": "1954",
+      "city": "Najaf",
+      "country": "Iraq",
+      "bio": "Najaf scholar active in religious reform and Muslim unity.",
+      "education": null,
+      "works": [
+        "Asl al-Shia wa Usuluha"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Sheikh%20Muhammad%20Husayn%20Kashif%20al-Ghita"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0033",
+      "slug": "ayatollah-golpaygani",
+      "name": "Ayatollah Muhammad Reza Golpaygani",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1899",
+      "deathDate": "1993",
+      "city": "Qom",
+      "country": "Iran",
+      "bio": "Senior Qom marja'.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ayatollah%20Muhammad%20Reza%20Golpaygani"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0034",
+      "slug": "ayatollah-marashi-najafi",
+      "name": "Ayatollah Shahab al-Din Mar'ashi Najafi",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1897",
+      "deathDate": "1990",
+      "city": "Qom",
+      "country": "Iran",
+      "bio": "Qom marja' known for his large manuscript library.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ayatollah%20Shahab%20al-Din%20Mar%27ashi%20Najafi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0035",
+      "slug": "ayatollah-taleghani",
+      "name": "Ayatollah Mahmoud Taleghani",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1911",
+      "deathDate": "1979",
+      "city": "Tehran",
+      "country": "Iran",
+      "bio": "Iranian cleric and Quran commentator.",
+      "education": null,
+      "works": [
+        "Partovi az Qur'an"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ayatollah%20Mahmoud%20Taleghani"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0036",
+      "slug": "ayatollah-fadlallah",
+      "name": "Ayatollah Muhammad Hussein Fadlallah",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1935",
+      "deathDate": "2010",
+      "city": "Beirut",
+      "country": "Lebanon",
+      "bio": "Born in Najaf; Lebanese Shia marja' and author.",
+      "education": null,
+      "works": [
+        "Min Wahy al-Qur'an"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ayatollah%20Muhammad%20Hussein%20Fadlallah"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0037",
+      "slug": "imam-musa-al-sadr",
+      "name": "Imam Musa al-Sadr",
+      "nameUrdu": "",
+      "honorific": "Imam",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1928",
+      "deathDate": "disappeared 1978",
+      "city": "Tyre",
+      "country": "Lebanon",
+      "bio": "Born in Qom; Lebanese Shia cleric who disappeared in Libya in 1978.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Imam%20Musa%20al-Sadr"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0038",
+      "slug": "ayatollah-baqir-al-hakim",
+      "name": "Ayatollah Muhammad Baqir al-Hakim",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1939",
+      "deathDate": "2003",
+      "city": "Najaf",
+      "country": "Iraq",
+      "bio": "Iraqi Shia cleric killed in a bombing in Najaf in 2003.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ayatollah%20Muhammad%20Baqir%20al-Hakim"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0039",
+      "slug": "ayatollah-muhammad-sadiq-al-sadr",
+      "name": "Ayatollah Muhammad Sadiq al-Sadr",
+      "nameUrdu": "",
+      "honorific": "Ayatollah",
+      "sect": "SHIA",
+      "category": "MARJA",
+      "status": "DECEASED",
+      "birthDate": "1943",
+      "deathDate": "1999",
+      "city": "Najaf",
+      "country": "Iraq",
+      "bio": "Iraqi Shia marja', killed in Najaf in 1999.",
+      "education": null,
+      "works": [
+        "Mawsu'at al-Imam al-Mahdi"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Ayatollah%20Muhammad%20Sadiq%20al-Sadr"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0040",
+      "slug": "sheikh-shamseddine",
+      "name": "Sheikh Muhammad Mahdi Shamseddine",
+      "nameUrdu": "",
+      "honorific": "Sheikh",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1936",
+      "deathDate": "2001",
+      "city": "Beirut",
+      "country": "Lebanon",
+      "bio": "Head of the Supreme Islamic Shia Council of Lebanon.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Sheikh%20Muhammad%20Mahdi%20Shamseddine"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0041",
+      "slug": "ghufran-maab",
+      "name": "Syed Dildar Ali Naseerabadi (Ghufran Maab)",
+      "nameUrdu": "",
+      "honorific": "Syed",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1753",
+      "deathDate": "1820",
+      "city": "Lucknow",
+      "country": "India",
+      "bio": "Prominent mujtahid of Awadh, Lucknow.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Syed%20Dildar%20Ali%20Naseerabadi%20%28Ghufran%20Maab%29"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0042",
+      "slug": "mir-hamid-husain",
+      "name": "Mir Hamid Husain Musawi",
+      "nameUrdu": "",
+      "honorific": "Allama",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1830",
+      "deathDate": "1880",
+      "city": "Lucknow",
+      "country": "India",
+      "bio": "Lucknow scholar, author of Abaqat al-Anwar.",
+      "education": null,
+      "works": [
+        "Abaqat al-Anwar"
+      ],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Mir%20Hamid%20Husain%20Musawi"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    },
+    {
+      "sourceId": "shia-0043",
+      "slug": "allama-mufti-jafar-hussain",
+      "name": "Allama Mufti Jafar Hussain",
+      "nameUrdu": "",
+      "honorific": "Mufti",
+      "sect": "SHIA",
+      "category": "SCHOLAR",
+      "status": "DECEASED",
+      "birthDate": "1914",
+      "deathDate": "1983",
+      "city": "Lahore",
+      "country": "Pakistan",
+      "bio": "Leader of Pakistan's Shia community in the 1970s-80s.",
+      "education": null,
+      "works": [],
+      "officialLinks": null,
+      "photoUrl": null,
+      "photoCredit": null,
+      "photoLicense": null,
+      "sources": [
+        {
+          "title": "Wikipedia search",
+          "url": "https://en.wikipedia.org/wiki/Special:Search?search=Allama%20Mufti%20Jafar%20Hussain"
+        }
+      ],
+      "confidence": "UNVERIFIED",
+      "lastVerified": null,
+      "isPublished": true
+    }
+  ]
+}

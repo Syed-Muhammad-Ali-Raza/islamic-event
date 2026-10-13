@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Menu, X, Search, Bookmark, User, LogOut, PlusCircle, LayoutDashboard,
-  ChevronDown, Soup, Landmark, MapPin, Star, Ticket, Sparkles, Compass
+  ChevronDown, Soup, Landmark, MapPin, Star, Ticket, Sparkles, Compass, BookOpen
 } from "lucide-react";
 import { useAuthStore } from "@/stores/auth.store";
 import { useLogout } from "@/hooks/useAuth";
@@ -74,6 +74,14 @@ export function Navbar() {
       icon: Ticket,
       badge: "Auqaf",
       badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
+    },
+    {
+      href: "/scholars",
+      label: t("nav.scholars"),
+      desc: "Shia & Sunni scholars directory",
+      icon: BookOpen,
+      badge: "Scholars",
+      badgeColor: "bg-sky-50 text-sky-700 border-sky-200",
     },
   ];
 

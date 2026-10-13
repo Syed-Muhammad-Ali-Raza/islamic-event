@@ -55,6 +55,7 @@ A Pakistan-focused community events platform where organizers publish events, us
 | Urs dates | 36 (16 researched) | `GET /urs-dates` (researched, city, q) | ordered "Upcoming Urs" + `/categories/urs` |
 | Muharram processions | 32 | `GET /processions` (city, month, day, kind, q) | jaloos routes on `/categories/muharram` |
 | Charities | 29 | `GET /charities` (country/province/city, `policy=100`, q) + `/facets` | cascading country→province→city dropdowns on `/categories/charity` |
+| Scholars (Shia & Sunni) | 96 (53 Sunni + 43 Shia) | `GET /scholars` (sect, category, city, q) | `/scholars` sect + role chips, Darbars scheme |
 
 - **FR-D1** All directory rows follow the `sourceId`-unique, `isActive` model and are seeded **idempotently** (`upsert` with `update: {}`) from `apps/api/prisma/data/*.json`.
 - **FR-D2** Category-conditional sections render only on their category page (muharram → Jaloos, charity → CharityDirectory, urs → UpcomingUrs).

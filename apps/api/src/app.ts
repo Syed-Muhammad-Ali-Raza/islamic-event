@@ -31,6 +31,7 @@ import charityRoutes from "./modules/charities/charity.routes";
 import cityRoutes from "./modules/cities/city.routes";
 import melaRoutes from "./modules/melas/mela.routes";
 import auqafUrsDateRoutes from "./modules/auqaf-urs-dates/auqafUrsDate.routes";
+import scholarRoutes from "./modules/scholars/scholar.routes";
 
 const app = express();
 
@@ -138,6 +139,7 @@ app.use(`${api}/charities`, charityRoutes);
 app.use(`${api}/cities`, cityRoutes);
 app.use(`${api}/melas`, melaRoutes);
 app.use(`${api}/auqaf-urs-dates`, auqafUrsDateRoutes);
+app.use(`${api}/scholars`, scholarRoutes);
 
 // Profile / user routes
 app.get(`${api}/users/me/saved-events`, requireAuth, listSavedEvents);

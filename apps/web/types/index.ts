@@ -338,6 +338,38 @@ export interface CharityFacets {
   cities: string[];
 }
 
+export interface ScholarSource {
+  title: string;
+  url: string;
+}
+
+export interface Scholar {
+  id: string;
+  sourceId: string;
+  slug: string;
+  name: string;
+  nameUrdu: string | null;
+  honorific: string | null;
+  sect: string;
+  category: string;
+  status: string;
+  birthDate: string | null;
+  deathDate: string | null;
+  city: string | null;
+  country: string | null;
+  bio: string | null;
+  education: string | null;
+  works: string[];
+  officialLinks: string | null;
+  photoUrl: string | null;
+  photoCredit: string | null;
+  photoLicense: string | null;
+  sources: ScholarSource[] | null;
+  confidence: string;
+  lastVerified: string | null;
+  isActive: boolean;
+}
+
 export interface Event extends EventSummary {
   description: string | null;
   address: string | null;

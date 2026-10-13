@@ -631,3 +631,40 @@ model Notification {
   @@index([userId, createdAt])
   @@map("notifications")
 }
+
+// ─── Scholar ──────────────────────────────────────────────────────────────────
+
+model Scholar {
+  id            String   @id @default(cuid())
+  sourceId      String   @unique
+  slug          String   @unique
+  name          String
+  nameUrdu      String?
+  honorific     String?
+  sect          String // SUNNI | SHIA
+  category      String // SCHOLAR | MARJA | KHATEEB
+  status        String   @default("DECEASED")
+  birthDate     String?
+  deathDate     String?
+  city          String?
+  country       String?
+  bio           String?
+  education     String?
+  works         String[]
+  officialLinks String?
+  photoUrl      String?
+  photoCredit   String?
+  photoLicense  String?
+  sources       Json?
+  confidence    String   @default("UNVERIFIED")
+  lastVerified  String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([sect])
+  @@index([category])
+  @@index([city])
+  @@index([isActive])
+  @@map("scholars")
+}

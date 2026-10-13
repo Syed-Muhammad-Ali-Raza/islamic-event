@@ -484,6 +484,55 @@ async function main() {
     console.log(`  ✓ ${items.length} charities seeded`);
   }
 
+  // ── Scholars (Sunni & Shia; idempotent) ──────────────────────────────────
+  const scholarsFile = path.join(__dirname, "data", "scholars.json");
+  if (fs.existsSync(scholarsFile)) {
+    const raw = JSON.parse(fs.readFileSync(scholarsFile, "utf8"));
+    const scholars: Array<{
+      sourceId: string; slug: string; name: string; nameUrdu?: string | null;
+      honorific?: string | null; sect: string; category: string; status?: string;
+      birthDate?: string | null; deathDate?: string | null; city?: string | null;
+      country?: string | null; bio?: string | null; education?: string | null;
+      works?: string[] | null; officialLinks?: string | null; photoUrl?: string | null;
+      photoCredit?: string | null; photoLicense?: string | null;
+      sources?: Array<{ title: string; url: string }> | null;
+      confidence?: string; lastVerified?: string | null;
+    }> = raw.scholars ?? [];
+
+    for (const s of scholars) {
+      await prisma.scholar.upsert({
+        where: { sourceId: s.sourceId },
+        update: {},
+        create: {
+          sourceId: s.sourceId,
+          slug: s.slug,
+          name: s.name,
+          nameUrdu: s.nameUrdu ?? null,
+          honorific: s.honorific ?? null,
+          sect: s.sect,
+          category: s.category,
+          status: s.status ?? "DECEASED",
+          birthDate: s.birthDate ?? null,
+          deathDate: s.deathDate ?? null,
+          city: s.city ?? null,
+          country: s.country ?? null,
+          bio: s.bio ?? null,
+          education: s.education ?? null,
+          works: s.works ?? [],
+          officialLinks: s.officialLinks ?? null,
+          photoUrl: s.photoUrl ?? null,
+          photoCredit: s.photoCredit ?? null,
+          photoLicense: s.photoLicense ?? null,
+          sources: (s.sources ?? []) as object[],
+          confidence: s.confidence ?? "UNVERIFIED",
+          lastVerified: s.lastVerified ?? null,
+          isActive: true,
+        },
+      });
+    }
+    console.log(`  ✓ ${scholars.length} scholars seeded`);
+  }
+
   const adminEmail = "admin@communityevents.pk";
   const adminExists = await prisma.user.findUnique({ where: { email: adminEmail } });
 

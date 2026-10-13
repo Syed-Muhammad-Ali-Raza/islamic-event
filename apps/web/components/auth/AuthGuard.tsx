@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -13,16 +13,24 @@ export function AuthGuard({ children, requireAdmin = false }: Props) {
   const { isAuthenticated, user } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
-
-  const allowed = isAuthenticated && (!requireAdmin || user?.role === "ADMIN");
+  // Wait one client mount so zustand persist can hydrate from localStorage
+  // before we decide to redirect (avoids false logout on hard refresh).
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  const allowed = hydrated && isAuthenticated && (!requireAdmin || user?.role === "ADMIN");
+
+  useEffect(() => {
+    if (!hydrated) return;
     if (!isAuthenticated) {
       router.replace(`/login?next=${encodeURIComponent(pathname)}`);
     } else if (requireAdmin && user?.role !== "ADMIN") {
       router.replace("/");
     }
-  }, [isAuthenticated, user, requireAdmin, router, pathname]);
+  }, [hydrated, isAuthenticated, user, requireAdmin, router, pathname]);
 
   if (!allowed) {
     return (

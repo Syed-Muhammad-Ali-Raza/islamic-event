@@ -73,14 +73,14 @@ A Pakistan-focused community events platform where organizers publish events, us
 | Area | Requirement |
 |---|---|
 | Security | helmet, CORS allow-list, rate limiting, zod validation everywhere, JWT, account lockout, CSRF origin guard (state-changing verbs), `trust proxy` in prod, Next.js security headers (Referrer-Policy, Permissions-Policy), upload allow-list |
-| Testing | API: jest + supertest (~144 tests); web: vitest (incl. i18n parity); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api` |
+| Testing | API: jest + supertest (~166 tests); web: vitest (incl. i18n parity); E2E: Playwright 13-test smoke suite (root `e2e/`, `npm run test:e2e`); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api` |
 | Data integrity | Idempotent seeds, `unique()`-suffixed fixtures in tests (shared test DB), zod 422 contract |
 | Perf | Server components + `fetchPaginated` with revalidate, TanStack Query staleTime 60 s client-side |
-| Known gaps | Cloudinary creds are placeholders (uploads fail); no E2E suite |
+| Known gaps | Cloudinary creds are placeholders (uploads fail); E2E is smoke-level only (no visual regression, no CI job yet) |
 
 ## 5. Out of scope / backlog candidates
 
 - Real Cloudinary (or S3) image pipeline
-- E2E (Playwright) + visual regression
+- E2E visual regression + CI job for the Playwright suite
 - SMS/WhatsApp notifications, maps geocoding
 - i18n for directory pages (currently English-only UI strings)

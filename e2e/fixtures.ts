@@ -1,0 +1,137 @@
+import { test as base, expect, type APIRequestContext, type Page } from "@playwright/test";
+
+export const unique = (prefix: string) =>
+  `${prefix}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
+
+export interface AuthTokens {
+  user: { id: string; name: string; email: string; role: string };
+  accessToken: string;
+  refreshToken: string;
+}
+
+const API = process.env.E2E_API_URL ?? "http://localhost:4000";
+const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL ?? "admin@communityevents.pk";
+const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD ?? "Admin@123456";
+
+/** Register a fresh user via the API and return tokens. */
+export async function registerViaApi(
+  request: APIRequestContext,
+  overrides: { name?: string; email?: string; password?: string } = {}
+): Promise<AuthTokens> {
+  const email = overrides.email ?? `${unique("e2e")}@example.com`;
+  const password = overrides.password ?? "E2ePass@123";
+  const name = overrides.name ?? "E2E User";
+
+  const res = await request.post(`${API}/api/v1/auth/register`, {
+    data: { name, email, password },
+  });
+  if (!res.ok()) {
+    throw new Error(`registerViaApi failed: ${res.status()} ${await res.text()}`);
+  }
+  const body = await res.json();
+  return body.data as AuthTokens;
+}
+
+/** Login an existing user via the API and return tokens. */
+export async function loginViaApi(
+  request: APIRequestContext,
+  email: string,
+  password = "E2ePass@123"
+): Promise<AuthTokens> {
+  const res = await request.post(`${API}/api/v1/auth/login`, {
+    data: { email, password },
+  });
+  if (!res.ok()) {
+    throw new Error(`loginViaApi failed: ${res.status()} ${await res.text()}`);
+  }
+  const body = await res.json();
+  return body.data as AuthTokens;
+}
+
+/** Login the seeded admin account (for moderation flows). */
+export async function loginAdminViaApi(request: APIRequestContext): Promise<AuthTokens> {
+  return loginViaApi(request, ADMIN_EMAIL, ADMIN_PASSWORD);
+}
+
+/**
+ * Seed the browser's zustand auth-storage with tokens so the app
+ * treats the page as logged-in without going through the UI login form.
+ */
+export async function seedAuth(page: Page, tokens: AuthTokens): Promise<void> {
+  const storage = {
+    state: {
+      user: tokens.user,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      isAuthenticated: true,
+    },
+    version: 0,
+  };
+  await page.addInitScript((value) => {
+    window.localStorage.setItem("auth-storage", JSON.stringify(value));
+  }, storage);
+}
+
+export interface CreatedEvent {
+  id: string;
+  slug: string;
+  title: string;
+}
+
+/** Create a draft event via the API (returns PENDING_REVIEW event). */
+export async function createEventViaApi(
+  request: APIRequestContext,
+  tokens: AuthTokens,
+  overrides: { title?: string; date?: string } = {}
+): Promise<CreatedEvent> {
+  const catsRes = await request.get(`${API}/api/v1/categories?limit=1`);
+  const catsBody = await catsRes.json();
+  const categoryId = catsBody?.data?.[0]?.id;
+  if (!categoryId) throw new Error("No categories seeded — run db:seed first");
+
+  const title = overrides.title ?? `E2E Event ${unique("t")}`;
+  const date = overrides.date ?? "2027-01-15";
+
+  const res = await request.post(`${API}/api/v1/events`, {
+    headers: { Authorization: `Bearer ${tokens.accessToken}` },
+    data: {
+      title,
+      categoryId,
+      description: "Created by Playwright E2E suite",
+      date,
+      startTime: "18:00",
+      endTime: "20:00",
+      venue: "E2E Test Venue",
+      address: "123 Test Street, Lahore",
+    },
+  });
+  if (!res.ok()) {
+    throw new Error(`createEventViaApi failed: ${res.status()} ${await res.text()}`);
+  }
+  const body = await res.json();
+  const event = body.data?.event ?? body.data;
+  return { id: event.id, slug: event.slug, title: event.title };
+}
+
+/** Approve a PENDING_REVIEW event as the seeded admin (so it becomes public). */
+export async function approveEventViaApi(
+  request: APIRequestContext,
+  eventId: string
+): Promise<void> {
+  const admin = await loginAdminViaApi(request);
+  const res = await request.patch(`${API}/api/v1/admin/events/${eventId}/approve`, {
+    headers: { Authorization: `Bearer ${admin.accessToken}` },
+  });
+  if (!res.ok()) {
+    throw new Error(`approveEventViaApi failed: ${res.status()} ${await res.text()}`);
+  }
+}
+
+export const test = base.extend<{ auth: AuthTokens }>({
+  auth: async ({ request }, use) => {
+    const tokens = await registerViaApi(request);
+    await use(tokens);
+  },
+});
+
+export { expect };

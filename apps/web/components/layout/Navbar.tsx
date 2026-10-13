@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -23,7 +23,9 @@ export function Navbar() {
   const logout = useLogout();
   const { t } = useTranslation();
   const pathname = usePathname();
+  const router = useRouter();
   const dirsRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const primaryLinks = [
     { href: "/events", label: t("nav.events") },
@@ -102,6 +104,26 @@ export function Navbar() {
       document.removeEventListener("keydown", onEscape);
     };
   }, [dirsOpen]);
+
+  // "/" focuses the navbar search pill (when visible on this viewport)
+  useEffect(() => {
+    const onSlash = (e: KeyboardEvent) => {
+      if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+      const el = e.target as HTMLElement | null;
+      if (
+        el &&
+        (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT" || el.isContentEditable)
+      )
+        return;
+      const input = searchInputRef.current;
+      if (input && input.offsetParent !== null) {
+        e.preventDefault();
+        input.focus();
+      }
+    };
+    document.addEventListener("keydown", onSlash);
+    return () => document.removeEventListener("keydown", onSlash);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-emerald-950/10 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-colors">
@@ -233,18 +255,27 @@ export function Navbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 ml-auto">
-            {/* Quick search button / trigger */}
-            <Link
-              href="/events?search="
-              className="hidden 2xl:flex items-center gap-2 pl-3 pr-2.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 border border-slate-200/70 text-slate-500 hover:text-slate-800 text-xs transition-colors"
-              aria-label={t("nav.search")}
+            {/* Quick search — real input; press "/" to focus, Enter to search */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const q = searchInputRef.current?.value.trim() ?? "";
+                router.push(q ? `/events?search=${encodeURIComponent(q)}` : "/events");
+              }}
+              className="hidden 2xl:flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 border border-slate-200/70 focus-within:border-brand-300 focus-within:bg-white text-slate-500 hover:text-slate-800 text-xs transition-colors"
             >
-              <Search size={14} className="text-slate-400" />
-              <span>Search gatherings...</span>
+              <Search size={14} className="text-slate-400 shrink-0" />
+              <input
+                ref={searchInputRef}
+                type="search"
+                placeholder="Search gatherings..."
+                aria-label={t("nav.search")}
+                className="w-44 bg-transparent border-none outline-none p-0 text-slate-800 placeholder:text-slate-400 text-xs"
+              />
               <kbd className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-white border border-slate-200 rounded">
                 /
               </kbd>
-            </Link>
+            </form>
 
             {/* Compact search icon button for lg/xl screens */}
             <Link

@@ -53,7 +53,7 @@ export default defineConfig({
       cwd: REPO_ROOT,
       url: WEB_URL,
       reuseExistingServer: !process.env.CI,
-      timeout: 90_000,
+      timeout: 120_000,
       stdout: "pipe",
       stderr: "pipe",
     },

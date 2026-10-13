@@ -73,14 +73,14 @@ A Pakistan-focused community events platform where organizers publish events, us
 | Area | Requirement |
 |---|---|
 | Security | helmet, CORS allow-list, rate limiting, zod validation everywhere, JWT, account lockout, CSRF origin guard (state-changing verbs), `trust proxy` in prod, Next.js security headers (Referrer-Policy, Permissions-Policy), upload allow-list |
-| Testing | API: jest + supertest (~166 tests); web: vitest (incl. i18n parity); E2E: Playwright 13-test smoke suite (root `e2e/`, `npm run test:e2e`); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api` |
+| Testing | API: jest + supertest (~166 tests); web: vitest (incl. i18n parity); E2E: Playwright 13-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api` |
 | Data integrity | Idempotent seeds, `unique()`-suffixed fixtures in tests (shared test DB), zod 422 contract |
 | Perf | Server components + `fetchPaginated` with revalidate, TanStack Query staleTime 60 s client-side |
-| Known gaps | Cloudinary creds are placeholders (uploads fail); E2E is smoke-level only (no visual regression, no CI job yet) |
+| Known gaps | Cloudinary creds are placeholders (uploads fail); E2E is smoke-level only (no visual regression) |
 
 ## 5. Out of scope / backlog candidates
 
 - Real Cloudinary (or S3) image pipeline
-- E2E visual regression + CI job for the Playwright suite
-- SMS/WhatsApp notifications, maps geocoding
-- i18n for directory pages (currently English-only UI strings)
+- E2E visual regression (CI job for the Playwright suite is in place)
+- SMS/WhatsApp notifications
+- i18n for category-page sections (Charity/Muharram Jaloos/Urs sections are English-only; explorers from Phase 36 + scholars/melas are translated)

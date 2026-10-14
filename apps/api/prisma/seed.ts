@@ -4,6 +4,7 @@ import { State, City } from "country-state-city";
 import slugify from "slugify";
 import fs from "fs";
 import path from "path";
+import crypto from "crypto";
 
 const prisma = new PrismaClient();
 
@@ -533,22 +534,48 @@ async function main() {
     console.log(`  ✓ ${scholars.length} scholars seeded`);
   }
 
-  const adminEmail = "admin@communityevents.pk";
+  // ── Admin user (idempotent — never overwrites an existing password) ───────
+  const adminEmail = process.env.ADMIN_EMAIL?.trim() || "admin@communityevents.pk";
   const adminExists = await prisma.user.findUnique({ where: { email: adminEmail } });
 
-  if (!adminExists) {
+  if (adminExists) {
+    console.log("  ✓ Admin user already exists, skipping");
+  } else {
+    const providedPassword = process.env.ADMIN_PASSWORD?.trim();
+    const isProduction = process.env.NODE_ENV === "production";
+
+    if (isProduction && (!providedPassword || providedPassword.length < 12)) {
+      throw new Error(
+        "Admin not seeded: set ADMIN_PASSWORD to at least 12 characters when NODE_ENV=production."
+      );
+    }
+
+    let password = providedPassword;
+    let generated = false;
+    if (!password) {
+      password = crypto.randomBytes(18).toString("base64url");
+      generated = true;
+    }
+
     await prisma.user.create({
       data: {
         name: "Platform Admin",
         email: adminEmail,
-        passwordHash: await bcrypt.hash("Admin@123456", 12),
+        passwordHash: await bcrypt.hash(password, 12),
         role: "ADMIN",
       },
     });
-    console.log(`  ✓ Admin user created — email: ${adminEmail}, password: Admin@123456`);
-    console.log("    ⚠️  Change this password immediately in production!");
-  } else {
-    console.log("  ✓ Admin user already exists, skipping");
+
+    if (generated) {
+      console.log(`  ✓ Admin user created — email: ${adminEmail}`);
+      console.log(
+        "    ⚠️  ADMIN_PASSWORD was not set — a random password was generated and will be shown ONCE:"
+      );
+      console.log(`    ${password}`);
+      console.log("    Copy it now — it cannot be shown again.");
+    } else {
+      console.log(`  ✓ Admin user created — email: ${adminEmail} (password read from ADMIN_PASSWORD)`);
+    }
   }
 
   console.log("\nSeeding complete!");

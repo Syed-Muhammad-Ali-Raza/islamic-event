@@ -98,14 +98,18 @@ Tests: `npm test` (unit) · `npm run test:e2e` (Playwright)
 
 ---
 
-## Default Admin Account
+## Seeded Admin Account
 
-Created by the seed (unless an account with that email already exists):
+The seed creates one ADMIN account — set the credentials in `apps/api/.env` **before** running `db:seed`:
 
-- Email: `admin@communityevents.pk`
-- Password: `Admin@123456`
+```bash
+ADMIN_EMAIL="admin@communityevents.pk"   # optional — this is the default
+ADMIN_PASSWORD="your-strong-password"    # required in production (min 12 chars)
+```
 
-> **Change this password immediately in production.**
+- **Development:** if `ADMIN_PASSWORD` is empty, the seed generates a strong random password and prints it to the console **once**.
+- **Production** (`NODE_ENV=production`): the seed refuses to create the admin unless `ADMIN_PASSWORD` is set and at least 12 characters.
+- Re-running the seed **never overwrites** an existing admin's password.
 
 ---
 

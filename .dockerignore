@@ -1,0 +1,35 @@
+# Build context = repo root (npm workspaces). Secrets are never baked into
+# images — compose injects .env values at RUNTIME.
+
+# VCS / IDE
+.git
+.github
+.vscode
+.idea
+
+# Dependencies & build output (rebuilt inside the image)
+node_modules
+**/node_modules
+**/.next
+**/dist
+*.tsbuildinfo
+
+# Env files — all of them (compose reads .env from the host at runtime)
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Logs & test artifacts
+logs
+**/logs
+*.log
+test-results
+**/test-results
+playwright-report
+**/playwright-report
+blob-report
+
+# Not needed inside images
+e2e
+docs

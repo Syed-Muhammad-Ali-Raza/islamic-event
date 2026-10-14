@@ -1,6 +1,12 @@
 import type { PaginatedResponse } from "@/types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
+// Server-side base URL. API_INTERNAL_URL is read at RUNTIME (Docker/Compose,
+// where SSR must reach the api service by service name); NEXT_PUBLIC_API_URL is
+// inlined at build time and is the fallback outside containers.
+const API_URL =
+  process.env.API_INTERNAL_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:4000/api/v1";
 
 export async function fetchFromApi<T>(path: string, revalidate = 60): Promise<T | null> {
   try {

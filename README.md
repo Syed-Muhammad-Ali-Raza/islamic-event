@@ -98,6 +98,30 @@ Tests: `npm test` (unit) · `npm run test:e2e` (Playwright)
 
 ---
 
+## Docker
+
+Run the whole stack (PostgreSQL + API + web) with Docker Compose:
+
+```bash
+docker compose up --build
+# web  → http://localhost:3000
+# api  → http://localhost:4000/health
+# db   → localhost:5432
+```
+
+- **Config comes from `.env`** (see `.env.example`). The API container runs with `NODE_ENV=production`, so `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` must be real random values (≥ 32 chars, not `your-*` placeholders) — generate with `openssl rand -hex 32`. The API refuses to start otherwise.
+- **Schema:** this repo uses `prisma db push` (no committed migrations) — the API container syncs the schema on startup. Existing data is never dropped without `--accept-data-loss`.
+- **Seeding** runs from the host (the API image ships no dev tooling):
+
+  ```bash
+  DATABASE_URL="postgresql://postgres:postgres@localhost:5432/community_events" \
+    npm run db:seed --workspace apps/api
+  ```
+
+- **Port clashes?** If you already run PostgreSQL locally, change `POSTGRES_PORT` (e.g. `55432`), `API_PORT`, or `WEB_PORT` in `.env` — Compose picks them up.
+
+---
+
 ## Seeded Admin Account
 
 The seed creates one ADMIN account — set the credentials in `apps/api/.env` **before** running `db:seed`:

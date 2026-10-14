@@ -1,0 +1,11 @@
+# Used only when building with the app directory as context:
+#   docker build -f apps/web/Dockerfile apps/web
+# The root docker-compose.yml builds with the repo-root context instead
+# (npm workspaces need the root package.json + lockfile), in which case the
+# root .dockerignore applies.
+node_modules
+.next
+.env
+.env.*
+*.log
+*.tsbuildinfo

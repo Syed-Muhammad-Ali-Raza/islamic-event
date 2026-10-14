@@ -1,0 +1,118 @@
+# Deploy — skeleton
+#
+# Runs ONLY on push to main (or manual dispatch), and ONLY after the full CI
+# suite (lint, typecheck, unit tests, build, E2E) has passed — the `tests`
+# job below reuses .github/workflows/ci.yml via workflow_call.
+#
+# Nothing here is configured yet: fill in your hosting providers and store
+# every credential in GitHub Secrets (Settings → Secrets and variables →
+# Actions). NEVER hardcode tokens, keys, or database URLs in this file.
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
+jobs:
+  # ── Gate: full CI suite (unit + e2e) must be green before deploying ────────
+  tests:
+    uses: ./.github/workflows/ci.yml
+
+  # ── API (Express + Prisma) ─────────────────────────────────────────────────
+  # Pick ONE provider below, add its secrets, and uncomment its steps.
+  deploy-api:
+    name: Deploy API
+    needs: tests
+    runs-on: ubuntu-latest
+    environment: production # optional: add environment protection rules in GitHub
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ── Database schema on every deploy ──────────────────────────────────
+      # This repo has NO committed migrations (apps/api/prisma/migrations/ is
+      # gitignored; the convention is `prisma db push`). If you start
+      # committing migrations, replace the run line with:
+      #   npx prisma migrate deploy
+      - name: Sync database schema
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npx prisma db push --skip-generate
+
+      # ── Option A: Render ─────────────────────────────────────────────────
+      # Secrets needed: RENDER_API_KEY, RENDER_SERVICE_ID
+      # - name: Deploy to Render
+      #   run: |
+      #     curl -sf -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+      #       -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+      #       -H "Content-Type: application/json" \
+      #       -d "{\"clear_cache\": false}"
+
+      # ── Option B: Railway ────────────────────────────────────────────────
+      # Secrets needed: RAILWAY_TOKEN (+ RAILWAY_SERVICE_ID if using --service)
+      # - name: Deploy to Railway
+      #   run: |
+      #     npm install -g @railway/cli
+      #     railway up --service "${{ secrets.RAILWAY_SERVICE_ID }}" --detach
+
+      # ── Option C: Fly.io ─────────────────────────────────────────────────
+      # Secrets needed: FLY_API_TOKEN
+      # - name: Deploy to Fly.io
+      #   uses: superfly/flyctl-actions/setup-flyctl@master
+      # - name: Run flyctl deploy
+      #   run: flyctl deploy --remote-only --app "${{ secrets.FLY_APP_NAME }}"
+      #   env:
+      #     FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Placeholder (no provider configured)
+        run: echo "Pick Render/Railway/Fly.io above and add the matching GitHub Secrets."
+
+  # ── Web (Next.js) ─────────────────────────────────────────────────────────
+  # Vercel is the default. NEXT_PUBLIC_* variables must be set in the Vercel
+  # project settings (they are inlined at build time), not only as runtime env.
+  deploy-web:
+    name: Deploy Web
+    needs: tests
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      # Secrets needed: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+      - name: Pull Vercel environment
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Build
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Deploy to production
+        id: deploy
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

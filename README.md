@@ -152,6 +152,12 @@ The full delivered-phase checklist (1–43) lives in [`docs/PHASES.md`](docs/PHA
 
 ---
 
+## Sponsor
+
+If this project helps you, consider sponsoring: [github.com/sponsors/Syed-Muhammad-Ali-Raza](https://github.com/sponsors/Syed-Muhammad-Ali-Raza) (or use the **Sponsor** button at the top of the repo).
+
+---
+
 ## License
 
 [MIT](LICENSE) © 2026 Syed Muhammad Ali Raza

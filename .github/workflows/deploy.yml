@@ -19,6 +19,11 @@ concurrency:
   group: deploy-main
   cancel-in-progress: false
 
+# Read secrets once; empty strings let each job below skip itself instead of
+# crashing CLI tools with e.g. `--token=` (GitHub's `if` can read workflow-level env).
+env:
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
 jobs:
   # ── Gate: full CI suite (unit + e2e) must be green before deploying ────────
   tests:
@@ -26,11 +31,14 @@ jobs:
 
   # ── API (Express + Prisma) ─────────────────────────────────────────────────
   # Pick ONE provider below, add its secrets, and uncomment its steps.
+  # Skips cleanly while DATABASE_URL is not configured yet.
   deploy-api:
     name: Deploy API
     needs: tests
     runs-on: ubuntu-latest
     environment: production # optional: add environment protection rules in GitHub
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -47,8 +55,7 @@ jobs:
       # committing migrations, replace the run line with:
       #   npx prisma migrate deploy
       - name: Sync database schema
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        if: ${{ env.DATABASE_URL != '' }}
         run: npx prisma db push --skip-generate
 
       # ── Option A: Render ─────────────────────────────────────────────────
@@ -82,9 +89,13 @@ jobs:
   # ── Web (Next.js) ─────────────────────────────────────────────────────────
   # Vercel is the default. NEXT_PUBLIC_* variables must be set in the Vercel
   # project settings (they are inlined at build time), not only as runtime env.
+  # Skips itself while VERCEL_TOKEN / VERCEL_ORG_ID / VERCEL_PROJECT_ID are
+  # not configured yet — add them under Settings → Secrets and variables →
+  # Actions, then re-run this workflow.
   deploy-web:
     name: Deploy Web
     needs: tests
+    if: ${{ env.VERCEL_TOKEN != '' }}
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -99,20 +110,20 @@ jobs:
 
       # Secrets needed: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
       - name: Pull Vercel environment
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Build
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --prod --token "$VERCEL_TOKEN"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Deploy to production
         id: deploy
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

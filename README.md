@@ -38,6 +38,12 @@ A modern web platform for Pakistani, Indian, and South Asian communities to disc
 
 ---
 
+## Screenshots
+
+_Coming soon — homepage, events list (map view), and event detail (desktop + mobile). Add images under `docs/screenshots/` and link them here._
+
+---
+
 ## Tech Stack
 
 | Layer    | Technology                                     |
@@ -157,6 +163,44 @@ See `.env.example` for all required variables (`DATABASE_URL`, JWT secrets, `CLO
 
 ---
 
+## Deployment
+
+Recommended production setup:
+
+| Piece | Recommended | Notes |
+| --- | --- | --- |
+| Web | **Vercel** (Next.js) | Set every `NEXT_PUBLIC_*` var in project settings — they are inlined at build time |
+| API | **Render** or **Railway** (Docker works out of the box) | Expose port `4000`; health check path `/health` |
+| Database | **Neon** or **Supabase** (managed Postgres) | Use the pooled connection string; backups on by default |
+| Images | **Cloudinary** | Required for event image uploads |
+
+**Required environment variables (API):** `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET` (random, ≥ 32 chars — `openssl rand -hex 32`), `CLOUDINARY_CLOUD_NAME/API_KEY/API_SECRET`, `CORS_ORIGINS` (your web origin), `APP_URL`. **Web:** `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_APP_URL`. The API validates these at boot and refuses weak/placeholder JWT secrets in production.
+
+**Migrate & seed:**
+
+```bash
+# Schema — this repo uses prisma db push (no committed migrations):
+npx prisma db push --skip-generate        # run on each deploy (see .github/workflows/deploy.yml)
+
+# Seed (once per environment, from a machine with dev deps installed):
+npm run db:seed --workspace apps/api
+
+# Admin account: set ADMIN_EMAIL / ADMIN_PASSWORD (min 12 chars) in the
+# environment before seeding — see "Seeded Admin Account" above.
+```
+
+**Post-deploy checklist:**
+
+- [ ] `GET https://api.<your-domain>/health` returns `"status":"ok"` and `"database":"up"`
+- [ ] Real JWT secrets set (not `your-*` placeholders) — the API log shows no config errors
+- [ ] `CORS_ORIGINS` contains the exact production web origin(s)
+- [ ] Web build has the production `NEXT_PUBLIC_API_URL` (inlined at build time)
+- [ ] Admin seeded and the initial password changed
+- [ ] Cloudinary upload tested with a real image
+- [ ] HTTPS enforced by the host; custom domain + DNS verified
+
+---
+
 ## Contributing
 
 Contributions are welcome, including data corrections, translations, and bug fixes.
@@ -177,6 +221,16 @@ Please be respectful. This platform serves religious communities, so keep discus
 ## Development Phases
 
 The full delivered-phase checklist (1–43) lives in [`docs/PHASES.md`](docs/PHASES.md).
+
+---
+
+## Content Disclaimer
+
+Urs dates, Muharram procession routes, road closures, darbar/shrine details, charity information, and other directory entries are **curated from publicly available sources** and may change without notice — dates shift (moon sighting), routes are altered by local authorities, and organizations update their policies. Nothing here should be treated as an official announcement.
+
+Always confirm with the organizers, the relevant Auqaf department, or the shrine administration before travelling.
+
+**Found something wrong?** [Open an issue](../../issues/new) with a source link, or use the "Data corrections" notes in [Contributing](#contributing) — corrections are the most valuable contributions you can make.
 
 ---
 

@@ -1,6 +1,6 @@
 # Requirements — Community Events Platform
 
-Last updated: 2026-10-10 · Status: Phases 1–31 delivered (see `README.md` phase checklist).
+Last updated: 2026-10-13 · Status: Phases 1–43 delivered (see `docs/PHASES.md` phase checklist).
 
 ## 1. Overview
 

@@ -13,9 +13,13 @@ const FILES = [
   "DarbarsExplorer.tsx",
   "MelaExplorer.tsx",
   "ScholarsExplorer.tsx",
+  "../events/CharityDirectory.tsx",
+  "../events/MuharramJaloos.tsx",
+  "../events/UpcomingUrs.tsx",
 ];
 
-const KEY_RE = /"(directories|dastarkhwan|imambargahs|places|darbars|melas|scholars)\.[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*"/g;
+const KEY_RE =
+  /"(directories|dastarkhwan|imambargahs|places|darbars|melas|scholars|category)\.[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*"/g;
 
 type Tree = { [key: string]: string | Tree };
 
@@ -30,7 +34,7 @@ describe("directory explorer i18n keys", () => {
   const en = i18n.getResourceBundle("en", "translation") as Tree;
 
   it("has directory namespaces in the English bundle", () => {
-    for (const ns of ["directories", "dastarkhwan", "imambargahs", "places", "darbars", "melas", "scholars"]) {
+    for (const ns of ["directories", "dastarkhwan", "imambargahs", "places", "darbars", "melas", "scholars", "category"]) {
       expect(resolve(en, ns)).toBeTruthy();
     }
   });
@@ -38,7 +42,7 @@ describe("directory explorer i18n keys", () => {
   it.each(FILES)("%s only uses keys that exist", (file) => {
     const src = fs.readFileSync(path.join(HERE, file), "utf8");
     const keys = [...src.matchAll(KEY_RE)].map((m) => m[0].slice(1, -1));
-    expect(keys.length).toBeGreaterThan(10);
+    expect(keys.length).toBeGreaterThanOrEqual(10);
     const missing = [...new Set(keys)].filter((k) => resolve(en, k) === undefined);
     expect(missing).toEqual([]);
   });

@@ -2,52 +2,48 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { Search, MapPin, Clock, ChevronDown, AlertTriangle } from "lucide-react";
 import { clsx } from "clsx";
 import { useProcessions } from "@/hooks/useProcessions";
 import type { PaginatedResponse, Procession } from "@/types";
 
-const KIND_META: Record<
-  string,
-  { label: string; rule: string; chip: string; dot: string }
-> = {
+const KIND_META: Record<string, { rule: string; chip: string; dot: string }> = {
   procession: {
-    label: "Procession",
     rule: "border-l-rose-500",
     chip: "bg-rose-50 text-rose-700 border-rose-200",
     dot: "bg-rose-500",
   },
   road_closure: {
-    label: "Road closure",
     rule: "border-l-amber-400",
     chip: "bg-amber-50 text-amber-700 border-amber-200",
     dot: "bg-amber-500",
   },
   summary: {
-    label: "Overview",
     rule: "border-l-emerald-500",
     chip: "bg-emerald-50 text-emerald-700 border-emerald-200",
     dot: "bg-emerald-500",
   },
 };
 
+const KIND_LABEL_KEY: Record<string, string> = {
+  procession: "category.jaloos.kindProcession",
+  road_closure: "category.jaloos.kindRoadClosure",
+  summary: "category.jaloos.kindOverview",
+};
+
 const CITIES = ["All", "Lahore", "Islamabad", "Faisalabad", "Rawalpindi", "Multan"];
-const MONTHS: { value: string; label: string }[] = [
-  { value: "", label: "All months" },
+const MONTHS: { value: string; label?: string; labelKey?: string }[] = [
+  { value: "", labelKey: "category.jaloos.allMonths" },
   { value: "Muharram", label: "Muharram" },
   { value: "Safar", label: "Safar" },
 ];
-
-function dayLabel(day: string) {
-  if (day === "1-10") return "1st – 10th Muharram";
-  const suffix = day === "1" ? "st" : day === "2" ? "nd" : day === "3" ? "rd" : "th";
-  return `${day}${suffix} Muharram`;
-}
 
 const focusRing =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600";
 
 function ProcessionCard({ p }: { p: Procession }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const meta = KIND_META[p.kind] ?? KIND_META.procession;
   const highlights = p.routeHighlights?.split("\n").filter(Boolean) ?? [];
@@ -76,7 +72,7 @@ function ProcessionCard({ p }: { p: Procession }) {
           )}
         >
           <span className={clsx("h-1.5 w-1.5 rounded-full", meta.dot)} />
-          {meta.label}
+          {t(KIND_LABEL_KEY[p.kind] ?? KIND_LABEL_KEY.procession)}
         </span>
       </header>
 
@@ -101,7 +97,7 @@ function ProcessionCard({ p }: { p: Procession }) {
               <li className="relative flex gap-3">
                 <span className="relative mt-1.5 h-[11px] w-[11px] shrink-0 rounded-full border-2 border-brand-600 bg-white" />
                 <div>
-                  <p className="text-xs text-slate-500">Starting point</p>
+                  <p className="text-xs text-slate-500">{t("category.jaloos.startingPoint")}</p>
                   <p className="font-medium text-sm">{p.start}</p>
                 </div>
               </li>
@@ -110,7 +106,7 @@ function ProcessionCard({ p }: { p: Procession }) {
               <li className="relative flex gap-3">
                 <span className="relative mt-1.5 h-[11px] w-[11px] shrink-0 rounded-full bg-rose-500" />
                 <div>
-                  <p className="text-xs text-slate-500">Culmination</p>
+                  <p className="text-xs text-slate-500">{t("category.jaloos.culmination")}</p>
                   <p className="font-medium text-sm">{p.end}</p>
                 </div>
               </li>
@@ -122,7 +118,7 @@ function ProcessionCard({ p }: { p: Procession }) {
       {routeLines.length > 0 && (
         <div className="mt-4 text-sm">
           <p className="font-semibold text-slate-900 text-xs uppercase tracking-wide">
-            Route and key intersections
+            {t("category.jaloos.route")}
           </p>
           <ul className="mt-2 space-y-1.5 text-xs text-slate-600">
             {routeLines.map((r, i) => (
@@ -141,7 +137,7 @@ function ProcessionCard({ p }: { p: Procession }) {
       {highlights.length > 0 && (
         <div className="mt-4 text-sm">
           <p className="font-semibold text-slate-900 text-xs uppercase tracking-wide">
-            Route highlights
+            {t("category.jaloos.highlights")}
           </p>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {highlights.map((h) => (
@@ -169,7 +165,7 @@ function ProcessionCard({ p }: { p: Procession }) {
                 focusRing
               )}
             >
-              {open ? "Show less" : "Read more"}
+              {open ? t("category.jaloos.showLess") : t("category.jaloos.readMore")}
               <ChevronDown
                 size={13}
                 className={clsx("transition-transform", open && "rotate-180")}
@@ -198,7 +194,7 @@ function ProcessionCard({ p }: { p: Procession }) {
             )}
           >
             <MapPin size={13} aria-hidden />
-            Open starting point in Google Maps
+            {t("category.jaloos.openMaps")}
           </a>
         </div>
       )}
@@ -215,6 +211,7 @@ export function MuharramJaloos({
   seed: { q: string; city: string; month: string; page: number };
   currentQuery: string;
 }) {
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const [input, setInput] = useState(seed.q);
   const [q, setQ] = useState(seed.q);
@@ -286,6 +283,21 @@ export function MuharramJaloos({
 
   const items = useMemo(() => data?.data ?? [], [data]);
 
+  const dayLabel = (day: string) => {
+    if (day === "1-10") return t("category.jaloos.days1to10");
+    const suffix =
+      i18n.language === "en"
+        ? day === "1"
+          ? "st"
+          : day === "2"
+            ? "nd"
+            : day === "3"
+              ? "rd"
+              : "th"
+        : "";
+    return t("category.jaloos.day", { day: `${day}${suffix}` });
+  };
+
   const grouped = useMemo(() => {
     const map = new Map<string, Procession[]>();
     for (const p of items) {
@@ -307,25 +319,20 @@ export function MuharramJaloos({
       <div className="mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold uppercase tracking-wider mb-2.5">
           <AlertTriangle size={14} className="text-rose-600" />
-          <span>Muharram & Safar Processions</span>
+          <span>{t("category.jaloos.badge")}</span>
         </div>
         <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-2">
-          Muharram jaloos
+          {t("category.jaloos.title")}
         </h2>
         <p className="text-slate-500 text-sm sm:text-base max-w-2xl leading-relaxed">
-          Procession routes, timings and road closures for Muharram and Safar in major
-          cities. Routes can change every year, so confirm locally before you travel.
+          {t("category.jaloos.subtitle")}
         </p>
       </div>
 
       {/* Disclaimer */}
       <div className="mb-8 flex items-start gap-3 rounded-2xl border border-amber-200/90 bg-amber-50/70 p-4 sm:p-5 text-xs sm:text-sm text-amber-900 shadow-xs">
         <AlertTriangle size={18} className="shrink-0 text-amber-600 mt-0.5" aria-hidden />
-        <p className="leading-relaxed">
-          Dates and routes depend on moon sighting and local administration decisions.
-          Google Maps links point to starting-point names only. Data is compiled from
-          official traffic advisories and police reports.
-        </p>
+        <p className="leading-relaxed">{t("category.jaloos.disclaimer")}</p>
       </div>
 
       {/* Filter Bar */}
@@ -345,7 +352,7 @@ export function MuharramJaloos({
                     : "bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200/70"
                 )}
               >
-                {c}
+                {c === "All" ? t("category.jaloos.all") : c}
               </button>
             ))}
           </div>
@@ -364,7 +371,7 @@ export function MuharramJaloos({
                     : "text-slate-600 hover:text-slate-900"
                 )}
               >
-                {m.label}
+                {m.labelKey ? t(m.labelKey) : m.label}
               </button>
             ))}
           </div>
@@ -379,9 +386,9 @@ export function MuharramJaloos({
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && applySearch()}
-              placeholder="Search by name, route or place"
+              placeholder={t("category.jaloos.searchPlaceholder")}
               className="flex-1 bg-transparent text-slate-900 placeholder-slate-400 text-sm focus:outline-none"
-              aria-label="Search processions"
+              aria-label={t("category.jaloos.searchAria")}
             />
           </div>
           <button
@@ -392,7 +399,7 @@ export function MuharramJaloos({
               focusRing
             )}
           >
-            <span>Search</span>
+            <span>{t("directories.search")}</span>
           </button>
         </div>
       </div>
@@ -409,9 +416,9 @@ export function MuharramJaloos({
         </div>
       ) : items.length === 0 ? (
         <div className="bg-white border border-slate-200 rounded-2xl text-center py-16 px-6 shadow-xs">
-          <p className="text-lg font-bold text-slate-900">No processions match these filters</p>
+          <p className="text-lg font-bold text-slate-900">{t("category.jaloos.noResultsTitle")}</p>
           <p className="text-slate-500 text-sm mt-1 mx-auto max-w-sm">
-            Try another city or month, or clear the search to see everything.
+            {t("category.jaloos.noResultsHint")}
           </p>
         </div>
       ) : (
@@ -455,7 +462,7 @@ export function MuharramJaloos({
                   {others.length > 0 && (
                     <div className="grid gap-4 md:grid-cols-[150px_1fr] md:gap-8">
                       <h4 className="text-lg font-bold text-amber-700 md:sticky md:top-4 md:self-start">
-                        Closures and overview
+                        {t("category.jaloos.closuresOverview")}
                       </h4>
                       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                         {others.map((p) => (
@@ -480,10 +487,10 @@ export function MuharramJaloos({
             onClick={() => gotoPage(page - 1)}
             className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
           >
-            ← Previous
+            {t("directories.prev")}
           </button>
           <span className="text-slate-500 text-sm font-medium">
-            Page {data.pagination.page} of {data.pagination.totalPages}
+            {t("directories.pageOf", { page: data.pagination.page, total: data.pagination.totalPages })}
           </span>
           <button
             type="button"
@@ -491,7 +498,7 @@ export function MuharramJaloos({
             onClick={() => gotoPage(page + 1)}
             className="btn-secondary py-2 px-4 text-sm disabled:opacity-40"
           >
-            Next →
+            {t("directories.next")}
           </button>
         </div>
       )}

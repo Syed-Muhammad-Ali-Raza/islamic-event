@@ -1,26 +1,29 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { CalendarDays, ArrowRight, MapPin, Sparkles } from "lucide-react";
 import type { UrsDate } from "@/types";
 
-const CONFIDENCE_CHIP: Record<string, { label: string; className: string }> = {
-  high: { label: "High confidence", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  medium: { label: "Medium confidence", className: "bg-sky-50 text-sky-700 border-sky-200" },
-  low: { label: "Low confidence", className: "bg-amber-50 text-amber-700 border-amber-200" },
-  none: { label: "Not researched", className: "bg-slate-50 text-slate-500 border-slate-200" },
+const CONFIDENCE_CHIP: Record<string, { labelKey: string; className: string }> = {
+  high: { labelKey: "category.urs.confHigh", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  medium: { labelKey: "category.urs.confMedium", className: "bg-sky-50 text-sky-700 border-sky-200" },
+  low: { labelKey: "category.urs.confLow", className: "bg-amber-50 text-amber-700 border-amber-200" },
+  none: { labelKey: "category.urs.confNone", className: "bg-slate-50 text-slate-500 border-slate-200" },
 };
 
-function confidenceChip(confidence: string) {
-  const c = CONFIDENCE_CHIP[confidence] ?? CONFIDENCE_CHIP.none;
-  return (
-    <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold shrink-0 ${c.className}`}>
-      {c.label}
-    </span>
-  );
-}
-
 export function UpcomingUrs({ dates }: { dates: UrsDate[] }) {
+  const { t } = useTranslation();
+
+  const confidenceChip = (confidence: string) => {
+    const c = CONFIDENCE_CHIP[confidence] ?? CONFIDENCE_CHIP.none;
+    return (
+      <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold shrink-0 ${c.className}`}>
+        {t(c.labelKey)}
+      </span>
+    );
+  };
+
   const upcoming = dates
     .filter((u) => u.researched && u.upcomingOrder != null)
     .sort((a, b) => (a.upcomingOrder ?? 0) - (b.upcomingOrder ?? 0));
@@ -33,13 +36,13 @@ export function UpcomingUrs({ dates }: { dates: UrsDate[] }) {
         <div>
           <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full mb-2">
             <Sparkles size={13} />
-            <span>Lunar Calendar Observances</span>
+            <span>{t("category.urs.badge")}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-            Upcoming Urs (In Order)
+            {t("category.urs.title")}
           </h2>
           <p className="text-slate-500 text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">
-            Respected Sufi shrines with researched annual Urs dates, ordered by next expected observance. Always confirm with local Auqaf or administration before travelling.
+            {t("category.urs.subtitle")}
           </p>
         </div>
 
@@ -47,7 +50,7 @@ export function UpcomingUrs({ dates }: { dates: UrsDate[] }) {
           href="/darbars"
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-800 transition-colors group shrink-0"
         >
-          <span>All shrines &amp; dates</span>
+          <span>{t("category.urs.allShrines")}</span>
           <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
         </Link>
       </div>
@@ -71,12 +74,12 @@ export function UpcomingUrs({ dates }: { dates: UrsDate[] }) {
               </p>
               {u.ursRule && (
                 <p className="text-xs text-slate-600 mt-1">
-                  <span className="font-medium text-slate-500">Rule:</span> {u.ursRule}
+                  <span className="font-medium text-slate-500">{t("category.urs.rule")}</span> {u.ursRule}
                 </p>
               )}
             </div>
             <div className="sm:text-right shrink-0 bg-amber-50 sm:bg-transparent p-2 sm:p-0 rounded-xl border border-amber-200/60 sm:border-0">
-              <span className="text-[10px] text-amber-800 uppercase font-bold block sm:hidden">Next Expected:</span>
+              <span className="text-[10px] text-amber-800 uppercase font-bold block sm:hidden">{t("category.urs.nextExpected")}</span>
               <p className="text-sm font-bold text-brand-700 sm:text-base">
                 {u.nextExpected}
               </p>

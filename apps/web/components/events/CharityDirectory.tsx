@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { Charity } from "@/types";
 
 function CharityCard({ c }: { c: Charity }) {
+  const { t } = useTranslation();
   const hundred = c.policyNote?.includes("100%") ?? false;
   const contacts = c.contactNumbers?.split(";").map((s) => s.trim()).filter(Boolean) ?? [];
 
@@ -13,7 +15,7 @@ function CharityCard({ c }: { c: Charity }) {
         <h3 className="font-semibold text-slate-900 leading-snug">{c.name}</h3>
         {hundred && (
           <span className="badge border text-[10px] px-2 py-0.5 whitespace-nowrap bg-emerald-50 text-emerald-700 border-emerald-200">
-            100% Policy
+            {t("category.charity.policyBadge")}
           </span>
         )}
       </div>
@@ -33,10 +35,10 @@ function CharityCard({ c }: { c: Charity }) {
       {c.address && <p className="text-xs text-slate-500 mb-2">🏠 {c.address}</p>}
 
       {c.founder && (
-        <p className="text-xs text-slate-500 mb-1">👤 Founded by {c.founder}{c.founded ? ` (${c.founded})` : ""}</p>
+        <p className="text-xs text-slate-500 mb-1">👤 {t("category.charity.foundedBy")} {c.founder}{c.founded ? ` (${c.founded})` : ""}</p>
       )}
       {c.founded && !c.founder && (
-        <p className="text-xs text-slate-500 mb-1">📅 Founded: {c.founded}</p>
+        <p className="text-xs text-slate-500 mb-1">📅 {t("category.charity.founded")}: {c.founded}</p>
       )}
 
       {contacts.length > 0 && (
@@ -69,7 +71,7 @@ function CharityCard({ c }: { c: Charity }) {
             rel="noopener noreferrer"
             className="text-xs text-brand-700 font-medium hover:underline"
           >
-            🌐 Visit website
+            🌐 {t("category.charity.visitWebsite")}
           </a>
         )}
         {c.googleMapsLink && (
@@ -79,7 +81,7 @@ function CharityCard({ c }: { c: Charity }) {
             rel="noopener noreferrer"
             className="text-xs text-brand-700 font-medium hover:underline"
           >
-            📍 Google Maps
+            📍 {t("category.charity.googleMaps")}
           </a>
         )}
       </div>
@@ -94,6 +96,7 @@ export function CharityDirectory({
   charities: Charity[];
   countries: string[];
 }) {
+  const { t } = useTranslation();
   // Cascading filters: country → province → city
   const [country, setCountry] = useState("");
   const [province, setProvince] = useState("");
@@ -146,11 +149,9 @@ export function CharityDirectory({
   return (
     <section className="mt-12" id="charities">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-slate-900">🤲 Charity Directory</h2>
+        <h2 className="text-2xl font-bold text-slate-900">🤲 {t("category.charity.title")}</h2>
         <p className="text-slate-500 text-sm mt-1 max-w-2xl mx-auto">
-          Registered charities and welfare organizations across Pakistan. &ldquo;100% donation
-          policy&rdquo; means the organization states donations go directly to beneficiaries —
-          always verify each policy before donating.
+          {t("category.charity.subtitle")}
         </p>
       </div>
 
@@ -159,7 +160,7 @@ export function CharityDirectory({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label htmlFor="charity-country" className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">
-              Country
+              {t("category.charity.country")}
             </label>
             <select
               id="charity-country"
@@ -171,7 +172,7 @@ export function CharityDirectory({
               }}
               className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-500 focus:outline-none"
             >
-              <option value="">All countries</option>
+              <option value="">{t("category.charity.allCountries")}</option>
               {countries.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
@@ -180,7 +181,7 @@ export function CharityDirectory({
 
           <div>
             <label htmlFor="charity-province" className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">
-              Province / Region
+              {t("category.charity.province")}
             </label>
             <select
               id="charity-province"
@@ -192,7 +193,7 @@ export function CharityDirectory({
               disabled={!country}
               className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <option value="">{country ? "All provinces" : "Select country first"}</option>
+              <option value="">{country ? t("directories.allProvinces") : t("category.charity.selectCountryFirst")}</option>
               {provinceOptions.map((p) => (
                 <option key={p} value={p}>{p}</option>
               ))}
@@ -201,7 +202,7 @@ export function CharityDirectory({
 
           <div>
             <label htmlFor="charity-city" className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">
-              City
+              {t("category.charity.city")}
             </label>
             <select
               id="charity-city"
@@ -210,7 +211,7 @@ export function CharityDirectory({
               disabled={!province}
               className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <option value="">{province ? "All cities" : "Select province first"}</option>
+              <option value="">{province ? t("directories.allCities") : t("category.charity.selectProvinceFirst")}</option>
               {cityOptions.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
@@ -220,8 +221,9 @@ export function CharityDirectory({
 
         <div className="flex items-center justify-between mt-4">
           <p className="text-sm text-slate-500">
-            <span className="font-semibold text-slate-700">{filtered.length}</span> organization
-            {filtered.length === 1 ? "" : "s"} shown
+            {t(filtered.length === 1 ? "category.charity.shownOne" : "category.charity.shownOther", {
+              count: filtered.length,
+            })}
           </p>
           {(country || province || city) && (
             <button
@@ -229,14 +231,14 @@ export function CharityDirectory({
               onClick={reset}
               className="text-xs text-brand-700 font-medium hover:underline"
             >
-              Clear filters
+              {t("category.charity.clearFilters")}
             </button>
           )}
         </div>
       </div>
 
       {groups.length === 0 ? (
-        <p className="text-center text-slate-500 py-10">No organizations match the selected filters.</p>
+        <p className="text-center text-slate-500 py-10">{t("category.charity.noResults")}</p>
       ) : (
         <div className="space-y-10">
           {groups.map(([label, items]) => (
@@ -257,8 +259,7 @@ export function CharityDirectory({
       )}
 
       <p className="text-xs text-slate-400 text-center mt-8 max-w-2xl mx-auto">
-        Disclaimer: this list is not exhaustive. Please verify each organization&rsquo;s current
-        donation policy, registration and contact details before donating.
+        {t("category.charity.disclaimer")}
       </p>
     </section>
   );

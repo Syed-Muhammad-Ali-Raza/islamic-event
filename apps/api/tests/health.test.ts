@@ -5,6 +5,15 @@ describe("Health & routing", () => {
     const res = await api().get("/health");
     expect(res.status).toBe(200);
     expect(res.body.status).toBe("ok");
+    expect(res.body.database).toBe("up");
+    expect(typeof res.body.uptime).toBe("number");
+  });
+
+  it("GET /api/v1/health mirrors the root health check", async () => {
+    const res = await api().get("/api/v1/health");
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe("ok");
+    expect(res.body.database).toBe("up");
   });
 
   it("GET unknown API route returns 404", async () => {

@@ -148,7 +148,17 @@ export const config = {
   },
 
   cors: {
-    origin: process.env.CORS_ORIGIN ?? "http://localhost:3000",
+    // Comma-separated allow-list (CORS_ORIGINS preferred; CORS_ORIGIN still
+    // accepted for backwards compatibility). Never hardcoded — empty in prod
+    // config means callers must set the env var.
+    origins: (
+      process.env.CORS_ORIGINS ??
+      process.env.CORS_ORIGIN ??
+      "http://localhost:3000"
+    )
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
   },
 
   upload: {

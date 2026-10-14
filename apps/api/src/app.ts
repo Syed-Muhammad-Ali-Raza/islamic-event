@@ -9,6 +9,7 @@ import rateLimit from "express-rate-limit";
 import { config } from "./config";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 import { requireAuth } from "./middleware/auth.middleware";
+import { prisma } from "./config/prisma";
 
 // â”€â”€â”€ Module routers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 import authRoutes from "./modules/auth/auth.routes";
@@ -46,7 +47,16 @@ if (config.nodeEnv === "production") {
 app.use(helmet());
 app.use(
   cors({
-    origin: config.cors.origin,
+    // Comma-separated allow-list from CORS_ORIGINS (see config). Requests
+    // without an Origin header (curl, server-to-server) pass through with no
+    // CORS headers — only browsers enforce them.
+    origin: (origin, callback) => {
+      if (!origin || config.cors.origins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -80,11 +90,10 @@ if (config.nodeEnv !== "test") {
 // and not matching our allowed origin, reject early. Requests without an
 // Origin header (curl, server-to-server) are allowed — they can't be forged
 // by a browser.
-const allowedOrigins = new Set(
-  [config.cors.origin, config.app.url].flatMap((o) =>
-    typeof o === "string" ? o.split(",").map((s) => s.trim()) : []
-  )
-);
+const allowedOrigins = new Set([
+  ...config.cors.origins,
+  ...config.app.url.split(",").map((s) => s.trim()),
+]);
 app.use((req, res, next) => {
   if (["GET", "HEAD", "OPTIONS"].includes(req.method)) return next();
   const origin = req.headers.origin;
@@ -109,9 +118,26 @@ if (config.nodeEnv !== "test") {
 }
 
 // â”€â”€â”€ Health check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString(), env: config.nodeEnv });
-});
+const healthHandler = async (_req: express.Request, res: express.Response) => {
+  let database: "up" | "down" = "down";
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    database = "up";
+  } catch {
+    database = "down";
+  }
+  const healthy = database === "up";
+  res.status(healthy ? 200 : 503).json({
+    status: healthy ? "ok" : "degraded",
+    database,
+    uptime: Math.round(process.uptime()),
+    timestamp: new Date().toISOString(),
+    env: config.nodeEnv,
+  });
+};
+
+app.get("/health", healthHandler);
+app.get(`${config.apiPrefix}/health`, healthHandler);
 
 // â”€â”€â”€ API Routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const api = config.apiPrefix;

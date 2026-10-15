@@ -1,12 +1,16 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, UserRole } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { prisma } from "../../config/prisma";
 import { config } from "../../config";
 import { Errors } from "../../utils/AppError";
 import { generateSlug, parsePagination } from "../../utils/helpers";
+import { isSuperAdmin, canSubmitForOrg, canApproveForOrg } from "../../utils/permissions";
 import { sendNewEventAdminEmail, sendRsvpOrganizerEmail } from "../../services/email.service";
 import { notify } from "../../services/notification.service";
 import type { CreateEventInput, UpdateEventInput, EventQueryInput, CheckinInput } from "./event.validation";
+
+/** The authenticated requester (req.user, attached by requireAuth). */
+type EventRequester = { id: string; role: UserRole };
 
 // ─── Select shape used on public event listing ────────────────────────────────
 const eventListSelect = {
@@ -58,9 +62,11 @@ const eventDetailSelect = {
 export async function listEvents(query: EventQueryInput, userId?: string) {
   const { page, limit, skip } = parsePagination(query.page, query.limit);
 
-  // Build dynamic where clause
+  // Public listing is ALWAYS approved-only — a status query param must never
+  // leak pending/rejected events. Creators see their own unapproved events via
+  // GET /events/mine; admins via /admin/events.
   const where: Prisma.EventWhereInput = {
-    status: query.status ?? "APPROVED",
+    status: "APPROVED",
   };
 
   if (query.search) {
@@ -134,7 +140,21 @@ export async function getEventBySlug(slug: string) {
 
 // ─── Create event ─────────────────────────────────────────────────────────────
 
-export async function createEvent(input: CreateEventInput, createdById: string) {
+export async function createEvent(input: CreateEventInput, requester: EventRequester) {
+  // Submitting on behalf of an organization: it must exist, be active, and
+  // the requester must be a member (any role). Everyone else's submissions
+  // go in without an organization and await platform review as before.
+  if (input.organizerId) {
+    const organizer = await prisma.organizer.findUnique({
+      where: { id: input.organizerId },
+      select: { id: true, isActive: true },
+    });
+    if (!organizer || !organizer.isActive) throw Errors.notFound("Organization");
+    if (!(await canSubmitForOrg(requester, input.organizerId))) {
+      throw Errors.forbidden("You are not a member of this organization.");
+    }
+  }
+
   // Check for duplicate events (same title + date + venue)
   const possibleDuplicate = await prisma.event.findFirst({
     where: {
@@ -154,7 +174,7 @@ export async function createEvent(input: CreateEventInput, createdById: string) 
       title: input.title,
       description: input.description,
       categoryId: input.categoryId,
-      createdById,
+      createdById: requester.id,
       organizerId: input.organizerId,
       date: new Date(input.date),
       startTime: input.startTime,
@@ -179,32 +199,57 @@ export async function createEvent(input: CreateEventInput, createdById: string) 
     select: eventDetailSelect,
   });
 
-  // Phase 12: confirm submission to the creator + alert admins for moderation
-  const [creator, admins] = await Promise.all([
+  // Phase 12: confirm submission to the creator, alert platform super admins
+  // for moderation, and (for org submissions) the organization's OWNER/ADMIN
+  // members. NOTE: the reviewer query must include SUPER_ADMIN — the seeded
+  // platform admin carries that role, not legacy ADMIN.
+  const [submitter, superAdmins, orgAdmins] = await Promise.all([
     prisma.user.findUnique({
-      where: { id: createdById },
+      where: { id: requester.id },
       select: { name: true },
     }),
     prisma.user.findMany({
-      where: { role: "ADMIN", isActive: true },
+      where: { role: { in: ["SUPER_ADMIN", "ADMIN"] }, isActive: true },
       select: { id: true, name: true, email: true },
     }),
+    input.organizerId
+      ? prisma.organizationMember
+          .findMany({
+            where: { organizerId: input.organizerId, role: { in: ["OWNER", "ADMIN"] } },
+            select: { user: { select: { id: true, name: true, email: true } } },
+          })
+          .then((rows) => rows.map((row) => row.user))
+      : Promise.resolve([]),
   ]);
 
   await notify({
-    userId: createdById,
+    userId: requester.id,
     type: "SYSTEM",
     title: "Event submitted for review",
     body: `"${event.title}" will be visible publicly once approved.`,
     link: "/profile/events",
   });
 
-  for (const admin of admins) {
+  // In-app notice to the org's OWNER/ADMIN members (skip anyone who is also a
+  // platform super admin — they are notified below and would be duplicates).
+  const superAdminIds = new Set(superAdmins.map((a) => a.id));
+  for (const member of orgAdmins) {
+    if (superAdminIds.has(member.id)) continue;
+    await notify({
+      userId: member.id,
+      type: "NEW_EVENT",
+      title: "New event submitted for your organization",
+      body: `"${event.title}" by ${submitter?.name ?? "a member"} — awaiting platform review.`,
+      link: "/profile/events",
+    });
+  }
+
+  for (const admin of superAdmins) {
     await notify({
       userId: admin.id,
       type: "NEW_EVENT",
       title: "New event awaiting review",
-      body: `"${event.title}" by ${creator?.name ?? "a community member"}`,
+      body: `"${event.title}" by ${submitter?.name ?? "a community member"}`,
       link: "/admin/events",
     });
     await sendNewEventAdminEmail({
@@ -212,29 +257,87 @@ export async function createEvent(input: CreateEventInput, createdById: string) 
       adminName: admin.name,
       eventTitle: event.title,
       eventUrl: `${config.app.url}/admin/events`,
-      creatorName: creator?.name ?? "A community member",
+      creatorName: submitter?.name ?? "A community member",
     });
   }
 
   return { event, possibleDuplicate };
 }
 
+// ─── Event management permissions (shared) ────────────────────────────────────
+
+/** Fields the ownership rule needs — always include these in a management select. */
+const managementSelect = {
+  createdById: true,
+  organizerId: true,
+  organizer: { select: { createdById: true } },
+} satisfies Prisma.EventSelect;
+
+type ManageableEvent = {
+  createdById: string;
+  organizerId: string | null;
+  organizer: { createdById: string } | null;
+};
+
+/**
+ * Who may manage an event — update/delete it, read its RSVP roster or export
+ * it as CSV, and scan check-ins: a platform super admin, the event's creator,
+ * the creator of the attached organization (implicit owner — memberships may
+ * not exist yet for pre-existing orgs), or the organization's OWNER/ADMIN
+ * members. Org EDITORs cannot manage events.
+ */
+async function canManageEvent(
+  event: ManageableEvent,
+  requester: EventRequester
+): Promise<boolean> {
+  if (isSuperAdmin(requester)) return true;
+  if (event.createdById === requester.id) return true;
+  if (event.organizer?.createdById === requester.id) return true;
+  if (event.organizerId && (await canApproveForOrg(requester, event.organizerId))) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Loads an event with `select` (which must include the managementSelect
+ * fields) or throws 404; then enforces canManageEvent or throws 403.
+ */
+async function requireEventManagement<S extends Prisma.EventSelect>(
+  eventId: string,
+  requester: EventRequester,
+  select: S
+): Promise<Prisma.EventGetPayload<{ select: S }>> {
+  const event = await prisma.event.findUnique({ where: { id: eventId }, select });
+  if (!event) throw Errors.notFound("Event");
+  // The select provably includes the management fields at every call site;
+  // generics can't express that, hence the assertion.
+  if (!(await canManageEvent(event as unknown as ManageableEvent, requester))) {
+    throw Errors.forbidden();
+  }
+  return event;
+}
+
 // ─── Update event ─────────────────────────────────────────────────────────────
 
-export async function updateEvent(id: string, input: UpdateEventInput, requesterId: string, requesterRole: string) {
-  const event = await prisma.event.findUnique({
-    where: { id },
-    select: { id: true, createdById: true, organizerId: true, organizer: { select: { createdById: true } } },
-  });
+export async function updateEvent(
+  id: string,
+  input: UpdateEventInput,
+  requester: EventRequester
+) {
+  const event = await requireEventManagement(id, requester, { id: true, ...managementSelect });
 
-  if (!event) throw Errors.notFound("Event");
-
-  const isCreator = event.createdById === requesterId;
-  const isOrganizerOwner = event.organizer?.createdById === requesterId;
-  const isAdmin = requesterRole === "ADMIN";
-
-  if (!isCreator && !isOrganizerOwner && !isAdmin) {
-    throw Errors.forbidden();
+  // Moving the event to another organization: only members of that
+  // organization may submit content for it.
+  if (input.organizerId && input.organizerId !== event.organizerId) {
+    const organizer = await prisma.organizer.findUnique({
+      where: { id: input.organizerId },
+      select: { id: true, isActive: true },
+    });
+    if (!organizer || !organizer.isActive) throw Errors.notFound("Organization");
+    if (!(await canSubmitForOrg(requester, input.organizerId))) {
+      throw Errors.forbidden("You are not a member of that organization.");
+    }
   }
 
   const updated = await prisma.event.update({
@@ -264,21 +367,8 @@ export async function updateEvent(id: string, input: UpdateEventInput, requester
 
 // ─── Delete event ─────────────────────────────────────────────────────────────
 
-export async function deleteEvent(id: string, requesterId: string, requesterRole: string) {
-  const event = await prisma.event.findUnique({
-    where: { id },
-    select: { id: true, createdById: true, organizer: { select: { createdById: true } } },
-  });
-
-  if (!event) throw Errors.notFound("Event");
-
-  const isCreator = event.createdById === requesterId;
-  const isOrganizerOwner = event.organizer?.createdById === requesterId;
-  const isAdmin = requesterRole === "ADMIN";
-
-  if (!isCreator && !isOrganizerOwner && !isAdmin) {
-    throw Errors.forbidden();
-  }
+export async function deleteEvent(id: string, requester: EventRequester) {
+  await requireEventManagement(id, requester, { id: true, ...managementSelect });
 
   // Soft delete — status CANCELLED rather than hard delete
   await prisma.event.update({
@@ -427,7 +517,7 @@ export type RsvpListEntry = {
 
 export async function getEventRsvps(
   eventId: string,
-  requester: { id: string; role: string },
+  requester: EventRequester,
   page: number,
   limit: number
 ): Promise<{
@@ -435,12 +525,7 @@ export async function getEventRsvps(
   counts: { interested: number; attending: number; checkedIn: number };
   total: number;
 }> {
-  const event = await prisma.event.findUnique({
-    where: { id: eventId },
-    select: { createdById: true },
-  });
-  if (!event) throw Errors.notFound("Event");
-  if (event.createdById !== requester.id && requester.role !== "ADMIN") throw Errors.forbidden();
+  await requireEventManagement(eventId, requester, { id: true, ...managementSelect });
 
   const skip = (page - 1) * limit;
   const where = { eventId };
@@ -478,14 +563,13 @@ export async function getEventRsvps(
 
 export async function getEventRsvpsCsv(
   eventId: string,
-  requester: { id: string; role: string }
+  requester: EventRequester
 ): Promise<{ csv: string; eventTitle: string }> {
-  const event = await prisma.event.findUnique({
-    where: { id: eventId },
-    select: { createdById: true, title: true },
+  const event = await requireEventManagement(eventId, requester, {
+    id: true,
+    title: true,
+    ...managementSelect,
   });
-  if (!event) throw Errors.notFound("Event");
-  if (event.createdById !== requester.id && requester.role !== "ADMIN") throw Errors.forbidden();
 
   const rows = await prisma.eventRsvp.findMany({
     where: { eventId },
@@ -529,15 +613,6 @@ function verifyCheckinToken(code: string): { rsvpId: string; eventId: string } |
   }
 }
 
-async function requireEventOwner(eventId: string, requester: { id: string; role: string }): Promise<void> {
-  const event = await prisma.event.findUnique({
-    where: { id: eventId },
-    select: { createdById: true },
-  });
-  if (!event) throw Errors.notFound("Event");
-  if (event.createdById !== requester.id && requester.role !== "ADMIN") throw Errors.forbidden();
-}
-
 export type MyRsvpInfo = {
   type: "INTERESTED" | "ATTENDING";
   checkedInAt: string | null;
@@ -567,10 +642,10 @@ export type CheckinResult = {
 
 export async function checkInAttendee(
   eventId: string,
-  requester: { id: string; role: string },
+  requester: EventRequester,
   code: string
 ): Promise<CheckinResult> {
-  await requireEventOwner(eventId, requester);
+  await requireEventManagement(eventId, requester, { id: true, ...managementSelect });
 
   const payload = verifyCheckinToken(code.trim());
   if (!payload || payload.eventId !== eventId) throw Errors.notFound("QR code");
@@ -616,10 +691,10 @@ export async function checkInAttendee(
 
 export async function undoCheckIn(
   eventId: string,
-  requester: { id: string; role: string },
+  requester: EventRequester,
   rsvpId: string
 ): Promise<{ rsvpId: string }> {
-  await requireEventOwner(eventId, requester);
+  await requireEventManagement(eventId, requester, { id: true, ...managementSelect });
 
   const rsvp = await prisma.eventRsvp.findUnique({
     where: { id: rsvpId },

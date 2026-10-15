@@ -38,7 +38,7 @@ export async function removeRsvp(req: Request, res: Response, next: NextFunction
 
 export async function createEvent(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { event, possibleDuplicate } = await EventService.createEvent(req.body, req.user!.id);
+    const { event, possibleDuplicate } = await EventService.createEvent(req.body, req.user!);
     sendSuccess({
       res,
       data: { event, possibleDuplicate },
@@ -50,14 +50,14 @@ export async function createEvent(req: Request, res: Response, next: NextFunctio
 
 export async function updateEvent(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const event = await EventService.updateEvent(req.params.id, req.body, req.user!.id, req.user!.role);
+    const event = await EventService.updateEvent(req.params.id, req.body, req.user!);
     sendSuccess({ res, data: event });
   } catch (err) { next(err); }
 }
 
 export async function deleteEvent(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    await EventService.deleteEvent(req.params.id, req.user!.id, req.user!.role);
+    await EventService.deleteEvent(req.params.id, req.user!);
     sendSuccess({ res, data: null, message: "Event cancelled." });
   } catch (err) { next(err); }
 }
@@ -82,7 +82,7 @@ export async function getEventRsvps(req: Request, res: Response, next: NextFunct
     const { page, limit } = parsePagination(req.query.page, req.query.limit);
     const result = await EventService.getEventRsvps(
       req.params.id,
-      { id: req.user!.id, role: req.user!.role },
+      req.user!,
       page,
       limit
     );
@@ -102,10 +102,7 @@ export async function getEventRsvps(req: Request, res: Response, next: NextFunct
 
 export async function exportEventRsvps(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { csv, eventTitle } = await EventService.getEventRsvpsCsv(req.params.id, {
-      id: req.user!.id,
-      role: req.user!.role,
-    });
+    const { csv, eventTitle } = await EventService.getEventRsvpsCsv(req.params.id, req.user!);
     const filename = `${eventTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "event"}-rsvps.csv`;
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
     res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
@@ -124,7 +121,7 @@ export async function checkInAttendee(req: Request, res: Response, next: NextFun
   try {
     const result = await EventService.checkInAttendee(
       req.params.id,
-      { id: req.user!.id, role: req.user!.role },
+      req.user!,
       req.body.code
     );
     sendSuccess({
@@ -141,7 +138,7 @@ export async function undoCheckIn(req: Request, res: Response, next: NextFunctio
   try {
     const result = await EventService.undoCheckIn(
       req.params.id,
-      { id: req.user!.id, role: req.user!.role },
+      req.user!,
       req.params.rsvpId
     );
     sendSuccess({ res, data: result, message: "Check-in undone." });

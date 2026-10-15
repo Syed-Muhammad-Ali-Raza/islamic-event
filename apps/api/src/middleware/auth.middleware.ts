@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { config } from "../config";
 import { prisma } from "../config/prisma";
 import { Errors } from "../utils/AppError";
+import { isSuperAdmin } from "../utils/permissions";
 import { UserRole } from "@prisma/client";
 
 // ─── Extend Express Request ───────────────────────────────────────────────────
@@ -122,4 +123,27 @@ export function requireRole(...roles: UserRole[]) {
 
     next();
   };
+}
+
+// ─── requireSuperAdmin ──────────────────────────────────────────────────────
+
+/**
+ * Must be used after requireAuth.
+ * Throws 403 unless the user is SUPER_ADMIN (legacy ADMIN counts — see
+ * utils/permissions.ts isSuperAdmin).
+ */
+export function requireSuperAdmin(
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): void {
+  if (!req.user) {
+    return next(Errors.unauthorized());
+  }
+
+  if (!isSuperAdmin(req.user)) {
+    return next(Errors.forbidden("Super admin access required."));
+  }
+
+  next();
 }

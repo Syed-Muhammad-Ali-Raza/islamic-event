@@ -20,14 +20,72 @@ export async function getOrganizer(req: Request, res: Response, next: NextFuncti
 
 export async function createOrganizer(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const organizer = await OrganizerService.createOrganizer(req.body, req.user!.id);
+    const organizer = await OrganizerService.createOrganizer(req.body, req.user);
     sendSuccess({ res, data: organizer, statusCode: 201 });
   } catch (err) { next(err); }
 }
 
 export async function updateOrganizer(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const organizer = await OrganizerService.updateOrganizer(req.params.id, req.body, req.user!.id, req.user!.role);
+    const organizer = await OrganizerService.updateOrganizer(req.params.id, req.body, req.user);
     sendSuccess({ res, data: organizer });
+  } catch (err) { next(err); }
+}
+
+export async function deactivateOrganizer(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const organizer = await OrganizerService.setOrganizerActive(req.params.id, false, req.user);
+    sendSuccess({ res, data: organizer, message: "Organization deactivated" });
+  } catch (err) { next(err); }
+}
+
+export async function activateOrganizer(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const organizer = await OrganizerService.setOrganizerActive(req.params.id, true, req.user);
+    sendSuccess({ res, data: organizer, message: "Organization activated" });
+  } catch (err) { next(err); }
+}
+
+// ─── Members ────────────────────────────────────────────────────────────────
+
+export async function listMembers(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const members = await OrganizerService.listMembers(req.params.id, req.user);
+    sendSuccess({ res, data: members });
+  } catch (err) { next(err); }
+}
+
+export async function addMember(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const member = await OrganizerService.addMember(req.params.id, req.body, req.user);
+    sendSuccess({ res, data: member, statusCode: 201 });
+  } catch (err) { next(err); }
+}
+
+export async function updateMember(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const member = await OrganizerService.updateMemberRole(
+      req.params.id,
+      req.params.userId,
+      req.body.role,
+      req.user
+    );
+    sendSuccess({ res, data: member });
+  } catch (err) { next(err); }
+}
+
+export async function removeMember(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    await OrganizerService.removeMember(req.params.id, req.params.userId, req.user);
+    sendSuccess({ res, data: { removed: true } });
+  } catch (err) { next(err); }
+}
+
+// ─── "Me" endpoints ─────────────────────────────────────────────────────────
+
+export async function listMyOrganizations(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const memberships = await OrganizerService.listMyOrganizations(req.user!.id);
+    sendSuccess({ res, data: memberships });
   } catch (err) { next(err); }
 }

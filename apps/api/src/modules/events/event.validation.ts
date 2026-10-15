@@ -67,7 +67,9 @@ export const EventQuerySchema = z.object({
   fromDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "fromDate must be in YYYY-MM-DD format").optional(),
   toDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "toDate must be in YYYY-MM-DD format").optional(),
   organizer: z.string().optional(),
-  status: z.enum(["APPROVED", "PENDING_REVIEW", "REJECTED", "DRAFT", "CANCELLED", "COMPLETED"]).optional(),
+  // NOTE: no `status` filter — the public list endpoint always returns
+  // APPROVED events only (unapproved content is visible to its creator via
+  // /events/mine and to admins via /admin/events).
 });
 
 export type CreateEventInput = z.infer<typeof CreateEventSchema>;

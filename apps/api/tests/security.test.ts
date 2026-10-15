@@ -1,4 +1,4 @@
-import { api, unique, registerUser } from "./helpers";
+import { api, unique, registerUser, createSuperAdmin } from "./helpers";
 import { prisma } from "../src/config/prisma";
 import bcrypt from "bcryptjs";
 
@@ -66,13 +66,13 @@ describe("Security: origin guard", () => {
   });
 
   it("allows state-changing requests with no Origin header (non-browser clients)", async () => {
-    const user = await registerUser("noorigin");
+    const admin = await createSuperAdmin("noorigin");
     // No Origin header — should pass the guard (may fail later validation, but not 403 ORIGIN_REJECTED)
     const res = await api()
       .post("/api/v1/organizers")
-      .set("Authorization", `Bearer ${user.token}`)
+      .set("Authorization", `Bearer ${admin.token}`)
       .send({ name: `Org ${unique("org")}` });
-    expect(res.status).not.toBe(403);
+    expect(res.status).toBe(201);
     expect(res.body.code).not.toBe("ORIGIN_REJECTED");
   });
 });

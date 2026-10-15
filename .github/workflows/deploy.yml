@@ -50,13 +50,13 @@ jobs:
         run: npm ci
 
       # ── Database schema on every deploy ──────────────────────────────────
-      # This repo has NO committed migrations (apps/api/prisma/migrations/ is
-      # gitignored; the convention is `prisma db push`). If you start
-      # committing migrations, replace the run line with:
-      #   npx prisma migrate deploy
-      - name: Sync database schema
+      # Migrations are committed (apps/api/prisma/migrations/) — production
+      # deploys apply them with `prisma migrate deploy`. Kept behind the same
+      # "only when DATABASE_URL is configured" guard so the skeleton skips
+      # cleanly on unconfigured repos.
+      - name: Apply database migrations
         if: ${{ env.DATABASE_URL != '' }}
-        run: npx prisma db push --skip-generate
+        run: npx prisma migrate deploy --schema apps/api/prisma/schema.prisma
 
       # ── Option A: Render ─────────────────────────────────────────────────
       # Secrets needed: RENDER_API_KEY, RENDER_SERVICE_ID
@@ -89,40 +89,48 @@ jobs:
   # ── Web (Next.js) ─────────────────────────────────────────────────────────
   # Vercel is the default. NEXT_PUBLIC_* variables must be set in the Vercel
   # project settings (they are inlined at build time), not only as runtime env.
-  # Skips itself while VERCEL_TOKEN / VERCEL_ORG_ID / VERCEL_PROJECT_ID are
-  # not configured yet — add them under Settings → Secrets and variables →
-  # Actions, then re-run this workflow.
+  # NOTE: job-level `if` cannot use the `env` context (that made this whole
+  # workflow fail validation with 0 jobs), so the skip check lives in a
+  # step-level condition below — steps skip themselves while VERCEL_TOKEN /
+  # VERCEL_ORG_ID / VERCEL_PROJECT_ID are not configured yet.
   deploy-web:
     name: Deploy Web
     needs: tests
-    if: ${{ env.VERCEL_TOKEN != '' }}
     runs-on: ubuntu-latest
     environment: production
     steps:
       - uses: actions/checkout@v4
 
+      - name: Skip notice (no Vercel secrets configured)
+        if: ${{ env.VERCEL_TOKEN == '' }}
+        run: echo "VERCEL_TOKEN not configured — skipping web deploy. Add Vercel secrets to enable."
+
       - uses: actions/setup-node@v4
+        if: ${{ env.VERCEL_TOKEN != '' }}
         with:
           node-version: 20
 
       - name: Install Vercel CLI
+        if: ${{ env.VERCEL_TOKEN != '' }}
         run: npm install -g vercel
 
       # Secrets needed: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
       - name: Pull Vercel environment
+        if: ${{ env.VERCEL_TOKEN != '' }}
         run: vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Build
+        if: ${{ env.VERCEL_TOKEN != '' }}
         run: vercel build --prod --token "$VERCEL_TOKEN"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Deploy to production
-        id: deploy
+        if: ${{ env.VERCEL_TOKEN != '' }}
         run: vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}

@@ -1,7 +1,9 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 import { Errors } from "../../utils/AppError";
-import type { ProcessionQueryInput } from "./procession.validation";
+import type { PermissionUser } from "../../utils/permissions";
+import { createDirectorySubmission, applySubmissionUpdate } from "../../services/approval.service";
+import type { ProcessionQueryInput, CreateProcessionInput, UpdateProcessionInput } from "./procession.validation";
 
 const select = {
   id: true,
@@ -22,11 +24,13 @@ const select = {
   notes: true,
   sortOrder: true,
   isActive: true,
+  approvalStatus: true,
 } satisfies Prisma.ProcessionSelect;
 
 export async function listProcessions(query: ProcessionQueryInput, page: number, limit: number) {
   const where: Prisma.ProcessionWhereInput = {
     isActive: true,
+    approvalStatus: "APPROVED",
     ...(query.city ? { city: { equals: query.city, mode: "insensitive" } } : {}),
     ...(query.month ? { month: query.month } : {}),
     ...(query.day ? { day: query.day } : {}),
@@ -60,6 +64,25 @@ export async function listProcessions(query: ProcessionQueryInput, page: number,
 
 export async function getProcession(sourceId: string) {
   const p = await prisma.procession.findUnique({ where: { sourceId }, select });
-  if (!p || !p.isActive) throw Errors.notFound("Procession");
+  if (!p || !p.isActive || p.approvalStatus !== "APPROVED") throw Errors.notFound("Procession");
   return p;
+}
+
+// ─── Submissions (approval flow) ─────────────────────────────────────────────
+
+export async function createProcession(
+  input: CreateProcessionInput,
+  user: PermissionUser
+) {
+  const { organizerId, ...content } = input;
+  return createDirectorySubmission("procession", user, content, organizerId);
+}
+
+export async function updateProcession(
+  id: string,
+  input: UpdateProcessionInput,
+  user: PermissionUser
+) {
+  const { organizerId, ...content } = input;
+  return applySubmissionUpdate("procession", id, user, content, organizerId);
 }

@@ -17,3 +17,17 @@ export async function getMela(req: Request, res: Response, next: NextFunction): 
     sendSuccess({ res, data: mela });
   } catch (err) { next(err); }
 }
+
+export async function createMela(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const mela = await MelaService.createMela(req.body, req.user!);
+    sendSuccess({ res, data: mela, statusCode: 201, message: "Mela submitted." });
+  } catch (err) { next(err); }
+}
+
+export async function updateMela(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const mela = await MelaService.updateMela(req.params.id, req.body, req.user!);
+    sendSuccess({ res, data: mela, message: "Mela updated." });
+  } catch (err) { next(err); }
+}

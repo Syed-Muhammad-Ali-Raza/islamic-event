@@ -17,3 +17,17 @@ export async function getScholar(req: Request, res: Response, next: NextFunction
     sendSuccess({ res, data: scholar });
   } catch (err) { next(err); }
 }
+
+export async function createScholar(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const scholar = await ScholarService.createScholar(req.body, req.user!);
+    sendSuccess({ res, data: scholar, statusCode: 201, message: "Scholar submitted." });
+  } catch (err) { next(err); }
+}
+
+export async function updateScholar(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const scholar = await ScholarService.updateScholar(req.params.id, req.body, req.user!);
+    sendSuccess({ res, data: scholar, message: "Scholar updated." });
+  } catch (err) { next(err); }
+}

@@ -7,6 +7,11 @@ export type NotificationType =
   | "NEW_EVENT"
   | "RSVP_NEW"
   | "EVENT_REMINDER"
+  // Directory submission lifecycle (approval.service.ts)
+  | "SUBMISSION_RECEIVED"
+  | "SUBMISSION_APPROVED"
+  | "SUBMISSION_REJECTED"
+  | "NEW_SUBMISSION"
   | "SYSTEM";
 
 interface NotifyInput {

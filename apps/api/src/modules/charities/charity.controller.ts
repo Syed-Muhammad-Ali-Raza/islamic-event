@@ -24,3 +24,17 @@ export async function listCharityFacets(_req: Request, res: Response, next: Next
     sendSuccess({ res, data: facets });
   } catch (err) { next(err); }
 }
+
+export async function createCharity(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const c = await CharityService.createCharity(req.body, req.user!);
+    sendSuccess({ res, data: c, statusCode: 201, message: "Charity submitted." });
+  } catch (err) { next(err); }
+}
+
+export async function updateCharity(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const c = await CharityService.updateCharity(req.params.id, req.body, req.user!);
+    sendSuccess({ res, data: c, message: "Charity updated." });
+  } catch (err) { next(err); }
+}

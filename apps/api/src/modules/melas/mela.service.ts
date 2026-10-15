@@ -1,7 +1,9 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 import { Errors } from "../../utils/AppError";
-import type { MelaQueryInput } from "./mela.validation";
+import type { PermissionUser } from "../../utils/permissions";
+import { createDirectorySubmission, applySubmissionUpdate } from "../../services/approval.service";
+import type { MelaQueryInput, CreateMelaInput, UpdateMelaInput } from "./mela.validation";
 
 const select = {
   id: true,
@@ -23,11 +25,13 @@ const select = {
   source: true,
   verified: true,
   isActive: true,
+  approvalStatus: true,
 } satisfies Prisma.MelaSelect;
 
 export async function listMelas(query: MelaQueryInput, page: number, limit: number) {
   const where: Prisma.MelaWhereInput = {
     isActive: true,
+    approvalStatus: "APPROVED",
     ...(query.city ? { city: { contains: query.city, mode: "insensitive" } } : {}),
     ...(query.province ? { province: { equals: query.province, mode: "insensitive" } } : {}),
     ...(query.type ? { type: { contains: query.type, mode: "insensitive" } } : {}),
@@ -61,6 +65,25 @@ export async function listMelas(query: MelaQueryInput, page: number, limit: numb
 
 export async function getMela(sourceId: string) {
   const mela = await prisma.mela.findUnique({ where: { sourceId }, select });
-  if (!mela || !mela.isActive) throw Errors.notFound("Mela");
+  if (!mela || !mela.isActive || mela.approvalStatus !== "APPROVED") throw Errors.notFound("Mela");
   return mela;
+}
+
+// ─── Submissions (approval flow) ─────────────────────────────────────────────
+
+export async function createMela(
+  input: CreateMelaInput,
+  user: PermissionUser
+) {
+  const { organizerId, ...content } = input;
+  return createDirectorySubmission("mela", user, content, organizerId);
+}
+
+export async function updateMela(
+  id: string,
+  input: UpdateMelaInput,
+  user: PermissionUser
+) {
+  const { organizerId, ...content } = input;
+  return applySubmissionUpdate("mela", id, user, content, organizerId);
 }

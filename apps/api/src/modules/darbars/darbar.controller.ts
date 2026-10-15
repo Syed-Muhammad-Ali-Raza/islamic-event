@@ -17,3 +17,17 @@ export async function getDarbar(req: Request, res: Response, next: NextFunction)
     sendSuccess({ res, data: darbar });
   } catch (err) { next(err); }
 }
+
+export async function createDarbar(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const darbar = await DarbarService.createDarbar(req.body, req.user!);
+    sendSuccess({ res, data: darbar, statusCode: 201, message: "Darbar submitted." });
+  } catch (err) { next(err); }
+}
+
+export async function updateDarbar(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const darbar = await DarbarService.updateDarbar(req.params.id, req.body, req.user!);
+    sendSuccess({ res, data: darbar, message: "Darbar updated." });
+  } catch (err) { next(err); }
+}

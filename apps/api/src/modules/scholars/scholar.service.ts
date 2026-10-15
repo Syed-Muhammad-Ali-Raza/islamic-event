@@ -1,7 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 import { Errors } from "../../utils/AppError";
-import type { ScholarQueryInput } from "./scholar.validation";
+import type { PermissionUser } from "../../utils/permissions";
+import { createDirectorySubmission, applySubmissionUpdate } from "../../services/approval.service";
+import { generateSlug } from "../../utils/helpers";
+import type { ScholarQueryInput, CreateScholarInput, UpdateScholarInput } from "./scholar.validation";
 
 const select = {
   id: true,
@@ -28,11 +31,13 @@ const select = {
   confidence: true,
   lastVerified: true,
   isActive: true,
+  approvalStatus: true,
 } satisfies Prisma.ScholarSelect;
 
 export async function listScholars(query: ScholarQueryInput, page: number, limit: number) {
   const where: Prisma.ScholarWhereInput = {
     isActive: true,
+    approvalStatus: "APPROVED",
     ...(query.sect ? { sect: query.sect } : {}),
     ...(query.category ? { category: query.category } : {}),
     ...(query.city ? { city: { equals: query.city, mode: "insensitive" } } : {}),
@@ -68,6 +73,32 @@ export async function listScholars(query: ScholarQueryInput, page: number, limit
 
 export async function getScholar(sourceId: string) {
   const scholar = await prisma.scholar.findUnique({ where: { sourceId }, select });
-  if (!scholar || !scholar.isActive) throw Errors.notFound("Scholar");
+  if (!scholar || !scholar.isActive || scholar.approvalStatus !== "APPROVED") throw Errors.notFound("Scholar");
   return scholar;
+}
+
+// ─── Submissions (approval flow) ─────────────────────────────────────────────
+
+export async function createScholar(
+  input: CreateScholarInput,
+  user: PermissionUser
+) {
+  const { organizerId, ...content } = input;
+  // slug is unique + required — generate one for user submissions (suffixed
+  // to avoid collisions between identical names).
+  return createDirectorySubmission(
+    "scholar",
+    user,
+    { ...content, slug: generateSlug(content.name, true) },
+    organizerId
+  );
+}
+
+export async function updateScholar(
+  id: string,
+  input: UpdateScholarInput,
+  user: PermissionUser
+) {
+  const { organizerId, ...content } = input;
+  return applySubmissionUpdate("scholar", id, user, content, organizerId);
 }

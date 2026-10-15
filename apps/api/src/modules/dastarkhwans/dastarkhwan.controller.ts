@@ -17,3 +17,17 @@ export async function getDastarkhwan(req: Request, res: Response, next: NextFunc
     sendSuccess({ res, data: point });
   } catch (err) { next(err); }
 }
+
+export async function createDastarkhwan(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const point = await DastarkhwanService.createDastarkhwan(req.body, req.user!);
+    sendSuccess({ res, data: point, statusCode: 201, message: "Dastarkhwan point submitted." });
+  } catch (err) { next(err); }
+}
+
+export async function updateDastarkhwan(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const point = await DastarkhwanService.updateDastarkhwan(req.params.id, req.body, req.user!);
+    sendSuccess({ res, data: point, message: "Dastarkhwan point updated." });
+  } catch (err) { next(err); }
+}

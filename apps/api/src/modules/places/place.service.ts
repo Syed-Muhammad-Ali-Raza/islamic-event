@@ -1,7 +1,9 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 import { Errors } from "../../utils/AppError";
-import type { PlaceQueryInput } from "./place.validation";
+import type { PermissionUser } from "../../utils/permissions";
+import { createDirectorySubmission, applySubmissionUpdate } from "../../services/approval.service";
+import type { PlaceQueryInput, CreatePlaceInput, UpdatePlaceInput } from "./place.validation";
 
 const select = {
   id: true,
@@ -22,11 +24,13 @@ const select = {
   sourceLink: true,
   verified: true,
   isActive: true,
+  approvalStatus: true,
 } satisfies Prisma.PlaceSelect;
 
 export async function listPlaces(query: PlaceQueryInput, page: number, limit: number) {
   const where: Prisma.PlaceWhereInput = {
     isActive: true,
+    approvalStatus: "APPROVED",
     ...(query.city ? { city: { equals: query.city, mode: "insensitive" } } : {}),
     ...(query.category ? { category: { equals: query.category, mode: "insensitive" } } : {}),
     ...(query.province ? { province: { equals: query.province, mode: "insensitive" } } : {}),
@@ -61,6 +65,25 @@ export async function listPlaces(query: PlaceQueryInput, page: number, limit: nu
 
 export async function getPlace(sourceId: string) {
   const place = await prisma.place.findUnique({ where: { sourceId }, select });
-  if (!place || !place.isActive) throw Errors.notFound("Place");
+  if (!place || !place.isActive || place.approvalStatus !== "APPROVED") throw Errors.notFound("Place");
   return place;
+}
+
+// ─── Submissions (approval flow) ─────────────────────────────────────────────
+
+export async function createPlace(
+  input: CreatePlaceInput,
+  user: PermissionUser
+) {
+  const { organizerId, ...content } = input;
+  return createDirectorySubmission("place", user, content, organizerId);
+}
+
+export async function updatePlace(
+  id: string,
+  input: UpdatePlaceInput,
+  user: PermissionUser
+) {
+  const { organizerId, ...content } = input;
+  return applySubmissionUpdate("place", id, user, content, organizerId);
 }

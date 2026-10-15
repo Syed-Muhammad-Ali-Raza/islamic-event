@@ -17,3 +17,17 @@ export async function getUrsDate(req: Request, res: Response, next: NextFunction
     sendSuccess({ res, data: date });
   } catch (err) { next(err); }
 }
+
+export async function createUrsDate(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const date = await UrsDateService.createUrsDate(req.body, req.user!);
+    sendSuccess({ res, data: date, statusCode: 201, message: "Urs date submitted." });
+  } catch (err) { next(err); }
+}
+
+export async function updateUrsDate(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const date = await UrsDateService.updateUrsDate(req.params.id, req.body, req.user!);
+    sendSuccess({ res, data: date, message: "Urs date updated." });
+  } catch (err) { next(err); }
+}

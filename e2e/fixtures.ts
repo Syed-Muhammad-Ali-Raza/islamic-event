@@ -10,8 +10,18 @@ export interface AuthTokens {
 }
 
 const API = process.env.E2E_API_URL ?? "http://localhost:4000";
-const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL ?? "admin@communityevents.pk";
-const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD ?? "Admin@123456";
+// Super-admin credentials must match what the database was seeded with.
+// Read from the same env vars the seed uses (CI sets them at job level;
+// locally playwright.config.ts loads apps/api/.env and the repo-root .env).
+// E2E_ADMIN_* stay as explicit overrides for ad-hoc runs. No hardcoded
+// fallback: the old "Admin@123456" default was a published credential.
+const ADMIN_EMAIL =
+  process.env.E2E_ADMIN_EMAIL?.trim() ||
+  process.env.SEED_SUPER_ADMIN_EMAIL?.trim() ||
+  "admin@communityevents.pk";
+const ADMIN_PASSWORD =
+  process.env.E2E_ADMIN_PASSWORD?.trim() ||
+  process.env.SEED_SUPER_ADMIN_PASSWORD?.trim();
 
 /** Register a fresh user via the API and return tokens. */
 export async function registerViaApi(
@@ -48,8 +58,14 @@ export async function loginViaApi(
   return body.data as AuthTokens;
 }
 
-/** Login the seeded admin account (for moderation flows). */
+/** Login the seeded super admin account (for moderation flows). */
 export async function loginAdminViaApi(request: APIRequestContext): Promise<AuthTokens> {
+  if (!ADMIN_PASSWORD) {
+    throw new Error(
+      "Seeded super-admin password not configured: set SEED_SUPER_ADMIN_PASSWORD " +
+        "(same value used with `npm run db:seed`) in the environment or .env."
+    );
+  }
   return loginViaApi(request, ADMIN_EMAIL, ADMIN_PASSWORD);
 }
 

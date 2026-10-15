@@ -50,8 +50,16 @@ export async function registerUser(prefix = "user"): Promise<TestUser> {
 }
 
 export async function createAdmin(prefix = "admin"): Promise<TestUser> {
+  // Legacy ADMIN role — treated as SUPER_ADMIN by the code (kept for
+  // backwards compatibility with pre-approval-system fixtures).
   const user = await registerUser(prefix);
   await prisma.user.update({ where: { id: user.id }, data: { role: "ADMIN" } });
+  return user;
+}
+
+export async function createSuperAdmin(prefix = "superadmin"): Promise<TestUser> {
+  const user = await registerUser(prefix);
+  await prisma.user.update({ where: { id: user.id }, data: { role: "SUPER_ADMIN" } });
   return user;
 }
 

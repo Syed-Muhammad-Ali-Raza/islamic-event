@@ -48,6 +48,16 @@ jobs:
       - name: Push database schema
         run: npm run db:push --workspace=apps/api -- --accept-data-loss
 
+      - name: Check committed migrations (empty database + seed)
+        env:
+          MIGRATE_CHECK_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/community_events_migrate_check
+          SEED_SUPER_ADMIN_EMAIL: admin@communityevents.pk
+          SEED_SUPER_ADMIN_PASSWORD: ci-throwaway-super-admin-password
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -d postgres -c "DROP DATABASE IF EXISTS community_events_migrate_check;" -c "CREATE DATABASE community_events_migrate_check;"
+          DATABASE_URL="$MIGRATE_CHECK_DATABASE_URL" npx prisma migrate deploy --schema apps/api/prisma/schema.prisma
+          DATABASE_URL="$MIGRATE_CHECK_DATABASE_URL" npm run db:seed --workspace apps/api
+
       - name: Lint
         run: npm run lint
 
@@ -84,9 +94,11 @@ jobs:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/community_events
       JWT_ACCESS_SECRET: ci-access-secret
       JWT_REFRESH_SECRET: ci-refresh-secret
-      # Seed creates a throwaway admin for the E2E suite (fresh container DB)
-      ADMIN_EMAIL: admin@communityevents.pk
-      ADMIN_PASSWORD: Admin@123456
+      # Seed creates a throwaway super admin for the E2E suite (fresh
+      # container DB). Same value is read by e2e/fixtures.ts — never a
+      # real credential, and nothing like the old public Admin@123456.
+      SEED_SUPER_ADMIN_EMAIL: admin@communityevents.pk
+      SEED_SUPER_ADMIN_PASSWORD: ci-throwaway-super-admin-password
       # Placeholders — api config requireEnv()s these at boot (uploads stay broken)
       CLOUDINARY_CLOUD_NAME: ci-cloud
       CLOUDINARY_API_KEY: ci-key

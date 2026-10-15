@@ -28,8 +28,8 @@ Last audited: 2026-10-13 · Scope: working tree + full local git history (`git l
 
 ## 2. What to rotate
 
-1. **`Admin@123456`** — it is public in git history. It is still the local dev DB admin password and the CI E2E throwaway credential.
-   - If this password (or the account) was ever reused outside throwaway environments: **change it now** (`apps/api/.env`: set `ADMIN_PASSWORD`, reseed on a fresh DB, or update the user directly).
+1. **`Admin@123456`** — it is public in git history. It may still be the local dev DB admin password (the seed no longer uses it; CI now uses a distinct throwaway value).
+   - If this password (or the account) was ever reused outside throwaway environments: **change it now** (`apps/api/.env`: set `SEED_SUPER_ADMIN_PASSWORD`, reseed on a fresh DB, or follow the manual runbook in `apps/api/prisma/ops/rotate-default-admin.sql` — the org-approval migration promotes this account to SUPER_ADMIN, so rotating it matters even more on upgraded deployments).
    - Rotating git history (filter-repo/BFG) is **not** recommended here: the value is a throwaway dev credential, and history rewriting force-pushes the whole repo.
 2. **Cloudinary keys in root `.env`** — rotate **only if** that `.env` was ever shared (zip/backup/chat). Otherwise they never left this machine.
 3. **Production JWT secrets** — must be fresh random values (≥32 chars, access ≠ refresh), never the CI/test/`your-*` placeholders. The API now **refuses to start** in production with weak/placeholder secrets (§3), so rotation = setting new values in the hosting provider's env dashboard.

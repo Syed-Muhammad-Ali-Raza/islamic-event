@@ -1,0 +1,54 @@
+-- ============================================================================
+-- MANUAL RUNBOOK — NOT A MIGRATION. NEVER RUN AUTOMATICALLY.
+-- ============================================================================
+-- This file deliberately lives OUTSIDE apps/api/prisma/migrations/ (Prisma
+-- only executes migrations/), and every statement below is COMMENTED OUT so an
+-- accidental `psql -f` does nothing. Uncomment by hand, review, then run
+-- interactively against the specific environment you intend to change.
+--
+-- Why this exists
+-- ---------------
+-- Seeds up to commit 7c9e7d9 created a PUBLIC default account:
+--       admin@communityevents.pk / Admin@123456
+-- The password is in git history, so any deployment that still has this
+-- account with that password is compromised by definition. The migration
+-- 20261015081220_promote_admins_to_super_admin then turns that account into a
+-- SUPER_ADMIN, so rotate or deactivate it after upgrading. See README
+-- "Upgrading existing deployments" and SECURITY_NOTES.md.
+--
+-- Option A — deactivate the legacy account (recommended first step)
+-- ----------------------------------------------------------------
+-- UPDATE "users"
+-- SET "isActive" = false, "updatedAt" = NOW()
+-- WHERE "email" = 'admin@communityevents.pk' AND "role" = 'SUPER_ADMIN';
+--
+-- Option B — rotate the password (keep the account)
+-- -------------------------------------------------
+-- 1. Generate a strong bcrypt hash OUTSIDE the database, e.g. from the repo
+--    root (bcryptjs is already a dependency of apps/api):
+--
+--      node -e "console.log(require('bcryptjs').hashSync(process.argv[1], 12))" 'YOUR-NEW-RANDOM-PASSWORD'
+--
+-- 2. Paste the hash below and run:
+--
+-- UPDATE "users"
+-- SET "passwordHash" = '<paste bcrypt hash here>',
+--     "failedLoginAttempts" = 0,
+--     "lockedUntil" = NULL,
+--     "resetToken" = NULL,
+--     "resetExpires" = NULL,
+--     "updatedAt" = NOW()
+-- WHERE "email" = 'admin@communityevents.pk' AND "role" = 'SUPER_ADMIN';
+--
+-- Option C — force a password reset instead
+-- -----------------------------------------
+-- UPDATE "users"
+-- SET "resetToken" = encode(sha256(random()::text::bytea), 'hex'),
+--     "resetExpires" = NOW() + INTERVAL '24 hours',
+--     "updatedAt" = NOW()
+-- WHERE "email" = 'admin@communityevents.pk' AND "role" = 'SUPER_ADMIN';
+--
+-- Verification
+-- ------------
+-- SELECT "email", "role", "isActive" FROM "users" WHERE "role" IN ('ADMIN', 'SUPER_ADMIN');
+-- ============================================================================

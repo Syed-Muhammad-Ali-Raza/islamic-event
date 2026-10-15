@@ -45,7 +45,12 @@ export interface CityDetail extends CitySummary {
 
 // ─── Domain types ─────────────────────────────────────────────────────────────
 
-export type UserRole = "USER" | "ORGANIZER" | "ADMIN";
+export type UserRole = "USER" | "ORGANIZER" | "ADMIN" | "SUPER_ADMIN";
+
+/** True for SUPER_ADMIN and legacy ADMIN (which the API treats identically). */
+export function isSuperAdminRole(role: UserRole | undefined): boolean {
+  return role === "SUPER_ADMIN" || role === "ADMIN";
+}
 
 export interface User {
   id: string;
@@ -113,6 +118,76 @@ export interface Organizer extends OrganizerSummary {
   website: string | null;
   isVerified: boolean;
   address: string | null;
+}
+
+// ─── Organizations, memberships & directory approvals ────────────────────────
+
+export type OrgRole = "OWNER" | "ADMIN" | "EDITOR";
+
+export type ApprovalStatus = "PENDING" | "APPROVED" | "REJECTED";
+
+export type ApprovalStatusFilter = ApprovalStatus | "ALL";
+
+/** The nine moderated directories (matches the API's DirectoryKey). */
+export type DirectoryModuleKey =
+  | "dastarkhwan"
+  | "imambargah"
+  | "place"
+  | "darbar"
+  | "ursDate"
+  | "procession"
+  | "charity"
+  | "mela"
+  | "scholar";
+
+/** Full organization row as returned by the super-admin org endpoints. */
+export interface OrganizationAdmin extends Organizer {
+  logoUrl: string | null;
+  isActive: boolean;
+}
+
+/** A member of an organization (as seen by super admins / org OWNER/ADMIN). */
+export interface OrganizationMember {
+  id: string;
+  userId: string;
+  organizerId: string;
+  role: OrgRole;
+  createdAt: string;
+  user: { id: string; name: string; email: string };
+}
+
+/** The caller's own membership (GET /users/me/organizations). */
+export interface MyOrganizationMembership {
+  id: string;
+  userId: string;
+  organizerId: string;
+  role: OrgRole;
+  createdAt: string;
+  organizer: {
+    id: string;
+    name: string;
+    slug: string;
+    logoUrl: string | null;
+    isVerified: boolean;
+    isActive: boolean;
+  };
+}
+
+/** One row of the permission-scoped moderation queue (GET /approvals). */
+export interface DirectorySubmission {
+  id: string;
+  sourceId: string;
+  name: string;
+  approvalStatus: ApprovalStatus;
+  submittedById: string | null;
+  organizerId: string | null;
+  reviewedById: string | null;
+  reviewedAt: string | null;
+  rejectionReason: string | null;
+  createdAt: string;
+  module: DirectoryModuleKey;
+  moduleLabel: string;
+  moduleRoute: string;
 }
 
 export interface EventSummary {

@@ -17,3 +17,17 @@ export async function getImambargah(req: Request, res: Response, next: NextFunct
     sendSuccess({ res, data: point });
   } catch (err) { next(err); }
 }
+
+export async function createImambargah(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const point = await ImambargahService.createImambargah(req.body, req.user!);
+    sendSuccess({ res, data: point, statusCode: 201, message: "Imambargah submitted." });
+  } catch (err) { next(err); }
+}
+
+export async function updateImambargah(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const point = await ImambargahService.updateImambargah(req.params.id, req.body, req.user!);
+    sendSuccess({ res, data: point, message: "Imambargah updated." });
+  } catch (err) { next(err); }
+}

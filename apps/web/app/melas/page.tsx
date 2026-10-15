@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { MelaExplorer } from "@/components/directories/MelaExplorer";
+import { SubmitListingButton } from "@/components/dashboard/SubmitListingButton";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchList, buildQuery, sanitizePage } from "@/lib/server-api";
@@ -58,6 +59,9 @@ export default async function MelasPage({ searchParams }: Props) {
             : []),
         ]}
       />
+      <div className="container-page pt-6 pb-1">
+        <SubmitListingButton module="mela" />
+      </div>
       <Suspense
         fallback={
           <div className="container-page py-10">

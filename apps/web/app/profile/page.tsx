@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Bookmark, CalendarClock, CheckCircle2, KeyRound, PlusCircle, Settings, ShieldCheck, UserRound } from "lucide-react";
 import { useAuthStore } from "@/stores/auth.store";
+import { isSuperAdminRole } from "@/types";
 import { AuthGuard } from "@/components/auth/AuthGuard";
 import { Input } from "@/components/ui/FormField";
 import { useUpdateProfile, useChangePassword } from "@/hooks/useAuth";
@@ -94,7 +95,7 @@ function ProfileContent() {
             <div className="mt-1.5">
               <span
                 className={
-                  user?.role === "ADMIN"
+                  isSuperAdminRole(user?.role)
                     ? "badge-brand text-[11px]"
                     : user?.role === "ORGANIZER"
                       ? "badge-gold text-[11px]"
@@ -264,11 +265,19 @@ function ProfileContent() {
 
       {/* Admin + settings */}
       <div className="flex flex-wrap gap-3 mt-6">
-        {user?.role === "ADMIN" && (
-          <Link href="/admin" className="btn-primary text-sm py-2.5">
-            <ShieldCheck size={15} /> Admin Panel
-          </Link>
+        {isSuperAdminRole(user?.role) && (
+          <>
+            <Link href="/admin" className="btn-primary text-sm py-2.5">
+              <ShieldCheck size={15} /> Admin Panel
+            </Link>
+            <Link href="/super-admin" className="btn-primary text-sm py-2.5">
+              <ShieldCheck size={15} /> Super Admin
+            </Link>
+          </>
         )}
+        <Link href="/dashboard" className="btn-secondary text-sm py-2.5">
+          <Settings size={15} /> Dashboard
+        </Link>
         <Link href="/profile/events" className="btn-secondary text-sm py-2.5">
           <Settings size={15} /> Manage My Events
         </Link>

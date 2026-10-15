@@ -11,6 +11,10 @@ const TYPE_ICONS: Record<string, string> = {
   EVENT_REJECTED: "❌",
   EVENT_CANCELLED: "⚠️",
   NEW_EVENT: "🆕",
+  NEW_SUBMISSION: "📨",
+  SUBMISSION_RECEIVED: "📨",
+  SUBMISSION_APPROVED: "✅",
+  SUBMISSION_REJECTED: "❌",
   SYSTEM: "🔔",
 };
 

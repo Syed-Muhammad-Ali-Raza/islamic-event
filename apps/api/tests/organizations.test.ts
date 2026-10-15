@@ -349,6 +349,41 @@ describe("organization members", () => {
   });
 });
 
+describe("GET /api/v1/organizers?includeInactive=true", () => {
+  it("requires authentication", async () => {
+    const res = await api().get("/api/v1/organizers?includeInactive=true");
+    expect(res.status).toBe(401);
+  });
+
+  it("rejects a normal user with 403", async () => {
+    const user = await registerUser("incl");
+    const res = await api()
+      .get("/api/v1/organizers?includeInactive=true")
+      .set(authHeader(user.token));
+    expect(res.status).toBe(403);
+  });
+
+  it("lets a super admin see deactivated organizations", async () => {
+    const admin = await createSuperAdmin("incl2");
+    const org = await createOrg(admin.token);
+    await api()
+      .patch(`/api/v1/organizers/${org.id}/deactivate`)
+      .set(authHeader(admin.token));
+
+    // Public list hides it; the admin view includes it with isActive=false.
+    const pub = await api().get(`/api/v1/organizers?search=${encodeURIComponent(org.name)}`);
+    expect(pub.body.data.map((o: TestOrg) => o.id)).not.toContain(org.id);
+
+    const adminList = await api()
+      .get("/api/v1/organizers?includeInactive=true&limit=100")
+      .set(authHeader(admin.token));
+    expect(adminList.status).toBe(200);
+    const row = adminList.body.data.find((o: TestOrg & { isActive: boolean }) => o.id === org.id);
+    expect(row).toBeDefined();
+    expect(row.isActive).toBe(false);
+  });
+});
+
 describe("GET /api/v1/users/me/organizations", () => {
   it("requires authentication", async () => {
     const res = await api().get("/api/v1/users/me/organizations");

@@ -17,3 +17,17 @@ export async function getProcession(req: Request, res: Response, next: NextFunct
     sendSuccess({ res, data: p });
   } catch (err) { next(err); }
 }
+
+export async function createProcession(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const p = await ProcessionService.createProcession(req.body, req.user!);
+    sendSuccess({ res, data: p, statusCode: 201, message: "Procession submitted." });
+  } catch (err) { next(err); }
+}
+
+export async function updateProcession(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const p = await ProcessionService.updateProcession(req.params.id, req.body, req.user!);
+    sendSuccess({ res, data: p, message: "Procession updated." });
+  } catch (err) { next(err); }
+}

@@ -2,11 +2,25 @@ import { Request, Response, NextFunction } from "express";
 import * as OrganizerService from "./organizer.service";
 import { sendSuccess, sendPaginated } from "../../utils/response";
 import { parsePagination } from "../../utils/helpers";
+import { Errors } from "../../utils/AppError";
+import { assertSuperAdmin } from "../../utils/permissions";
 
 export async function listOrganizers(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const { page, limit } = parsePagination(req.query.page, req.query.limit);
-    const result = await OrganizerService.listOrganizers(page, limit, req.query.search as string | undefined);
+    // Admin surfaces need to see (and re-activate) deactivated organizations;
+    // that view is super-admin only. Regular callers get the public list.
+    const includeInactive = req.query.includeInactive === "true";
+    if (includeInactive) {
+      if (!req.user) throw Errors.unauthorized();
+      assertSuperAdmin(req.user);
+    }
+    const result = await OrganizerService.listOrganizers(
+      page,
+      limit,
+      req.query.search as string | undefined,
+      includeInactive
+    );
     sendPaginated({ res, data: result.organizers, page, limit, total: result.total });
   } catch (err) { next(err); }
 }

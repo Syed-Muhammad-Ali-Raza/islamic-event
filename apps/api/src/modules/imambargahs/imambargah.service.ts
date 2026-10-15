@@ -1,7 +1,9 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 import { Errors } from "../../utils/AppError";
-import type { ImambargahQueryInput } from "./imambargah.validation";
+import type { PermissionUser } from "../../utils/permissions";
+import { createDirectorySubmission, applySubmissionUpdate } from "../../services/approval.service";
+import type { ImambargahQueryInput, CreateImambargahInput, UpdateImambargahInput } from "./imambargah.validation";
 
 const select = {
   id: true,
@@ -21,11 +23,13 @@ const select = {
   verified: true,
   confidence: true,
   isActive: true,
+  approvalStatus: true,
 } satisfies Prisma.ImambargahSelect;
 
 export async function listImambargahs(query: ImambargahQueryInput, page: number, limit: number) {
   const where: Prisma.ImambargahWhereInput = {
     isActive: true,
+    approvalStatus: "APPROVED",
     ...(query.city ? { city: { equals: query.city, mode: "insensitive" } } : {}),
     ...(query.q
       ? {
@@ -56,6 +60,25 @@ export async function listImambargahs(query: ImambargahQueryInput, page: number,
 
 export async function getImambargah(sourceId: string) {
   const point = await prisma.imambargah.findUnique({ where: { sourceId }, select });
-  if (!point || !point.isActive) throw Errors.notFound("Imambargah");
+  if (!point || !point.isActive || point.approvalStatus !== "APPROVED") throw Errors.notFound("Imambargah");
   return point;
+}
+
+// ─── Submissions (approval flow) ─────────────────────────────────────────────
+
+export async function createImambargah(
+  input: CreateImambargahInput,
+  user: PermissionUser
+) {
+  const { organizerId, ...content } = input;
+  return createDirectorySubmission("imambargah", user, content, organizerId);
+}
+
+export async function updateImambargah(
+  id: string,
+  input: UpdateImambargahInput,
+  user: PermissionUser
+) {
+  const { organizerId, ...content } = input;
+  return applySubmissionUpdate("imambargah", id, user, content, organizerId);
 }

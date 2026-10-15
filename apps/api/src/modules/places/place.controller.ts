@@ -17,3 +17,17 @@ export async function getPlace(req: Request, res: Response, next: NextFunction):
     sendSuccess({ res, data: place });
   } catch (err) { next(err); }
 }
+
+export async function createPlace(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const place = await PlaceService.createPlace(req.body, req.user!);
+    sendSuccess({ res, data: place, statusCode: 201, message: "Place submitted." });
+  } catch (err) { next(err); }
+}
+
+export async function updatePlace(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const place = await PlaceService.updatePlace(req.params.id, req.body, req.user!);
+    sendSuccess({ res, data: place, message: "Place updated." });
+  } catch (err) { next(err); }
+}

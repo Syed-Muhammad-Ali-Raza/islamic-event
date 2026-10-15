@@ -1,7 +1,9 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 import { Errors } from "../../utils/AppError";
-import type { CharityQueryInput } from "./charity.validation";
+import type { PermissionUser } from "../../utils/permissions";
+import { createDirectorySubmission, applySubmissionUpdate } from "../../services/approval.service";
+import type { CharityQueryInput, CreateCharityInput, UpdateCharityInput } from "./charity.validation";
 
 const select = {
   id: true,
@@ -23,11 +25,13 @@ const select = {
   website: true,
   registration: true,
   isActive: true,
+  approvalStatus: true,
 } satisfies Prisma.CharitySelect;
 
 export async function listCharities(query: CharityQueryInput, page: number, limit: number) {
   const where: Prisma.CharityWhereInput = {
     isActive: true,
+    approvalStatus: "APPROVED",
     ...(query.country ? { country: { equals: query.country, mode: "insensitive" } } : {}),
     ...(query.province ? { province: { equals: query.province, mode: "insensitive" } } : {}),
     ...(query.city ? { city: { equals: query.city, mode: "insensitive" } } : {}),
@@ -64,27 +68,47 @@ export async function listCharities(query: CharityQueryInput, page: number, limi
 
 export async function getCharity(sourceId: string) {
   const c = await prisma.charity.findUnique({ where: { sourceId }, select });
-  if (!c || !c.isActive) throw Errors.notFound("Charity");
+  if (!c || !c.isActive || c.approvalStatus !== "APPROVED") throw Errors.notFound("Charity");
   return c;
+}
+
+// ─── Submissions (approval flow) ─────────────────────────────────────────────
+
+export async function createCharity(
+  input: CreateCharityInput,
+  user: PermissionUser
+) {
+  const { organizerId, ...content } = input;
+  return createDirectorySubmission("charity", user, content, organizerId);
+}
+
+export async function updateCharity(
+  id: string,
+  input: UpdateCharityInput,
+  user: PermissionUser
+) {
+  const { organizerId, ...content } = input;
+  return applySubmissionUpdate("charity", id, user, content, organizerId);
 }
 
 // Distinct filter options for cascading country → province → city dropdowns
 export async function listCharityFacets() {
+  const approvedOnly = { isActive: true, approvalStatus: "APPROVED" as const };
   const [countries, provinces, cities] = await Promise.all([
     prisma.charity.findMany({
-      where: { isActive: true },
+      where: approvedOnly,
       distinct: ["country"],
       select: { country: true },
       orderBy: { country: "asc" },
     }),
     prisma.charity.findMany({
-      where: { isActive: true },
+      where: approvedOnly,
       distinct: ["province"],
       select: { province: true },
       orderBy: { province: "asc" },
     }),
     prisma.charity.findMany({
-      where: { isActive: true },
+      where: approvedOnly,
       distinct: ["city"],
       select: { city: true },
       orderBy: { city: "asc" },

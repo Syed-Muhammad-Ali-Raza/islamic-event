@@ -6,10 +6,12 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Menu, X, Search, Bookmark, User, LogOut, PlusCircle, LayoutDashboard,
-  ChevronDown, Soup, Landmark, MapPin, Star, Ticket, Sparkles, Compass, BookOpen
+  ChevronDown, Soup, Landmark, MapPin, Star, Ticket, Sparkles, Compass, BookOpen,
+  ShieldCheck, ClipboardCheck
 } from "lucide-react";
 import { useAuthStore } from "@/stores/auth.store";
 import { useLogout } from "@/hooks/useAuth";
+import { isSuperAdminRole } from "@/types";
 import { clsx } from "clsx";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { LocationIndicator } from "@/components/layout/LocationIndicator";
@@ -346,10 +348,24 @@ export function Navbar() {
                           <LayoutDashboard size={15} className="text-slate-400" /> {t("nav.myEvents")}
                         </Link>
 
-                        {user?.role === "ADMIN" && (
-                          <Link href="/admin" className="flex items-center gap-2.5 px-4 py-2 text-sm text-brand-700 font-medium hover:bg-emerald-50 transition-colors" onClick={() => setUserMenuOpen(false)}>
-                            <Sparkles size={15} className="text-brand-600" /> {t("nav.adminPanel")}
-                          </Link>
+                        <Link href="/dashboard" className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors" onClick={() => setUserMenuOpen(false)}>
+                          <ClipboardCheck size={15} className="text-slate-400" /> {t("nav.dashboard")}
+                        </Link>
+
+                        {isSuperAdminRole(user?.role) && (
+                          <>
+                            <Link href="/approvals" className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors" onClick={() => setUserMenuOpen(false)}>
+                              <ClipboardCheck size={15} className="text-slate-400" /> {t("nav.approvals")}
+                            </Link>
+
+                            <Link href="/admin" className="flex items-center gap-2.5 px-4 py-2 text-sm text-brand-700 font-medium hover:bg-emerald-50 transition-colors" onClick={() => setUserMenuOpen(false)}>
+                              <Sparkles size={15} className="text-brand-600" /> {t("nav.adminPanel")}
+                            </Link>
+
+                            <Link href="/super-admin" className="flex items-center gap-2.5 px-4 py-2 text-sm text-brand-700 font-medium hover:bg-emerald-50 transition-colors" onClick={() => setUserMenuOpen(false)}>
+                              <ShieldCheck size={15} className="text-brand-600" /> {t("nav.superAdmin")}
+                            </Link>
+                          </>
                         )}
                       </div>
 
@@ -467,6 +483,31 @@ export function Navbar() {
                 >
                   {t("nav.myEvents")}
                 </Link>
+                <Link
+                  href="/dashboard"
+                  className="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-lg"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {t("nav.dashboard")}
+                </Link>
+                {isSuperAdminRole(user?.role) && (
+                  <>
+                    <Link
+                      href="/approvals"
+                      className="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-lg"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {t("nav.approvals")}
+                    </Link>
+                    <Link
+                      href="/super-admin"
+                      className="block px-3 py-2 text-sm font-medium text-brand-700 hover:bg-brand-50 rounded-lg"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {t("nav.superAdmin")}
+                    </Link>
+                  </>
+                )}
               </div>
             ) : (
               <div className="pt-2 border-t border-slate-200/80 grid grid-cols-2 gap-2 px-1">

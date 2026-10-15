@@ -3,13 +3,16 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/stores/auth.store";
+import { isSuperAdminRole } from "@/types";
 
 interface Props {
   children: React.ReactNode;
   requireAdmin?: boolean;
+  /** Super admins only (legacy ADMIN counts — same as the API). */
+  requireSuperAdmin?: boolean;
 }
 
-export function AuthGuard({ children, requireAdmin = false }: Props) {
+export function AuthGuard({ children, requireAdmin = false, requireSuperAdmin = false }: Props) {
   const { isAuthenticated, user } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
@@ -21,22 +24,24 @@ export function AuthGuard({ children, requireAdmin = false }: Props) {
     setHydrated(true);
   }, []);
 
-  const allowed = hydrated && isAuthenticated && (!requireAdmin || user?.role === "ADMIN");
+  const adminOk = !requireAdmin || isSuperAdminRole(user?.role);
+  const superAdminOk = !requireSuperAdmin || isSuperAdminRole(user?.role);
+  const allowed = hydrated && isAuthenticated && adminOk && superAdminOk;
 
   useEffect(() => {
     if (!hydrated) return;
     if (!isAuthenticated) {
       router.replace(`/login?next=${encodeURIComponent(pathname)}`);
-    } else if (requireAdmin && user?.role !== "ADMIN") {
+    } else if (!adminOk || !superAdminOk) {
       router.replace("/");
     }
-  }, [hydrated, isAuthenticated, user, requireAdmin, router, pathname]);
+  }, [hydrated, isAuthenticated, adminOk, superAdminOk, router, pathname]);
 
   if (!allowed) {
     return (
       <div className="container-page py-24 text-center">
-        <div className="w-10 h-10 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-slate-500 text-sm">Checking access…</p>
+        <div className="h-10 w-10 mx-auto mb-4 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
+        <p className="text-sm text-slate-500">Checking access…</p>
       </div>
     );
   }

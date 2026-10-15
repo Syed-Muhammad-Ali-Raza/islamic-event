@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { DarbarsExplorer } from "@/components/directories/DarbarsExplorer";
+import { SubmitListingButton } from "@/components/dashboard/SubmitListingButton";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchList, buildQuery, sanitizePage } from "@/lib/server-api";
@@ -57,6 +58,9 @@ export default async function DarbarsPage({ searchParams }: Props) {
             : []),
         ]}
       />
+      <div className="container-page pt-6 pb-1">
+        <SubmitListingButton module="darbar" />
+      </div>
       <Suspense
       fallback={
         <div className="container-page py-10">

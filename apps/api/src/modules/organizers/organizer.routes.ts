@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as OrganizerController from "./organizer.controller";
-import { requireAuth, requireSuperAdmin } from "../../middleware/auth.middleware";
+import { requireAuth, requireSuperAdmin, optionalAuth } from "../../middleware/auth.middleware";
 import { validateBody } from "../../middleware/validate.middleware";
 import {
   CreateOrganizerSchema,
@@ -11,8 +11,9 @@ import {
 
 const router = Router();
 
-// Public
-router.get("/", OrganizerController.listOrganizers);
+// Public — optionalAuth so super admins can pass ?includeInactive=true
+// (see the controller); anonymous callers still get the public list.
+router.get("/", optionalAuth, OrganizerController.listOrganizers);
 router.get("/:slug", OrganizerController.getOrganizer);
 
 // Super admin only — organizations are created/edited/deactivated by the

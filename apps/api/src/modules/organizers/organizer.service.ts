@@ -10,10 +10,17 @@ import {
 
 const MEMBER_USER_SELECT = { id: true, name: true, email: true } as const;
 
-export async function listOrganizers(page: number, limit: number, search?: string) {
+export async function listOrganizers(
+  page: number,
+  limit: number,
+  search?: string,
+  includeInactive = false
+) {
   const skip = (page - 1) * limit;
   const where = {
-    isActive: true,
+    // includeInactive is only reachable by super admins (checked in the
+    // controller) — the public list always hides deactivated organizations.
+    ...(includeInactive ? {} : { isActive: true }),
     ...(search ? { name: { contains: search, mode: "insensitive" as const } } : {}),
   };
 

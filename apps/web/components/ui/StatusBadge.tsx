@@ -20,7 +20,7 @@ const LABELS: Record<string, string> = {
   ACTION_TAKEN: "Action Taken",
 };
 
-export function StatusBadge({ status }: { status: string }) {
+export function StatusBadge({ status, label }: { status: string; label?: string }) {
   return (
     <span
       className={clsx(
@@ -28,7 +28,7 @@ export function StatusBadge({ status }: { status: string }) {
         STATUS_STYLES[status] ?? "bg-slate-100 text-slate-600 border-slate-300"
       )}
     >
-      {LABELS[status] ?? status.replace(/_/g, " ")}
+      {label ?? LABELS[status] ?? status.replace(/_/g, " ")}
     </span>
   );
 }

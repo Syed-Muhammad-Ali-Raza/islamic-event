@@ -1,11 +1,11 @@
 import { Router } from "express";
 import * as AdminController from "./admin.controller";
-import { requireAuth, requireRole } from "../../middleware/auth.middleware";
+import { requireAuth, requireSuperAdmin } from "../../middleware/auth.middleware";
 
 const router = Router();
 
-// All admin routes require auth + ADMIN role
-router.use(requireAuth, requireRole("ADMIN"));
+// All admin routes require auth + super admin (SUPER_ADMIN or legacy ADMIN)
+router.use(requireAuth, requireSuperAdmin);
 
 router.get("/dashboard", AdminController.dashboard);
 

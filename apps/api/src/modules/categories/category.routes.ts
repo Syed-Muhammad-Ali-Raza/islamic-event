@@ -1,7 +1,6 @@
 import { Router } from "express";
 import * as CategoryController from "./category.controller";
-import { requireAuth } from "../../middleware/auth.middleware";
-import { requireRole } from "../../middleware/auth.middleware";
+import { requireAuth, requireSuperAdmin } from "../../middleware/auth.middleware";
 import { validateBody } from "../../middleware/validate.middleware";
 import { CreateCategorySchema, UpdateCategorySchema } from "./category.validation";
 
@@ -10,31 +9,31 @@ const router = Router();
 // Public
 router.get("/", CategoryController.listCategories);
 
-// Admin only — must be registered before "/:slug"
+// Super admin only — must be registered before "/:slug"
 router.get(
   "/admin",
   requireAuth,
-  requireRole("ADMIN"),
+  requireSuperAdmin,
   CategoryController.listAllCategoriesAdmin
 );
 
 router.get("/:slug", CategoryController.getCategory);
 
-// Admin only
+// Super admin only
 router.post(
   "/",
   requireAuth,
-  requireRole("ADMIN"),
+  requireSuperAdmin,
   validateBody(CreateCategorySchema),
   CategoryController.createCategory
 );
 router.patch(
   "/:id",
   requireAuth,
-  requireRole("ADMIN"),
+  requireSuperAdmin,
   validateBody(UpdateCategorySchema),
   CategoryController.updateCategory
 );
-router.delete("/:id", requireAuth, requireRole("ADMIN"), CategoryController.deleteCategory);
+router.delete("/:id", requireAuth, requireSuperAdmin, CategoryController.deleteCategory);
 
 export default router;

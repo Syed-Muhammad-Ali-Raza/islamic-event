@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { OrgRole } from "@prisma/client";
 
 const phoneRegex = /^\+?[0-9\s\-()]{7,20}$/;
 
@@ -35,3 +36,28 @@ export const CreateOrganizerSchema = z.object({
 });
 
 export type CreateOrganizerInput = z.infer<typeof CreateOrganizerSchema>;
+
+/** Partial update — privileged fields (slug, isVerified, isActive, createdById) are not accepted. */
+export const UpdateOrganizerSchema = CreateOrganizerSchema.partial();
+
+export type UpdateOrganizerInput = z.infer<typeof UpdateOrganizerSchema>;
+
+const roleError = "Role must be OWNER, ADMIN or EDITOR";
+
+/** Add an existing user (by email) as a member of an organization. */
+export const AddMemberSchema = z.object({
+  email: z
+    .string({ required_error: "Email is required" })
+    .email("Please enter a valid email address")
+    .trim(),
+  role: z.nativeEnum(OrgRole, { invalid_type_error: roleError }).default("ADMIN"),
+});
+
+export type AddMemberInput = z.infer<typeof AddMemberSchema>;
+
+/** Change a member's role. */
+export const UpdateMemberSchema = z.object({
+  role: z.nativeEnum(OrgRole, { invalid_type_error: roleError }),
+});
+
+export type UpdateMemberInput = z.infer<typeof UpdateMemberSchema>;

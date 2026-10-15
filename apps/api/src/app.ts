@@ -16,6 +16,7 @@ import authRoutes from "./modules/auth/auth.routes";
 import eventRoutes from "./modules/events/event.routes";
 import categoryRoutes from "./modules/categories/category.routes";
 import organizerRoutes from "./modules/organizers/organizer.routes";
+import { listMyOrganizations } from "./modules/organizers/organizer.controller";
 import peopleRoutes from "./modules/people/people.routes";
 import savedEventRoutes from "./modules/saved-events/savedEvents.routes";
 import { listSavedEvents } from "./modules/saved-events/savedEvents.routes";
@@ -169,6 +170,7 @@ app.use(`${api}/scholars`, scholarRoutes);
 
 // Profile / user routes
 app.get(`${api}/users/me/saved-events`, requireAuth, listSavedEvents);
+app.get(`${api}/users/me/organizations`, requireAuth, listMyOrganizations);
 
 // â”€â”€â”€ Error handling (must be last) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.use(notFoundHandler);

@@ -35,7 +35,10 @@ Thumbs.db
 *.sw?
 
 # Prisma
-apps/api/prisma/migrations/
+# Migrations ARE committed (decision: `prisma migrate deploy` for real envs,
+# `prisma db push` stays the fast path for CI/dev — see README).
+!apps/api/prisma/migrations/
+!apps/api/prisma/migrations/**
 
 # TypeScript
 *.tsbuildinfo

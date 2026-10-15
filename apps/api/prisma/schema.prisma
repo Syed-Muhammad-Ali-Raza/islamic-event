@@ -16,7 +16,23 @@ datasource db {
 enum UserRole {
   USER
   ORGANIZER
+  ADMIN // legacy — treated as SUPER_ADMIN in code (deprecated)
+  SUPER_ADMIN
+}
+
+// Role of a user within an organization (OrganizationMember)
+enum OrgRole {
+  OWNER
   ADMIN
+  EDITOR
+}
+
+// Moderation state for user-submitted directory content.
+// Existing seeded rows default to APPROVED so they stay public.
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 enum EventStatus {
@@ -88,6 +104,7 @@ model User {
   reports        EventReport[]
   notifications  Notification[]
   eventRsvps     EventRsvp[]
+  organizationMemberships OrganizationMember[]
 
   @@map("users")
 }
@@ -200,8 +217,27 @@ model Organizer {
   country   Country? @relation(fields: [countryId], references: [id])
   city      City?    @relation(fields: [cityId], references: [id])
   events    Event[]
+  members   OrganizationMember[]
 
   @@map("organizers")
+}
+
+// ─── Organization membership (multi-level roles) ──────────────────────────────
+
+model OrganizationMember {
+  id          String   @id @default(cuid())
+  userId      String
+  organizerId String
+  role        OrgRole  @default(ADMIN)
+  addedById   String?
+  createdAt   DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizer Organizer @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizerId])
+  @@index([organizerId])
+  @@map("organization_members")
 }
 
 // ─── Person (Participant profile) ─────────────────────────────────────────────
@@ -246,6 +282,8 @@ model Event {
   posterPublicId  String?
   status          EventStatus @default(PENDING_REVIEW)
   rejectionReason String?
+  reviewedById    String?
+  reviewedAt      DateTime?
   isFeatured      Boolean     @default(false)
   viewCount       Int         @default(0)
   createdAt       DateTime    @default(now())
@@ -374,8 +412,17 @@ model Dastarkhwan {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
   @@index([city])
   @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
   @@map("dastarkhwans")
 }
 
@@ -402,8 +449,17 @@ model Imambargah {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
   @@index([city])
   @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
   @@map("imambargahs")
 }
 
@@ -431,10 +487,19 @@ model Place {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
   @@index([category])
   @@index([city])
   @@index([province])
   @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
   @@map("places")
 }
 
@@ -459,9 +524,18 @@ model Darbar {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
   @@index([city])
   @@index([province])
   @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
   @@map("darbars")
 }
 
@@ -488,10 +562,19 @@ model UrsDate {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
   @@index([researched])
   @@index([city])
   @@index([upcomingOrder])
   @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
   @@map("urs_dates")
 }
 
@@ -519,10 +602,19 @@ model Procession {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
   @@index([city])
   @@index([month, day])
   @@index([kind])
   @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
   @@map("processions")
 }
 
@@ -551,10 +643,19 @@ model Charity {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
   @@index([country])
   @@index([province])
   @@index([city])
   @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
   @@map("charities")
 }
 
@@ -583,9 +684,18 @@ model Mela {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
   @@index([city])
   @@index([province])
   @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
   @@map("melas")
 }
 
@@ -662,9 +772,18 @@ model Scholar {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  approvalStatus  ApprovalStatus @default(APPROVED)
+  submittedById   String?
+  organizerId     String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+
   @@index([sect])
   @@index([category])
   @@index([city])
   @@index([isActive])
+  @@index([approvalStatus])
+  @@index([organizerId])
   @@map("scholars")
 }

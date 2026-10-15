@@ -1,7 +1,15 @@
 import { defineConfig, devices } from "@playwright/test";
 import path from "path";
+import dotenv from "dotenv";
 
 const REPO_ROOT = __dirname;
+
+// Load .env for SEED_SUPER_ADMIN_* (read by e2e/fixtures.ts to log in as the
+// seeded super admin). apps/api/.env wins over the repo-root .env — the same
+// precedence as the seed's findEnvFile() — and dotenv never overwrites
+// variables already in process.env (CI sets them at the job level).
+dotenv.config({ path: path.join(REPO_ROOT, "apps", "api", ".env") });
+dotenv.config({ path: path.join(REPO_ROOT, ".env") });
 
 // Full-path npm on Windows dodges the rogue Node v26 shadowing bug
 // (see AGENTS.md). On other platforms, plain `npm` is fine.

@@ -5,6 +5,22 @@ import slugify from "slugify";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
+import dotenv from "dotenv";
+
+// Load .env by walking up from this file until one is found — mirrors
+// src/config/index.ts so `db:seed` reliably sees SEED_SUPER_ADMIN_* vars
+// whether it is run from the repo root or apps/api.
+function findEnvFile(): string {
+  let dir = __dirname;
+  for (let i = 0; i < 6; i++) {
+    const candidate = path.join(dir, ".env");
+    if (fs.existsSync(candidate)) return candidate;
+    dir = path.dirname(dir);
+  }
+  return path.resolve(__dirname, "../../../../.env");
+}
+
+dotenv.config({ path: findEnvFile() });
 
 const prisma = new PrismaClient();
 
@@ -534,48 +550,56 @@ async function main() {
     console.log(`  ✓ ${scholars.length} scholars seeded`);
   }
 
-  // ── Admin user (idempotent — never overwrites an existing password) ───────
-  const adminEmail = process.env.ADMIN_EMAIL?.trim() || "admin@communityevents.pk";
-  const adminExists = await prisma.user.findUnique({ where: { email: adminEmail } });
+  // ── Super admin (idempotent — never overwrites an existing user) ─────────
+  // Credentials come ONLY from the environment: there is deliberately no
+  // built-in default password. See .env.example / README "Seeded Super Admin".
+  const superAdminEmail =
+    process.env.SEED_SUPER_ADMIN_EMAIL?.trim() || "admin@communityevents.pk";
+  const providedPassword = process.env.SEED_SUPER_ADMIN_PASSWORD?.trim();
 
-  if (adminExists) {
-    console.log("  ✓ Admin user already exists, skipping");
+  if (!providedPassword) {
+    throw new Error(
+      "Refusing to seed the super admin: SEED_SUPER_ADMIN_PASSWORD is not set. " +
+        "Set it in your .env (12+ characters; required in production) and re-run db:seed. " +
+        "No default password is ever used."
+    );
+  }
+
+  if (process.env.NODE_ENV === "production" && providedPassword.length < 12) {
+    throw new Error(
+      "Refusing to seed the super admin: SEED_SUPER_ADMIN_PASSWORD must be " +
+        "at least 12 characters when NODE_ENV=production."
+    );
+  }
+
+  const existingSuperAdmin = await prisma.user.findUnique({
+    where: { email: superAdminEmail },
+    select: { id: true, role: true },
+  });
+
+  if (existingSuperAdmin) {
+    // Idempotent: never touch an existing user's password.
+    if (existingSuperAdmin.role !== "SUPER_ADMIN") {
+      await prisma.user.update({
+        where: { id: existingSuperAdmin.id },
+        data: { role: "SUPER_ADMIN" },
+      });
+      console.log(`  ✓ Existing user promoted to SUPER_ADMIN: ${superAdminEmail}`);
+    } else {
+      console.log("  ✓ Super admin already exists, skipping");
+    }
   } else {
-    const providedPassword = process.env.ADMIN_PASSWORD?.trim();
-    const isProduction = process.env.NODE_ENV === "production";
-
-    if (isProduction && (!providedPassword || providedPassword.length < 12)) {
-      throw new Error(
-        "Admin not seeded: set ADMIN_PASSWORD to at least 12 characters when NODE_ENV=production."
-      );
-    }
-
-    let password = providedPassword;
-    let generated = false;
-    if (!password) {
-      password = crypto.randomBytes(18).toString("base64url");
-      generated = true;
-    }
-
     await prisma.user.create({
       data: {
         name: "Platform Admin",
-        email: adminEmail,
-        passwordHash: await bcrypt.hash(password, 12),
-        role: "ADMIN",
+        email: superAdminEmail,
+        passwordHash: await bcrypt.hash(providedPassword, 12),
+        role: "SUPER_ADMIN",
       },
     });
-
-    if (generated) {
-      console.log(`  ✓ Admin user created — email: ${adminEmail}`);
-      console.log(
-        "    ⚠️  ADMIN_PASSWORD was not set — a random password was generated and will be shown ONCE:"
-      );
-      console.log(`    ${password}`);
-      console.log("    Copy it now — it cannot be shown again.");
-    } else {
-      console.log(`  ✓ Admin user created — email: ${adminEmail} (password read from ADMIN_PASSWORD)`);
-    }
+    console.log(
+      `  ✓ Super admin created — email: ${superAdminEmail} (password read from SEED_SUPER_ADMIN_PASSWORD)`
+    );
   }
 
   console.log("\nSeeding complete!");

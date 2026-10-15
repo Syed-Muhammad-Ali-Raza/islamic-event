@@ -92,8 +92,8 @@ npm install
 
 # 3. Database (from the repo root)
 npm run db:generate --workspace apps/api   # Generate Prisma client
-npm run db:push --workspace apps/api       # Apply schema (this repo uses db:push, not migrations)
-npm run db:seed --workspace apps/api       # Seed categories, directories, admin user
+npm run db:push --workspace apps/api       # Apply schema (dev fast path; migrations are also committed)
+npm run db:seed --workspace apps/api       # Seed categories, directories, super admin (needs SEED_SUPER_ADMIN_PASSWORD)
 
 # 4. Run (from the repo root, in two terminals)
 npm run dev:api   # http://localhost:4000
@@ -116,7 +116,7 @@ docker compose up --build
 ```
 
 - **Config comes from `.env`** (see `.env.example`). The API container runs with `NODE_ENV=production`, so `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` must be real random values (≥ 32 chars, not `your-*` placeholders) — generate with `openssl rand -hex 32`. The API refuses to start otherwise.
-- **Schema:** this repo uses `prisma db push` (no committed migrations) — the API container syncs the schema on startup. Existing data is never dropped without `--accept-data-loss`.
+- **Schema:** migrations are committed under `apps/api/prisma/migrations/`. The API container still syncs with `prisma db push` on startup (dev fast path); real deployments should use `prisma migrate deploy` — see [Upgrading existing deployments](#upgrading-existing-deployments). `db push` never drops data without `--accept-data-loss`.
 - **Seeding** runs from the host (the API image ships no dev tooling):
 
   ```bash
@@ -128,18 +128,18 @@ docker compose up --build
 
 ---
 
-## Seeded Admin Account
+## Seeded Super Admin Account
 
-The seed creates one ADMIN account — set the credentials in `apps/api/.env` **before** running `db:seed`:
+The seed creates one **SUPER_ADMIN** account. Credentials come **only** from the environment — there is deliberately no default password. Set them in `apps/api/.env` **before** running `db:seed`:
 
 ```bash
-ADMIN_EMAIL="admin@communityevents.pk"   # optional — this is the default
-ADMIN_PASSWORD="your-strong-password"    # required in production (min 12 chars)
+SEED_SUPER_ADMIN_EMAIL="admin@communityevents.pk"   # optional — this is the default email
+SEED_SUPER_ADMIN_PASSWORD="your-strong-password"    # required (12+ chars enforced in production)
 ```
 
-- **Development:** if `ADMIN_PASSWORD` is empty, the seed generates a strong random password and prints it to the console **once**.
-- **Production** (`NODE_ENV=production`): the seed refuses to create the admin unless `ADMIN_PASSWORD` is set and at least 12 characters.
-- Re-running the seed **never overwrites** an existing admin's password.
+- **Required:** the seed refuses to create the super admin unless `SEED_SUPER_ADMIN_PASSWORD` is set. There is no hardcoded fallback password.
+- **Production** (`NODE_ENV=production`): `SEED_SUPER_ADMIN_PASSWORD` must be at least 12 characters.
+- Re-running the seed **never overwrites** an existing user's password; if the account exists it is left untouched (and promoted to SUPER_ADMIN if it somehow is not).
 
 ---
 
@@ -179,14 +179,17 @@ Recommended production setup:
 **Migrate & seed:**
 
 ```bash
-# Schema — this repo uses prisma db push (no committed migrations):
-npx prisma db push --skip-generate        # run on each deploy (see .github/workflows/deploy.yml)
+# Schema — recommended for real deployments (migrations are committed):
+npx prisma migrate deploy --schema apps/api/prisma/schema.prisma
+# ...or keep the dev/CI fast path (see .github/workflows/deploy.yml):
+npx prisma db push --skip-generate
 
 # Seed (once per environment, from a machine with dev deps installed):
-npm run db:seed --workspace apps/api
+SEED_SUPER_ADMIN_PASSWORD="your-strong-password" npm run db:seed --workspace apps/api
 
-# Admin account: set ADMIN_EMAIL / ADMIN_PASSWORD (min 12 chars) in the
-# environment before seeding — see "Seeded Admin Account" above.
+# Super admin account: set SEED_SUPER_ADMIN_PASSWORD (and optionally
+# SEED_SUPER_ADMIN_EMAIL) in the environment before seeding —
+# see "Seeded Super Admin Account" above.
 ```
 
 **Post-deploy checklist:**
@@ -198,6 +201,28 @@ npm run db:seed --workspace apps/api
 - [ ] Admin seeded and the initial password changed
 - [ ] Cloudinary upload tested with a real image
 - [ ] HTTPS enforced by the host; custom domain + DNS verified
+
+---
+
+## Upgrading existing deployments
+
+Migrations are committed under `apps/api/prisma/migrations/` and ordered lexicographically:
+
+1. `0_init` — baseline of the pre-migration schema (existing databases mark it applied with `npx prisma migrate resolve --applied 0_init --schema apps/api/prisma/schema.prisma`)
+2. `20261015081210_add_super_admin_role` — `ALTER TYPE "UserRole" ADD VALUE IF NOT EXISTS 'SUPER_ADMIN'` (kept separate: Postgres cannot *use* a new enum value in the transaction that adds it)
+3. `20261015081219_org_approval_system` — new enums `OrgRole`/`ApprovalStatus`, `organization_members` table, approval columns on the 9 directory tables
+4. `20261015081220_promote_admins_to_super_admin` — data-only `UPDATE users SET role='SUPER_ADMIN' WHERE role='ADMIN'` (the legacy `ADMIN` value stays in the enum and is still treated as super admin by the code)
+
+To upgrade an existing database:
+
+```bash
+npx prisma migrate resolve --applied 0_init --schema apps/api/prisma/schema.prisma  # once, on pre-migration DBs
+npx prisma migrate deploy --schema apps/api/prisma/schema.prisma
+```
+
+All existing rows keep working: directory entries get `approvalStatus = 'APPROVED'` (default), and admins become `SUPER_ADMIN`.
+
+**⚠️ Rotate the legacy default admin.** Older seeds shipped a public default account (`admin@communityevents.pk` / `Admin@123456`, visible in git history), and this upgrade promotes that account to SUPER_ADMIN if it still exists. After upgrading, either deactivate it or rotate its password by hand using the commented runbook in [`apps/api/prisma/ops/rotate-default-admin.sql`](apps/api/prisma/ops/rotate-default-admin.sql) (never run automatically — it lives outside `prisma/migrations/` for that reason). See also `SECURITY_NOTES.md`.
 
 ---
 

@@ -92,6 +92,7 @@ export function ApprovalQueue({
         <label className="flex flex-col text-xs text-slate-500">
           {t("approvals.status")}
           <select
+            aria-label={t("approvals.status")}
             value={status}
             onChange={(e) => { setStatus(e.target.value as ApprovalStatusFilter); setPage(1); }}
             className="input mt-1 w-40"
@@ -107,6 +108,7 @@ export function ApprovalQueue({
         <label className="flex flex-col text-xs text-slate-500">
           {t("approvals.module")}
           <select
+            aria-label={t("approvals.module")}
             value={module}
             onChange={(e) => { setModule(e.target.value as DirectoryModuleKey | ""); setPage(1); }}
             className="input mt-1 w-48"

@@ -67,6 +67,7 @@ export function SubmitDirectoryForm({ initialModule }: { initialModule?: Directo
     <form onSubmit={onSubmit} className="max-w-2xl space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <Select
+          id="submit-module"
           label={t("dashboard.module")}
           value={module}
           onChange={(e) => {
@@ -78,6 +79,7 @@ export function SubmitDirectoryForm({ initialModule }: { initialModule?: Directo
         />
 
         <Select
+          id="submit-org"
           label={t("dashboard.submitFor")}
           value={organizerId}
           onChange={(e) => setOrganizerId(e.target.value)}

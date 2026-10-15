@@ -143,6 +143,46 @@ export async function approveEventViaApi(
   }
 }
 
+export interface CreatedOrg {
+  id: string;
+  slug: string;
+  name: string;
+}
+
+/** Create an organization as the seeded super admin (org management API). */
+export async function createOrgViaApi(
+  request: APIRequestContext,
+  name = `E2E Org ${unique("o")}`
+): Promise<CreatedOrg> {
+  const admin = await loginAdminViaApi(request);
+  const res = await request.post(`${API}/api/v1/organizers`, {
+    headers: { Authorization: `Bearer ${admin.accessToken}` },
+    data: { name },
+  });
+  if (!res.ok()) {
+    throw new Error(`createOrgViaApi failed: ${res.status()} ${await res.text()}`);
+  }
+  const body = await res.json();
+  return body.data as CreatedOrg;
+}
+
+/** Add an existing user to an org with a role (super admin only). */
+export async function addMemberViaApi(
+  request: APIRequestContext,
+  orgId: string,
+  email: string,
+  role: "OWNER" | "ADMIN" | "EDITOR"
+): Promise<void> {
+  const admin = await loginAdminViaApi(request);
+  const res = await request.post(`${API}/api/v1/organizers/${orgId}/members`, {
+    headers: { Authorization: `Bearer ${admin.accessToken}` },
+    data: { email, role },
+  });
+  if (!res.ok()) {
+    throw new Error(`addMemberViaApi failed: ${res.status()} ${await res.text()}`);
+  }
+}
+
 export const test = base.extend<{ auth: AuthTokens }>({
   auth: async ({ request }, use) => {
     const tokens = await registerViaApi(request);

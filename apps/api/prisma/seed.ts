@@ -44,6 +44,7 @@ async function main() {
     { name: "Community", slug: "community", description: "General community gatherings", sortOrder: 13 },
     { name: "Educational", slug: "educational", description: "Educational programs and workshops", sortOrder: 14 },
     { name: "Other", slug: "other", description: "Other religious and community events", sortOrder: 15 },
+    { name: "Expo", slug: "expo", description: "Trade shows, exhibitions and expos at Pakistan's expo centres", sortOrder: 16 },
   ];
 
   for (const cat of categories) {
@@ -548,6 +549,115 @@ async function main() {
       });
     }
     console.log(`  ✓ ${scholars.length} scholars seeded`);
+  }
+
+  // ── Expo & trade shows (idempotent) ────────────────────────────────────────
+  // Seeded as real APPROVED events so they appear in /events, the Expo category
+  // page, calendar, map, search and detail pages like any organiser submission.
+  const expoFile = path.join(__dirname, "data", "pakistan-expos.json");
+  if (fs.existsSync(expoFile)) {
+    const raw = JSON.parse(fs.readFileSync(expoFile, "utf8"));
+    const expos: Array<{
+      id: string; slug: string; title: string; city: string; venue: string;
+      address?: string | null; latitude?: number | null; longitude?: number | null;
+      startDate: string; endDate: string; startTime?: string | null; endTime?: string | null;
+      industry: string; description: string; featured?: boolean;
+    }> = raw.events ?? [];
+
+    if (expos.length > 0) {
+      const expoCategory = await prisma.category.findUnique({ where: { slug: "expo" } });
+      const pakistanCountry = await prisma.country.findUnique({ where: { code: "PK" } });
+
+      if (!expoCategory) {
+        console.warn("  ! Expo category missing — skipping expo events");
+      } else {
+        // Directory-seeded events need a creator + organizer. A dedicated system
+        // account keeps them out of any real person's "My Events".
+        const systemEmail = "expos@communityevents.pk";
+        const systemUser = await prisma.user.upsert({
+          where: { email: systemEmail },
+          update: {},
+          create: {
+            name: "Expo Desk",
+            email: systemEmail,
+            passwordHash: await bcrypt.hash(crypto.randomBytes(32).toString("hex"), 10),
+            role: "ORGANIZER",
+            emailVerifiedAt: new Date(),
+          },
+        });
+
+        const organizer = await prisma.organizer.upsert({
+          where: { slug: "pakistan-expo-desk" },
+          update: {},
+          create: {
+            name: "Pakistan Expo & Trade Show Desk",
+            slug: "pakistan-expo-desk",
+            description:
+              "Community-maintained listing of Pakistan's expo centres, trade shows and conferences.",
+            isVerified: true,
+            createdById: systemUser.id,
+            countryId: pakistanCountry?.id ?? null,
+          },
+        });
+
+        const formatDay = (iso: string) =>
+          new Date(`${iso}T00:00:00.000Z`).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            timeZone: "UTC",
+          });
+
+        let expoCount = 0;
+        for (const e of expos) {
+          const city = await prisma.city.findFirst({
+            where: { name: e.city },
+            select: { id: true, stateId: true },
+            orderBy: { createdAt: "asc" },
+          });
+
+          const schedule =
+            e.startDate === e.endDate
+              ? formatDay(e.startDate)
+              : `${formatDay(e.startDate)} – ${formatDay(e.endDate)}`;
+
+          const description = [
+            `Sector: ${e.industry}.`,
+            e.description,
+            `Runs ${schedule} at ${e.venue}, ${e.city}.`,
+            "Dates and timings are indicative — confirm with the organiser before travelling.",
+          ].join("\n\n");
+
+          await prisma.event.upsert({
+            where: { slug: e.slug },
+            update: {},
+            create: {
+              slug: e.slug,
+              title: e.title,
+              description,
+              categoryId: expoCategory.id,
+              createdById: systemUser.id,
+              organizerId: organizer.id,
+              date: new Date(`${e.startDate}T00:00:00.000Z`),
+              startTime: e.startTime ?? null,
+              endTime: e.endTime ?? null,
+              countryId: pakistanCountry?.id ?? null,
+              stateId: city?.stateId ?? null,
+              cityId: city?.id ?? null,
+              venue: e.venue,
+              address: e.address ?? null,
+              latitude: e.latitude ?? null,
+              longitude: e.longitude ?? null,
+              status: "APPROVED",
+              isFeatured: e.featured ?? false,
+              publishedAt: new Date(),
+            },
+          });
+          expoCount++;
+        }
+        console.log(`  ✓ ${expoCount} expo & trade-show events seeded`);
+      }
+    }
   }
 
   // ── Super admin (idempotent — never overwrites an existing user) ─────────

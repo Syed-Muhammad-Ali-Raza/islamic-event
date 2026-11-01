@@ -80,7 +80,7 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 
 ## Data sources
 
-Curated JSON in `apps/api/prisma/data/`: dastarkhwan-points, imambargahs, pakistan-places, pakistan-darbars, pakistan-urs-dates, muharram-processions, pakistan-charities, pakistan-melas (melas + auqaf_urs_calendar), scholars (sunni + shia). All seeded idempotently; re-run `npm run db:seed --workspace apps/api` after editing.
+Curated JSON in `apps/api/prisma/data/`: dastarkhwan-points, imambargahs, pakistan-places, pakistan-darbars, pakistan-urs-dates, muharram-processions, pakistan-charities, pakistan-melas (melas + auqaf_urs_calendar), scholars (sunni + shia), pakistan-expos (42 seeded APPROVED expo/trade-show events under the `expo` category, owned by the seeded "Pakistan Expo & Trade Show Desk" organizer). All seeded idempotently; re-run `npm run db:seed --workspace apps/api` after editing.
 
 ## Security baseline (already in place — don't regress)
 

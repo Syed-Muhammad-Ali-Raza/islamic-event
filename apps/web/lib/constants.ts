@@ -15,4 +15,5 @@ export const CATEGORY_ICONS: Record<string, string> = {
   community: "👥",
   educational: "🎓",
   other: "📅",
+  expo: "🏛️",
 };

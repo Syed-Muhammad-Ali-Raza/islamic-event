@@ -32,6 +32,7 @@ A Pakistan-focused community events platform where organizers publish events, us
 - **FR-E4** Share: WhatsApp / X / Facebook, copy-link, QR code on event detail.
 - **FR-E5** Organizer detail pages (`/organizers/[slug]`) with SEO metadata; multi-step create form with validation.
 - **FR-E6** Saved events (user's shortlist).
+- **FR-E7** Seeded expo & trade-show calendar: 42 approved events at Pakistan's expo centres and chambers (Lahore, Karachi, Islamabad, Multan, Faisalabad, Peshawar, Sialkot, Rawalpindi, Gujranwala) under the **Expo** category, owned by the seeded "Pakistan Expo & Trade Show Desk" organizer. Source: `apps/api/prisma/data/pakistan-expos.json`; dates are indicative and carry a verify-with-organiser disclaimer.
 
 ### 3.3 RSVPs & attendance (Phases 17, 20–23)
 - **FR-R1** RSVP toggles (Interested / Attending) with counts on event detail; upsert semantics.

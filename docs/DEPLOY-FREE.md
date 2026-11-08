@@ -112,7 +112,12 @@ and every other feature work fine. (`placeholder-cloud` / `000000000000000` /
 | `apps/api/vercel.json` | rewrites `/(.*)` → `/api`; `buildCommand` = `npm run vercel-build`; `outputDirectory` = `public`; `maxDuration` 30 s |
 | `apps/api/package.json` | `"vercel-build": "prisma generate"` — generates the Linux (rhel-openssl-3.0.x) query engine during the build |
 | `apps/api/prisma/schema.prisma` | `binaryTargets = ["native", "rhel-openssl-3.0.x"]` |
-| `apps/api/public/robots.txt` | keeps `outputDirectory` honest so `src/` is never published as static files |
+| `apps/api/public/robots.txt` | makes `outputDirectory` real so Vercel never publishes `src/` as static files |
+
+`public/` exists only because of `outputDirectory`: if it is missing, Vercel falls
+back to publishing the whole `apps/api` directory, and source files have no
+business being served as static assets. The robots file is a crawler block and
+nothing else — the API has no content to index.
 
 ### 5b. Create the project and set the env vars (CLI)
 

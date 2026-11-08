@@ -9,6 +9,9 @@ process.env.DATABASE_URL =
   process.env.TEST_DATABASE_URL ??
   "postgresql://postgres:12345@localhost:5432/community_events_test";
 
+// Local Postgres has no pooler, so both Prisma URLs point at the same database.
+process.env.DATABASE_URL_UNPOOLED = process.env.DATABASE_URL;
+
 process.env.JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET ?? "test-access-secret";
 process.env.JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET ?? "test-refresh-secret";
 process.env.CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME ?? "test-cloud";

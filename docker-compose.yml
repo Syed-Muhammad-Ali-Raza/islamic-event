@@ -45,6 +45,8 @@ services:
       # Overrides .env's localhost URL — inside the compose network the DB is
       # reachable at the `postgres` service hostname.
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-community_events}
+      # No pooler in compose, so the Prisma CLI/direct connection is the same DB.
+      DATABASE_URL_UNPOOLED: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-community_events}
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
       JWT_ACCESS_EXPIRES_IN: ${JWT_ACCESS_EXPIRES_IN:-15m}

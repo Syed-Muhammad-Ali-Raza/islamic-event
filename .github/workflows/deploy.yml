@@ -39,6 +39,9 @@ jobs:
     environment: production # optional: add environment protection rules in GitHub
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      # Direct (non-pooler) URL for Prisma CLI. Falls back to DATABASE_URL when
+      # the repo has no pooler (e.g. plain Postgres).
+      DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED || secrets.DATABASE_URL }}
     steps:
       - uses: actions/checkout@v4
 

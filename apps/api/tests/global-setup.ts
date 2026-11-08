@@ -13,7 +13,7 @@ export default function globalSetup(): void {
   execSync(
     `npx prisma db push --force-reset --accept-data-loss --skip-generate --schema="${schema}"`,
     {
-      env: { ...process.env, DATABASE_URL: url },
+      env: { ...process.env, DATABASE_URL: url, DATABASE_URL_UNPOOLED: url },
       cwd: path.resolve(__dirname, ".."),
       stdio: "inherit",
     }

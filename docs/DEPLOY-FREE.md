@@ -68,16 +68,22 @@ STARTTLS (`SMTP_SECURE=false`).
    - Region: **AWS ap-southeast-1 (Singapore)** — same region as the Render
      service, so queries stay fast.
    - Postgres version: default.
-2. On the project dashboard, open **Connect** and copy the **direct**
-   connection string (the host *without* `-pooler`). It looks like:
+2. On the project dashboard, open **Connect** and copy **both** connection
+   strings:
 
-   ```
-   postgresql://neondb_owner:XXXX@ep-cool-name-123456.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+   - **Pooled** (host contains `-pooler`) → `DATABASE_URL`, used by the running API.
+   - **Direct** (no `-pooler`) → `DATABASE_URL_UNPOOLED`, used by the Prisma CLI
+     (`db push` / migrations).
+
+   ```ini
+   DATABASE_URL="postgresql://neondb_owner:XXXX@ep-cool-name-123456-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+   DATABASE_URL_UNPOOLED="postgresql://neondb_owner:XXXX@ep-cool-name-123456.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
    ```
 
-   Use the direct host, not the pooled one: this API is a single long-running
-   process, and pooled connections are meant for serverless functions.
-3. Keep that string — it is `DATABASE_URL` in two places (§5 and §7).
+   Use the direct host for the CLI, not the pooled one: this API is a single
+   long-running process, and pooled connections are meant for serverless.
+3. Keep both strings — they are `DATABASE_URL` / `DATABASE_URL_UNPOOLED` in two
+   places (§5 and §7).
 
 > Neon scales to zero after ~5 minutes idle. The first query afterwards takes
 > ~0.5–1 s. That is expected and harmless.
@@ -112,7 +118,8 @@ the health check and every env var.
 
    | Key | Value |
    | --- | --- |
-   | `DATABASE_URL` | Neon **direct** connection string from §3 |
+   | `DATABASE_URL` | Neon **pooled** (`-pooler`) string from §3 |
+   | `DATABASE_URL_UNPOOLED` | Neon **direct** string from §3 (Prisma CLI) |
    | `CLOUDINARY_CLOUD_NAME` | from §4 |
    | `CLOUDINARY_API_KEY` | from §4 |
    | `CLOUDINARY_API_SECRET` | from §4 |
@@ -222,7 +229,10 @@ cd C:\Users\Ali\Desktop\islamic-event
 
 # Point at Neon for this shell session only.
 # (Your apps/api/.env still points at localhost, so local dev is unaffected.)
-$env:DATABASE_URL = "postgresql://...neon.tech/neondb?sslmode=require"
+# The Prisma CLI uses DATABASE_URL_UNPOOLED (direct); the app/seed uses
+# DATABASE_URL (pooled).
+$env:DATABASE_URL = "postgresql://...-pooler...neon.tech/neondb?sslmode=require"
+$env:DATABASE_URL_UNPOOLED = "postgresql://...neon.tech/neondb?sslmode=require"
 
 # Create/refresh the schema (same thing the container does on boot).
 npx prisma db push --schema apps/api/prisma/schema.prisma
@@ -255,7 +265,8 @@ Log in at `https://<your-project>.vercel.app/login` with the seeded admin.
 | Variable | Required | Example / notes |
 | --- | --- | --- |
 | `NODE_ENV` | yes | `production` (enables strict JWT validation + `trust proxy`) |
-| `DATABASE_URL` | yes | Neon direct URL, keep `?sslmode=require` |
+| `DATABASE_URL` | yes | Neon pooled (`-pooler`) URL, keep `?sslmode=require` |
+| `DATABASE_URL_UNPOOLED` | yes | Neon direct URL — Prisma CLI (`db push`/migrate) uses it |
 | `JWT_ACCESS_SECRET` | yes | ≥ 32 chars, not a placeholder, different from refresh |
 | `JWT_REFRESH_SECRET` | yes | ≥ 32 chars |
 | `JWT_ACCESS_EXPIRES_IN` | no | `15m` |
@@ -350,6 +361,7 @@ it is interactive and can reset data.
 | SMTP error `ETIMEDOUT` / `ECONNECTION` on port 465/587 | Render blocks those ports — use `2525` |
 | Brevo `535 Authentication failed` | Wrong SMTP key (not account password), or relay not yet activated |
 | `P1001: Can't reach database server` | `DATABASE_URL` typo or missing `?sslmode=require` |
+| `P1001` only locally, while `psql`/ping works | Broken IPv6 route: Neon's AAAA records are tried first. Disable IPv6 on the adapter, or append `&connect_timeout=150&pool_timeout=200` to the URL |
 | Vercel build error about files outside the project root | Root Directory must be `apps/web`; the custom `outputFileTracingRoot` is skipped on Vercel |
 | Uploads fail with a Cloudinary error | Placeholder/invalid keys, or the unsigned-upload preset is disabled |
 

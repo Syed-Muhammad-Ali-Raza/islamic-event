@@ -27,6 +27,9 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/community_events
+      # Prisma CLI (db push / migrate) reads directUrl; local Postgres has no
+      # pooler, so both point at the same database.
+      DATABASE_URL_UNPOOLED: postgresql://postgres:postgres@localhost:5432/community_events
       TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/community_events_test
       JWT_ACCESS_SECRET: ci-access-secret
       JWT_REFRESH_SECRET: ci-refresh-secret
@@ -55,8 +58,8 @@ jobs:
           SEED_SUPER_ADMIN_PASSWORD: ci-throwaway-super-admin-password
         run: |
           PGPASSWORD=postgres psql -h localhost -U postgres -d postgres -c "DROP DATABASE IF EXISTS community_events_migrate_check;" -c "CREATE DATABASE community_events_migrate_check;"
-          DATABASE_URL="$MIGRATE_CHECK_DATABASE_URL" npx prisma migrate deploy --schema apps/api/prisma/schema.prisma
-          DATABASE_URL="$MIGRATE_CHECK_DATABASE_URL" npm run db:seed --workspace apps/api
+          DATABASE_URL="$MIGRATE_CHECK_DATABASE_URL" DATABASE_URL_UNPOOLED="$MIGRATE_CHECK_DATABASE_URL" npx prisma migrate deploy --schema apps/api/prisma/schema.prisma
+          DATABASE_URL="$MIGRATE_CHECK_DATABASE_URL" DATABASE_URL_UNPOOLED="$MIGRATE_CHECK_DATABASE_URL" npm run db:seed --workspace apps/api
 
       - name: Lint
         run: npm run lint
@@ -92,6 +95,7 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/community_events
+      DATABASE_URL_UNPOOLED: postgresql://postgres:postgres@localhost:5432/community_events
       JWT_ACCESS_SECRET: ci-access-secret
       JWT_REFRESH_SECRET: ci-refresh-secret
       # Seed creates a throwaway super admin for the E2E suite (fresh

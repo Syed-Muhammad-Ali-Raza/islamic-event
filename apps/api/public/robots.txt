@@ -1,0 +1,8 @@
+# The API project's static output directory (see vercel.json "outputDirectory").
+# It must exist so Vercel doesn't fall back to publishing the whole apps/api
+# directory — source files have no business being served as static assets.
+#
+# Every other path is rewritten to the Express function, which answers with its
+# own 404 handler, so this file is effectively the only static asset.
+User-agent: *
+Disallow: /

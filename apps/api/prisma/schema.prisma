@@ -4,6 +4,9 @@
 
 generator client {
   provider = "prisma-client-js"
+  // `native` keeps local dev/CI on the host platform; the rhel target is the
+  // engine AWS Lambda / Vercel functions run (Amazon Linux 2023, OpenSSL 3).
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {

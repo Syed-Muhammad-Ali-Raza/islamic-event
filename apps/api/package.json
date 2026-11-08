@@ -7,6 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc --project tsconfig.json",
     "start": "node dist/server.js",
+    "vercel-build": "prisma generate",
     "typecheck": "tsc --noEmit && tsc --noEmit -p prisma",
     "test": "jest",
     "db:generate": "prisma generate",

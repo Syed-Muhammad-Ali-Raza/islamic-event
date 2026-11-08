@@ -1,5 +1,6 @@
 import nodemailer, { type Transporter } from "nodemailer";
 import fs from "fs";
+import os from "os";
 import path from "path";
 import { config } from "../config";
 
@@ -37,9 +38,21 @@ function getTransporter(): Transporter | null {
 }
 
 function outboxDir(): string {
-  const dir = path.resolve(process.cwd(), "logs", "outbox");
-  fs.mkdirSync(dir, { recursive: true });
-  return dir;
+  // Local dev gets logs/outbox/ under the repo. Serverless hosts (Vercel /
+  // Lambda) mount the deployment bundle read-only, so the only writable path
+  // is the OS temp dir — try the nice location first, fall back to /tmp.
+  for (const dir of [
+    path.resolve(process.cwd(), "logs", "outbox"),
+    path.join(os.tmpdir(), "outbox"),
+  ]) {
+    try {
+      fs.mkdirSync(dir, { recursive: true });
+      return dir;
+    } catch {
+      // read-only filesystem — try the next candidate
+    }
+  }
+  return os.tmpdir();
 }
 
 export interface RawEmail {

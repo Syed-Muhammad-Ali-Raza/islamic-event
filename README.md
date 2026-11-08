@@ -165,14 +165,21 @@ See `.env.example` for all required variables (`DATABASE_URL`, JWT secrets, `CLO
 
 ## Deployment
 
+> **Deploying at zero cost?** Follow the step-by-step guide in
+> [`docs/DEPLOY-FREE.md`](docs/DEPLOY-FREE.md): Vercel (web) + Render free (API)
+> + Neon free (Postgres) + Cloudinary + Brevo email, with the free-tier gotchas
+> spelled out (Render blocks SMTP ports 25/465/587, Neon needs the direct URL,
+> seeding runs from your machine, keeping the API warm).
+
 Recommended production setup:
 
 | Piece | Recommended | Notes |
 | --- | --- | --- |
 | Web | **Vercel** (Next.js) | Set every `NEXT_PUBLIC_*` var in project settings — they are inlined at build time |
 | API | **Render** or **Railway** (Docker works out of the box) | Expose port `4000`; health check path `/health` |
-| Database | **Neon** or **Supabase** (managed Postgres) | Use the pooled connection string; backups on by default |
+| Database | **Neon** or **Supabase** (managed Postgres) | Use the direct (non-pooled) URL for the long-running API server; backups on by default |
 | Images | **Cloudinary** | Required for event image uploads |
+| Email | **Brevo** (`smtp-relay.brevo.com:2525`) | Gmail SMTP works only on hosts that allow 465/587 — Render free does not |
 
 **Required environment variables (API):** `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET` (random, ≥ 32 chars — `openssl rand -hex 32`), `CLOUDINARY_CLOUD_NAME/API_KEY/API_SECRET`, `CORS_ORIGINS` (your web origin), `APP_URL`. **Web:** `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_APP_URL`. The API validates these at boot and refuses weak/placeholder JWT secrets in production.
 

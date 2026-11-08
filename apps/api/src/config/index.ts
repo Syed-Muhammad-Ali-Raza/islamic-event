@@ -133,9 +133,11 @@ export const config = {
   },
 
   app: {
-    url: process.env.APP_URL ?? "http://localhost:3000",
-    name: process.env.APP_NAME ?? "Community Events",
-    supportEmail: process.env.SUPPORT_EMAIL ?? "support@communityevents.pk",
+    // `||` (not `??`) so an empty env var from a host dashboard still falls
+    // back — production links must never become relative/broken.
+    url: process.env.APP_URL?.trim() || "http://localhost:3000",
+    name: process.env.APP_NAME?.trim() || "Community Events",
+    supportEmail: process.env.SUPPORT_EMAIL?.trim() || "support@communityevents.pk",
   },
 
   smtp: {
@@ -144,7 +146,13 @@ export const config = {
     secure: process.env.SMTP_SECURE === "true",
     user: process.env.SMTP_USER ?? "",
     pass: process.env.SMTP_PASS ?? "",
-    from: process.env.EMAIL_FROM ?? "Community Events <no-reply@communityevents.pk>",
+    // Same reasoning as `app.url`: an empty EMAIL_FROM from a host dashboard
+    // should fall back to SMTP_USER, never produce an empty sender address.
+    from:
+      process.env.EMAIL_FROM?.trim() ||
+      (process.env.SMTP_USER?.trim()
+        ? `Community Events <${process.env.SMTP_USER.trim()}>`
+        : "Community Events <no-reply@communityevents.pk>"),
   },
 
   cors: {

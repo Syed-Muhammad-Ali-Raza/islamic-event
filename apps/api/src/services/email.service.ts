@@ -17,7 +17,21 @@ function getTransporter(): Transporter | null {
       port: config.smtp.port,
       secure: config.smtp.secure,
       auth: config.smtp.user ? { user: config.smtp.user, pass: config.smtp.pass } : undefined,
+      // Fail fast with a clear log instead of hanging a request worker.
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 20_000,
     });
+    // Surface auth/host problems in the API log at startup.
+    transporter
+      .verify()
+      .then(() => console.log(`[email] SMTP ready (${config.smtp.host}:${config.smtp.port})`))
+      .catch((err: unknown) =>
+        console.error(
+          "[email] SMTP connection failed:",
+          err instanceof Error ? err.message : err
+        )
+      );
   }
   return transporter;
 }
@@ -50,7 +64,16 @@ export async function sendEmail(email: RawEmail): Promise<void> {
       return;
     }
 
-    // Dev outbox — no SMTP configured
+    // No SMTP configured. In production this means the email is NOT delivered,
+    // so make it loud in the logs instead of failing silently.
+    if (config.nodeEnv === "production") {
+      console.error(
+        `[email] SMTP is not configured — "${email.subject}" to ${email.to} was NOT sent. ` +
+          "Set SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER and SMTP_PASS."
+      );
+    }
+
+    // Dev outbox — inspectable HTML on disk.
     const safeName = email.to.replace(/[^a-z0-9@._-]/gi, "_");
     const file = path.join(outboxDir(), `${Date.now()}-${safeName}.html`);
     const content = `<!-- To: ${email.to} | Subject: ${email.subject} -->\n${email.html}`;

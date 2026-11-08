@@ -1,9 +1,18 @@
 /** @type {import('next').NextConfig} */
 const path = require("path");
 
+// Vercel produces its own build output and handles monorepo file tracing, so
+// the standalone bundle + custom tracing root are only applied for Docker
+// builds (docker-compose, self-hosting). VERCEL=1 is set by the platform.
+const isVercel = process.env.VERCEL === "1";
+
 const nextConfig = {
-  output: "standalone",
-  outputFileTracingRoot: path.join(__dirname, "../.."),
+  ...(isVercel
+    ? {}
+    : {
+        output: "standalone",
+        outputFileTracingRoot: path.join(__dirname, "../.."),
+      }),
   poweredByHeader: false,
   images: {
     remotePatterns: [

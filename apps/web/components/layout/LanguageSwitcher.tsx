@@ -41,7 +41,9 @@ export function LanguageSwitcher() {
         title={t("nav.language")}
       >
         <Globe size={18} />
-        <span className="hidden lg:inline text-xs font-medium">{current.flag}</span>
+        <span className="hidden lg:inline-flex h-5 w-7 items-center justify-center rounded border border-slate-200 text-[9px] font-bold uppercase tracking-wide text-slate-600">
+          {current.code}
+        </span>
       </button>
 
       {open && (
@@ -67,7 +69,9 @@ export function LanguageSwitcher() {
                 }`}
                 id={`language-option-${lang.code}`}
               >
-                <span className="text-base leading-none">{lang.flag}</span>
+                <span className="inline-flex h-5 w-7 items-center justify-center rounded border border-slate-200 text-[9px] font-bold uppercase tracking-wide text-slate-600">
+                  {lang.code}
+                </span>
                 <span className="flex-1 text-left">{lang.native}</span>
                 {active && <Check size={14} className="text-brand-600" />}
               </button>

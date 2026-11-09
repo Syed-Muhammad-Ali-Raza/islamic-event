@@ -2,6 +2,16 @@
 
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import {
+  BadgeCheck,
+  CalendarDays,
+  Globe,
+  HeartHandshake,
+  House,
+  MapPin,
+  Phone,
+  User,
+} from "lucide-react";
 import type { Charity } from "@/types";
 
 function CharityCard({ c }: { c: Charity }) {
@@ -32,35 +42,54 @@ function CharityCard({ c }: { c: Charity }) {
         </p>
       )}
 
-      {c.address && <p className="text-xs text-slate-500 mb-2">🏠 {c.address}</p>}
+      {c.address && (
+        <p className="text-xs text-slate-500 mb-2 flex items-start gap-1.5">
+          <House size={12} className="mt-0.5 shrink-0" aria-hidden="true" />
+          <span>{c.address}</span>
+        </p>
+      )}
 
       {c.founder && (
-        <p className="text-xs text-slate-500 mb-1">👤 {t("category.charity.foundedBy")} {c.founder}{c.founded ? ` (${c.founded})` : ""}</p>
+        <p className="text-xs text-slate-500 mb-1 flex items-start gap-1.5">
+          <User size={12} className="mt-0.5 shrink-0" aria-hidden="true" />
+          <span>
+            {t("category.charity.foundedBy")} {c.founder}
+            {c.founded ? ` (${c.founded})` : ""}
+          </span>
+        </p>
       )}
       {c.founded && !c.founder && (
-        <p className="text-xs text-slate-500 mb-1">📅 {t("category.charity.founded")}: {c.founded}</p>
+        <p className="text-xs text-slate-500 mb-1 flex items-start gap-1.5">
+          <CalendarDays size={12} className="mt-0.5 shrink-0" aria-hidden="true" />
+          <span>{t("category.charity.founded")}: {c.founded}</span>
+        </p>
       )}
 
       {contacts.length > 0 && (
-        <div className="text-xs text-slate-600 mb-1">
-          📞{" "}
-          {contacts.map((num, i) => (
-            <span key={num}>
-              {i > 0 && " · "}
-              {num.startsWith("+") || /^\d/.test(num) ? (
-                <a href={`tel:${num.replace(/[^+\d]/g, "")}`} className="hover:text-brand-700">
-                  {num}
-                </a>
-              ) : (
-                num
-              )}
-            </span>
-          ))}
+        <div className="text-xs text-slate-600 mb-1 flex items-start gap-1.5">
+          <Phone size={12} className="mt-0.5 shrink-0" aria-hidden="true" />
+          <span>
+            {contacts.map((num, i) => (
+              <span key={num}>
+                {i > 0 && " · "}
+                {num.startsWith("+") || /^\d/.test(num) ? (
+                  <a href={`tel:${num.replace(/[^+\d]/g, "")}`} className="hover:text-brand-700">
+                    {num}
+                  </a>
+                ) : (
+                  num
+                )}
+              </span>
+            ))}
+          </span>
         </div>
       )}
 
       {c.registration && (
-        <p className="text-[11px] text-slate-400 mt-auto pt-2">✓ {c.registration}</p>
+        <p className="text-[11px] text-slate-400 mt-auto pt-2 flex items-center gap-1">
+          <BadgeCheck size={12} className="shrink-0" aria-hidden="true" />
+          {c.registration}
+        </p>
       )}
 
       <div className="flex flex-wrap gap-3 mt-2">
@@ -69,9 +98,9 @@ function CharityCard({ c }: { c: Charity }) {
             href={c.website}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-brand-700 font-medium hover:underline"
+            className="text-xs text-brand-700 font-medium hover:underline inline-flex items-center gap-1"
           >
-            🌐 {t("category.charity.visitWebsite")}
+            <Globe size={12} aria-hidden="true" /> {t("category.charity.visitWebsite")}
           </a>
         )}
         {c.googleMapsLink && (
@@ -79,9 +108,9 @@ function CharityCard({ c }: { c: Charity }) {
             href={c.googleMapsLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-brand-700 font-medium hover:underline"
+            className="text-xs text-brand-700 font-medium hover:underline inline-flex items-center gap-1"
           >
-            📍 {t("category.charity.googleMaps")}
+            <MapPin size={12} aria-hidden="true" /> {t("category.charity.googleMaps")}
           </a>
         )}
       </div>
@@ -149,7 +178,10 @@ export function CharityDirectory({
   return (
     <section className="mt-12" id="charities">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-slate-900">🤲 {t("category.charity.title")}</h2>
+        <h2 className="text-2xl font-bold text-slate-900 inline-flex items-center gap-2">
+          <HeartHandshake className="h-6 w-6 text-brand-600" aria-hidden="true" />
+          {t("category.charity.title")}
+        </h2>
         <p className="text-slate-500 text-sm mt-1 max-w-2xl mx-auto">
           {t("category.charity.subtitle")}
         </p>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { MapPinned, Soup, Landmark, LandPlot, Ticket, ArrowRight, BookOpen } from "lucide-react";
+import { MapPinned, Soup, Landmark, LandPlot, Ticket, ArrowRight, BookOpen, CalendarDays } from "lucide-react";
 import { EventCard } from "@/components/events/EventCard";
 import { CityMapLazy } from "@/components/maps/CityMapLazy";
 import { JsonLdScript } from "@/components/seo/JsonLd";
@@ -202,7 +202,7 @@ async function CityHub({ slug }: { slug: string }) {
 
         {data.events.length === 0 ? (
           <div className="card-glass text-center py-14 px-6">
-            <p className="text-5xl mb-4">📅</p>
+            <CalendarDays className="mx-auto mb-4 h-12 w-12 text-slate-300" aria-hidden="true" />
             <p className="text-lg font-medium text-slate-900">No events in {city.name} yet</p>
             <p className="text-slate-500 text-sm mt-1">
               Be the first — publish an event for your community.

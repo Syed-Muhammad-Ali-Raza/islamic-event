@@ -176,7 +176,7 @@ function CreateEventContent() {
         <div className="w-16 h-16 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center mx-auto mb-5">
           <Check size={30} className="text-green-600" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Event submitted! 🎉</h1>
+        <h1 className="text-2xl font-bold text-slate-900 mb-2">Event submitted!</h1>
         <p className="text-slate-500 text-sm leading-relaxed">
           Your event <span className="text-slate-900 font-medium">“{getValues("title")}”</span> is now pending
           review. An admin will approve it shortly, and it will appear on the public events feed.

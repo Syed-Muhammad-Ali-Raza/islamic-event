@@ -7,14 +7,14 @@ async function main() {
   // Verify database connection before binding
   try {
     await prisma.$connect();
-    console.log("✓ Database connected");
+    console.log("[ok] Database connected");
   } catch (err) {
-    console.error("✗ Database connection failed:", err);
+    console.error("[fail] Database connection failed:", err);
     process.exit(1);
   }
 
   const server = app.listen(config.port, () => {
-    console.log(`✓ API running on http://localhost:${config.port}`);
+    console.log(`[ok] API running on http://localhost:${config.port}`);
     console.log(`  Environment: ${config.nodeEnv}`);
     console.log(`  API prefix:  ${config.apiPrefix}`);
   });

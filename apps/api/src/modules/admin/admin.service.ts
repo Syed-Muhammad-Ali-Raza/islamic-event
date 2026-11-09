@@ -60,9 +60,9 @@ async function notifyCreatorOfStatus(
   reason?: string
 ): Promise<void> {
   const titles: Record<string, string> = {
-    APPROVED: "Your event has been approved ✅",
-    REJECTED: "Your event needs changes ❌",
-    CANCELLED: "Your event was cancelled ⚠️",
+    APPROVED: "Your event has been approved",
+    REJECTED: "Your event needs changes",
+    CANCELLED: "Your event was cancelled",
   };
 
   await notify({

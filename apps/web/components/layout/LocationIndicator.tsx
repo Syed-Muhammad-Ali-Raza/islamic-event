@@ -39,7 +39,7 @@ export function LocationIndicator({ variant = "compact" }: Props) {
         className="hidden lg:flex items-center gap-1.5 text-xs text-slate-500 border border-slate-200 rounded-full px-2.5 py-1"
         title={`${[data.city, data.region, data.country].filter(Boolean).join(", ")}`}
       >
-        <span className="text-sm leading-none">{data.flag}</span>
+        <MapPin size={13} className="text-brand-600 shrink-0" />
         {data.country}
       </span>
     );

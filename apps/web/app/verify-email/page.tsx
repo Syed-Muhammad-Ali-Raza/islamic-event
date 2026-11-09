@@ -48,7 +48,7 @@ function VerifyEmailContent() {
     return (
       <div className="text-center py-8">
         <BadgeCheck size={44} className="mx-auto text-green-600 mb-4" />
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Email verified! ✅</h1>
+        <h1 className="text-2xl font-bold text-slate-900 mb-2">Email verified!</h1>
         <p className="text-slate-500 text-sm mb-6">
           Your email address has been confirmed. You&apos;re all set.
         </p>

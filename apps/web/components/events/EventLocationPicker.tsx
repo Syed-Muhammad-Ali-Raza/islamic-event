@@ -19,9 +19,9 @@ const PAKISTAN_VIEW: L.LatLngExpression = [30.3753, 69.3451];
 const pinIcon = () =>
   L.divIcon({
     className: "",
-    html: `<div style="font-size:26px;line-height:1;transform:translateY(-4px);filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))">📍</div>`,
-    iconSize: [24, 24],
-    iconAnchor: [12, 22],
+    html: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:translateY(-6px);filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 26],
   });
 
 export function EventLocationPicker({ address, venue, cityName, latitude, longitude, onChange }: Props) {

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
-import { CheckCircle2, EyeOff, ShieldCheck, ExternalLink } from "lucide-react";
+import { CheckCircle2, EyeOff, ShieldCheck, ExternalLink, PartyPopper } from "lucide-react";
 import { useAdminReports, useResolveReport } from "@/hooks/useAdmin";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 
@@ -54,7 +54,10 @@ export default function AdminReportsPage() {
               ) : !data || data.data.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-5 py-12 text-center text-slate-500">
-                    No reports. Everything looks good! 🎉
+                    <span className="inline-flex items-center gap-2">
+                      <PartyPopper size={16} className="text-emerald-600" aria-hidden="true" />
+                      No reports. Everything looks good!
+                    </span>
                   </td>
                 </tr>
               ) : (

@@ -37,7 +37,7 @@ function SavedEventsList() {
         </div>
       ) : items.length === 0 ? (
         <div className="text-center py-20 text-slate-500">
-          <p className="text-5xl mb-4">🔖</p>
+          <Bookmark className="mx-auto mb-4 h-12 w-12 text-slate-300" aria-hidden="true" />
           <p className="text-lg font-medium">No saved events yet</p>
           <p className="text-sm mt-1">
             Browse events and tap the bookmark icon to save them here.

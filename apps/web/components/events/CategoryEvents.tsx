@@ -118,7 +118,7 @@ export function CategoryEvents({
         </div>
       ) : total === 0 ? (
         <div className="text-center py-16 text-slate-500">
-          <p className="text-4xl mb-3">🔍</p>
+          <Search className="mx-auto mb-3 h-10 w-10 text-slate-300" aria-hidden="true" />
           <p className="text-lg font-medium">
             {isFiltered ? "No events match your search" : `No ${categoryName} events right now`}
           </p>

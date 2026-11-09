@@ -16,11 +16,12 @@ export default function Icon() {
           justifyContent: "center",
           background: "linear-gradient(135deg, #059669 0%, #34d399 100%)",
           borderRadius: 14,
-          fontSize: 40,
           color: "#ffffff",
         }}
       >
-        🌙
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="#ffffff">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
       </div>
     ),
     { ...size }

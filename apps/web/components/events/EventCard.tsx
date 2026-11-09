@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, MapPin, Clock } from "lucide-react";
+import { Calendar, MapPin, Clock, Landmark } from "lucide-react";
 import { format } from "date-fns";
 import type { EventSummary } from "@/types";
 import { clsx } from "clsx";
@@ -36,7 +36,7 @@ export function EventCard({ event, className }: Props) {
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-brand-900/60 to-surface-100">
-            <span className="text-4xl opacity-40">🕌</span>
+            <Landmark className="h-12 w-12 text-white/40" aria-hidden="true" />
           </div>
         )}
 

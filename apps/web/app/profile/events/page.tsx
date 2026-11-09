@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   PlusCircle, Calendar, MapPin, Users, ChevronDown, ChevronUp, Download,
-  ScanLine, Undo2, CircleCheckBig,
+  ScanLine, Undo2, CircleCheckBig, CalendarDays, Landmark,
 } from "lucide-react";
 import { useMyEvents, useEventRsvps } from "@/hooks/useEvents";
 import { eventService } from "@/services/event.service";
@@ -303,7 +303,7 @@ function MyEventsContent() {
         </div>
       ) : !data || data.data.length === 0 ? (
         <div className="card-glass text-center py-16 px-6">
-          <p className="text-5xl mb-4">📅</p>
+          <CalendarDays className="mx-auto mb-4 h-12 w-12 text-slate-300" aria-hidden="true" />
           <p className="text-lg font-medium text-slate-900">No events yet</p>
           <p className="text-slate-500 text-sm mt-1">
             Create your first event and it will be reviewed before going live.
@@ -331,7 +331,9 @@ function MyEventsContent() {
                       sizes="128px"
                     />
                   ) : (
-                    <div className="absolute inset-0 flex items-center justify-center text-2xl opacity-40">🕌</div>
+                    <div className="absolute inset-0 flex items-center justify-center text-brand-700/40">
+                      <Landmark className="h-9 w-9" aria-hidden="true" />
+                    </div>
                   )}
                 </div>
 

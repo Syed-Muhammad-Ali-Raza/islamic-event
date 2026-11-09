@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Search, MapPin, ExternalLink, AlertTriangle, Sparkles, Clock, CalendarDays,
-  ListOrdered, BadgeCheck, Ticket,
+  ListOrdered, BadgeCheck, Ticket, Tent,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
@@ -233,7 +233,7 @@ export function MelaExplorer({
             </div>
           ) : !data || data.data.length === 0 ? (
             <div className="card-glass text-center py-16 px-6">
-              <p className="text-5xl mb-4">🎪</p>
+              <Tent className="mx-auto mb-4 h-12 w-12 text-slate-300" aria-hidden="true" />
               <p className="text-lg font-medium text-slate-900">{t("melas.emptyTitle")}</p>
               <p className="text-slate-500 text-sm mt-1">{t("directories.tryFilters")}</p>
             </div>
@@ -402,7 +402,7 @@ export function MelaExplorer({
             </div>
           ) : !auqafData || auqafData.data.length === 0 ? (
             <div className="card-glass text-center py-16 px-6">
-              <p className="text-5xl mb-4">📅</p>
+              <CalendarDays className="mx-auto mb-4 h-12 w-12 text-slate-300" aria-hidden="true" />
               <p className="text-lg font-medium text-slate-900">{t("melas.auqafEmptyTitle")}</p>
               <p className="text-slate-500 text-sm mt-1">{t("melas.auqafNothingMatches")}</p>
             </div>

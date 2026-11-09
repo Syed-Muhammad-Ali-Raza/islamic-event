@@ -257,7 +257,7 @@ export function EventsExplorer({ initialData, categories: categoryList, seed }: 
               : data?.data.length === 0
                 ? (
                     <div className="col-span-full text-center py-20 text-slate-500">
-                      <p className="text-5xl mb-4">🔍</p>
+                      <Search className="mx-auto mb-4 h-12 w-12 text-slate-300" aria-hidden="true" />
                       <p className="text-lg font-medium">No events found</p>
                       <p className="text-sm mt-1">Try different search terms or clear your filters.</p>
                       {hasFilters && (

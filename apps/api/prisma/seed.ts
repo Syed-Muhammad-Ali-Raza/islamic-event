@@ -54,7 +54,7 @@ async function main() {
       create: cat,
     });
   }
-  console.log(`  ✓ ${categories.length} categories seeded`);
+  console.log(`  [ok] ${categories.length} categories seeded`);
 
   // ─── Countries (Pakistan-only platform) ─────────────────────────────────────
   const countries = [{ name: "Pakistan", code: "PK", dialCode: "+92" }];
@@ -66,7 +66,7 @@ async function main() {
       create: country,
     });
   }
-  console.log(`  ✓ ${countries.length} countries seeded`);
+  console.log(`  [ok] ${countries.length} countries seeded`);
   // Platform is Pakistan-only: deactivate anything seeded earlier
   await prisma.country.updateMany({ where: { code: { not: "PK" } }, data: { isActive: false } });
 
@@ -126,7 +126,7 @@ async function main() {
         });
       }
     }
-    console.log(`  ✓ Pakistan states (${stateIdByCode.size}) + cities (${pkCities.length}) seeded`);
+    console.log(`  [ok] Pakistan states (${stateIdByCode.size}) + cities (${pkCities.length}) seeded`);
   }
 
   // ─── Admin user ───────────────────────────────────────────────────────────────
@@ -163,7 +163,7 @@ async function main() {
         },
       });
     }
-    console.log(`  ✓ ${points.length} free dastarkhwan points seeded`);
+    console.log(`  [ok] ${points.length} free dastarkhwan points seeded`);
   }
 
   // ── Imambargahs / Karbalas (idempotent; preserves admin edits) ─────────────
@@ -200,7 +200,7 @@ async function main() {
         },
       });
     }
-    console.log(`  ✓ ${points.length} imambargah points seeded`);
+    console.log(`  [ok] ${points.length} imambargah points seeded`);
   }
 
   // ── Pakistan places (historical / religious / cultural / natural) ──────────
@@ -239,7 +239,7 @@ async function main() {
         },
       });
     }
-    console.log(`  ✓ ${places.length} Pakistan places seeded`);
+    console.log(`  [ok] ${places.length} Pakistan places seeded`);
   }
 
   // ── Darbars (Sufi shrines) ────────────────────────────────────────────────
@@ -273,7 +273,7 @@ async function main() {
         },
       });
     }
-    console.log(`  ✓ ${darbars.length} darbars seeded`);
+    console.log(`  [ok] ${darbars.length} darbars seeded`);
   }
 
   // ── Urs dates (researched schedules; idempotent) ──────────────────────────
@@ -347,7 +347,7 @@ async function main() {
       });
     }
 
-    console.log(`  ✓ ${researched.length + unverified.length} Urs dates seeded (${researched.length} researched, ${unverified.length} not verified)`);
+    console.log(`  [ok] ${researched.length + unverified.length} Urs dates seeded (${researched.length} researched, ${unverified.length} not verified)`);
   }
 
   // ── Muharram / Safar processions (jaloos routes; idempotent) ───────────────
@@ -385,7 +385,7 @@ async function main() {
         },
       });
     }
-    console.log(`  ✓ ${items.length} processions seeded`);
+    console.log(`  [ok] ${items.length} processions seeded`);
   }
 
   // ── Melas (festivals; idempotent) ───────────────────────────────────────────
@@ -425,7 +425,7 @@ async function main() {
         },
       });
     }
-    console.log(`  ✓ ${melas.length} melas seeded`);
+    console.log(`  [ok] ${melas.length} melas seeded`);
   }
 
   // ── Punjab Auqaf urs calendar (idempotent) ──────────────────────────────────
@@ -458,7 +458,7 @@ async function main() {
         },
       });
     }
-    console.log(`  ✓ ${auqaf.length} Auqaf urs calendar dates seeded`);
+    console.log(`  [ok] ${auqaf.length} Auqaf urs calendar dates seeded`);
   }
 
   // ── Charity organizations (idempotent) ─────────────────────────────────────
@@ -499,7 +499,7 @@ async function main() {
         },
       });
     }
-    console.log(`  ✓ ${items.length} charities seeded`);
+    console.log(`  [ok] ${items.length} charities seeded`);
   }
 
   // ── Scholars (Sunni & Shia; idempotent) ──────────────────────────────────
@@ -548,7 +548,7 @@ async function main() {
         },
       });
     }
-    console.log(`  ✓ ${scholars.length} scholars seeded`);
+    console.log(`  [ok] ${scholars.length} scholars seeded`);
   }
 
   // ── Expo & trade shows (idempotent) ────────────────────────────────────────
@@ -655,7 +655,7 @@ async function main() {
           });
           expoCount++;
         }
-        console.log(`  ✓ ${expoCount} expo & trade-show events seeded`);
+        console.log(`  [ok] ${expoCount} expo & trade-show events seeded`);
       }
     }
   }
@@ -694,9 +694,9 @@ async function main() {
         where: { id: existingSuperAdmin.id },
         data: { role: "SUPER_ADMIN" },
       });
-      console.log(`  ✓ Existing user promoted to SUPER_ADMIN: ${superAdminEmail}`);
+      console.log(`  [ok] Existing user promoted to SUPER_ADMIN: ${superAdminEmail}`);
     } else {
-      console.log("  ✓ Super admin already exists, skipping");
+      console.log("  [ok] Super admin already exists, skipping");
     }
   } else {
     await prisma.user.create({
@@ -708,7 +708,7 @@ async function main() {
       },
     });
     console.log(
-      `  ✓ Super admin created — email: ${superAdminEmail} (password read from SEED_SUPER_ADMIN_PASSWORD)`
+      `  [ok] Super admin created — email: ${superAdminEmail} (password read from SEED_SUPER_ADMIN_PASSWORD)`
     );
   }
 

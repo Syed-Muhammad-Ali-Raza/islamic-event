@@ -2,10 +2,10 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
 export const LANGUAGES = [
-  { code: "en", label: "English", native: "English", flag: "🇬🇧" },
-  { code: "ur", label: "Urdu", native: "اردو", flag: "🇵🇰" },
-  { code: "hi", label: "Hindi", native: "हिन्दी", flag: "🇮🇳" },
-  { code: "ar", label: "Arabic", native: "العربية", flag: "🇸🇦" },
+  { code: "en", label: "English", native: "English" },
+  { code: "ur", label: "Urdu", native: "اردو" },
+  { code: "hi", label: "Hindi", native: "हिन्दी" },
+  { code: "ar", label: "Arabic", native: "العربية" },
 ] as const;
 
 export type LanguageCode = (typeof LANGUAGES)[number]["code"];

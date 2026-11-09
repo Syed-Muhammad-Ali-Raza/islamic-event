@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, BadgeCheck, Globe, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Globe, Mail, MapPin, MoonStar, Phone } from "lucide-react";
 import { EventCard } from "@/components/events/EventCard";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/seo";
@@ -172,7 +172,7 @@ export default async function OrganizerDetailPage({ params }: Props) {
 
       {eventList.length === 0 ? (
         <div className="text-center py-16 text-slate-500">
-          <p className="text-4xl mb-3">🌙</p>
+          <MoonStar className="mx-auto mb-3 h-10 w-10 text-slate-300" aria-hidden="true" />
           <p className="text-lg font-medium">No published events right now</p>
           <p className="text-sm mt-1">Check back soon for upcoming gatherings.</p>
           <Link href="/events" className="btn-secondary mt-5 inline-flex">

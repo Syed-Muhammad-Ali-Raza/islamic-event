@@ -2,21 +2,27 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Bell, Check, CheckCheck } from "lucide-react";
+import { Bell, Check, CheckCheck, AlertTriangle, CalendarPlus, CheckCircle2, Inbox, XCircle } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useUnreadCount, useNotifications, useMarkNotificationRead, useMarkAllNotificationsRead } from "@/hooks/useNotifications";
 import { useAuthStore } from "@/stores/auth.store";
 
-const TYPE_ICONS: Record<string, string> = {
-  EVENT_APPROVED: "✅",
-  EVENT_REJECTED: "❌",
-  EVENT_CANCELLED: "⚠️",
-  NEW_EVENT: "🆕",
-  NEW_SUBMISSION: "📨",
-  SUBMISSION_RECEIVED: "📨",
-  SUBMISSION_APPROVED: "✅",
-  SUBMISSION_REJECTED: "❌",
-  SYSTEM: "🔔",
+const TYPE_ICONS: Record<string, LucideIcon> = {
+  EVENT_APPROVED: CheckCircle2,
+  EVENT_REJECTED: XCircle,
+  EVENT_CANCELLED: AlertTriangle,
+  NEW_EVENT: CalendarPlus,
+  NEW_SUBMISSION: Inbox,
+  SUBMISSION_RECEIVED: Inbox,
+  SUBMISSION_APPROVED: CheckCircle2,
+  SUBMISSION_REJECTED: XCircle,
+  SYSTEM: Bell,
 };
+
+function NotificationIcon({ type }: { type: string }) {
+  const Icon = TYPE_ICONS[type] ?? Bell;
+  return <Icon className="h-4 w-4 text-slate-500" aria-hidden="true" />;
+}
 
 function timeAgo(date: string): string {
   const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
@@ -112,8 +118,8 @@ export function NotificationBell() {
                   }`}
                   id={`notification-${n.id}`}
                 >
-                  <span className="text-base leading-none mt-0.5">
-                    {TYPE_ICONS[n.type] ?? "🔔"}
+                  <span className="leading-none mt-0.5">
+                    <NotificationIcon type={n.type} />
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className={`block text-sm truncate ${n.readAt ? "text-slate-600" : "text-slate-900 font-medium"}`}>

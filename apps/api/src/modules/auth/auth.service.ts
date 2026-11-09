@@ -104,7 +104,7 @@ export async function register(input: RegisterInput): Promise<{
   await notify({
     userId: user.id,
     type: "SYSTEM",
-    title: "Welcome to Community Events! 🎉",
+    title: "Welcome to Community Events!",
     body: "Discover religious and community events near you, or create your own.",
     link: "/events",
   });

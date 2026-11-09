@@ -8,16 +8,6 @@ export interface DetectedLocation {
   region?: string;
   country: string;
   countryCode: string;
-  flag: string;
-}
-
-function codeToFlag(code: string): string {
-  return String.fromCodePoint(
-    ...code
-      .toUpperCase()
-      .split("")
-      .map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)
-  );
 }
 
 async function detectLocation(): Promise<DetectedLocation | null> {
@@ -72,7 +62,6 @@ async function detectLocation(): Promise<DetectedLocation | null> {
     region: stateName,
     country: country?.name ?? apiCountry,
     countryCode: code,
-    flag: codeToFlag(code),
   };
 }
 

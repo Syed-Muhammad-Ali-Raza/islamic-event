@@ -5,17 +5,30 @@ import path from "path";
 import { config } from "../config";
 
 // ─── Transport ────────────────────────────────────────────────────────────────
-// If SMTP_HOST is not configured, emails are written to logs/outbox/ as HTML
-// files (dev outbox) so flows are fully testable without real credentials.
+// Delivery priority:
+//   1. Brevo HTTP API (BREVO_API_KEY) — one HTTPS POST, ideal for serverless:
+//      no SMTP handshake, no socket timeouts, works on hosts that block 25/587.
+//   2. SMTP relay (SMTP_HOST) via nodemailer.
+//   3. Dev outbox — writes logs/outbox/*.html so flows stay testable with no
+//      credentials at all.
 
 let transporter: Transporter | null = null;
 
-// Loud, once-per-process signal for production deploys without SMTP. Without
-// it every verification/reset/moderation email is written to /tmp and lost.
-if (config.nodeEnv === "production" && !config.smtp.host) {
+export type EmailProvider = "brevo" | "smtp" | "outbox";
+
+export function emailProvider(): EmailProvider {
+  if (config.brevo.apiKey) return "brevo";
+  if (config.smtp.host) return "smtp";
+  return "outbox";
+}
+
+// Loud, once-per-process signal for production deploys with no delivery path.
+// Without it every verification/reset/moderation email is written to /tmp and
+// lost, and nothing in the logs says so at boot.
+if (config.nodeEnv === "production" && emailProvider() === "outbox") {
   console.warn(
-    "[email] SMTP is NOT configured — outbound email is disabled. " +
-      "Set SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS and EMAIL_FROM."
+    "[email] No email transport configured — outbound email is disabled. " +
+      "Set BREVO_API_KEY (preferred) or SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS, plus EMAIL_FROM."
   );
 }
 
@@ -71,8 +84,89 @@ export interface RawEmail {
   text?: string;
 }
 
+// ─── Brevo HTTP API ───────────────────────────────────────────────────────────
+// Free tier: 300 emails/day, no credit card. The sender address must be
+// verified in Brevo (Senders & IP → Senders) or the API answers 400.
+
+const BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
+
+/** `"Name <user@example.com>"` or `"user@example.com"` → Brevo sender object. */
+export function parseSender(value: string): { email: string; name?: string } {
+  const match = value.match(/^\s*(.*?)\s*<([^>]+)>\s*$/);
+  if (match) {
+    const name = match[1].replace(/^["']|["']$/g, "").trim();
+    return { email: match[2].trim(), ...(name ? { name } : {}) };
+  }
+  return { email: value.trim() };
+}
+
+async function sendViaBrevo(email: RawEmail): Promise<string> {
+  const res = await fetch(BREVO_ENDPOINT, {
+    method: "POST",
+    headers: {
+      "api-key": config.brevo.apiKey,
+      "content-type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify({
+      sender: parseSender(config.smtp.from),
+      to: [{ email: email.to }],
+      subject: email.subject,
+      htmlContent: email.html,
+      ...(email.text ? { textContent: email.text } : {}),
+    }),
+    signal: AbortSignal.timeout(15_000),
+  });
+
+  const body = await res.text().catch(() => "");
+  if (!res.ok) {
+    // Brevo returns {"code":"...","message":"..."} — keep it in the log.
+    throw new Error(`Brevo HTTP ${res.status}: ${body.slice(0, 400)}`);
+  }
+
+  let messageId = "";
+  try {
+    messageId = JSON.parse(body)?.messageId ?? "";
+  } catch {
+    // ignore — success is the 2xx status
+  }
+  return messageId;
+}
+
+/** Sends an email and surfaces failures — used by the CLI checks, never by app flows. */
+export async function sendEmailStrict(email: RawEmail): Promise<EmailProvider> {
+  if (emailProvider() === "brevo") {
+    const id = await sendViaBrevo(email);
+    console.log(`[email] sent via Brevo to ${email.to}: ${email.subject}${id ? ` (${id})` : ""}`);
+    return "brevo";
+  }
+  const transport = getTransporter();
+  if (transport) {
+    await transport.sendMail({
+      from: config.smtp.from,
+      to: email.to,
+      subject: email.subject,
+      html: email.html,
+      text: email.text,
+    });
+    console.log(`[email] sent via SMTP to ${email.to}: ${email.subject}`);
+    return "smtp";
+  }
+  throw new Error(
+    "No email transport configured — set BREVO_API_KEY or SMTP_HOST before sending."
+  );
+}
+
 export async function sendEmail(email: RawEmail): Promise<void> {
   try {
+    // 1. Brevo HTTP API — preferred on serverless.
+    if (config.brevo.apiKey) {
+      await sendViaBrevo(email);
+      console.log(`[email] sent via Brevo to ${email.to}: ${email.subject}`);
+      return;
+    }
+
+    // 2. SMTP relay.
     const transport = getTransporter();
     if (transport) {
       await transport.sendMail({
@@ -86,12 +180,12 @@ export async function sendEmail(email: RawEmail): Promise<void> {
       return;
     }
 
-    // No SMTP configured. In production this means the email is NOT delivered,
-    // so make it loud in the logs instead of failing silently.
+    // 3. No transport configured. In production this means the email is NOT
+    // delivered, so make it loud in the logs instead of failing silently.
     if (config.nodeEnv === "production") {
       console.error(
-        `[email] SMTP is not configured — "${email.subject}" to ${email.to} was NOT sent. ` +
-          "Set SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER and SMTP_PASS."
+        `[email] No email transport configured — "${email.subject}" to ${email.to} was NOT sent. ` +
+          "Set BREVO_API_KEY (preferred) or SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS."
       );
     }
 

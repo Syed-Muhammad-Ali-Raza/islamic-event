@@ -6,7 +6,7 @@ patch: both apps run on Vercel Hobby and the database is Neon's free plan.
 ```
 Browser ──► Vercel (Next.js web) ──► Vercel serverless fn (Express API) ──► Neon Postgres
                   │                             │
-                  └── Cloudinary (images)       └── SMTP relay (optional)
+                  └── Cloudinary (images)       └── Brevo / SMTP (email)
 ```
 
 | Piece | Service | Free tier | Notes |
@@ -15,7 +15,7 @@ Browser ──► Vercel (Next.js web) ──► Vercel serverless fn (Express A
 | API | Vercel Hobby (serverless function) | 100 GB-hours, 1M invocations | Cold start 1–3 s; 30 s max duration |
 | Database | Neon free | 1 GB storage, 100 CU-hours | Permanent (no 30-day expiry), scales to zero |
 | Images | Cloudinary free | ~25 credits/month | Uploads stay broken until real keys are set |
-| Email | Brevo / any SMTP relay | 300 emails/day (Brevo) | Optional — see §5d |
+| Email | Brevo API (or any SMTP relay) | 300 emails/day (Brevo) | Requires a verified sender — see §5d |
 
 > Free tiers are for demos and small communities, not an SLA. Moving to paid
 > plans later requires no code change.
@@ -36,7 +36,7 @@ The Express API runs unchanged inside one Vercel function. Three consequences:
 | --- | --- | --- |
 | The process is not long-lived | The hourly RSVP-reminder sweep (`setInterval` in `server.ts`) never runs | Vercel Cron calls `GET /api/v1/internal/reminders` once a day on Hobby (§5e); use an external cron for hourly runs |
 | 30 s request cap (`maxDuration` in `vercel.json`) | Long report/export queries could time out | Already capped by pagination; raise to 60 s if needed |
-| No writable disk | The dev email outbox used to write `logs/outbox/` | `outboxDir()` now falls back to the OS temp dir — emails are still not *delivered* without SMTP, just logged |
+| No writable disk | The dev email outbox used to write `logs/outbox/` | `outboxDir()` now falls back to the OS temp dir — emails are still not *delivered* without Brevo/SMTP, just logged |
 | Cold starts | First request after idle takes ~1–3 s (plus Neon wake ~0.5 s) | Acceptable; a free monitor pinging `/health` every 10 min keeps it warm |
 
 Everything else behaves exactly like the long-running server: CORS, rate
@@ -143,7 +143,8 @@ Preview). `NODE_ENV` is injected by Vercel — do not set it.
 | `CORS_ORIGINS` | the web URL, e.g. `https://islamic-event-web.vercel.app` |
 | `APP_URL` | same web URL (used in email links) |
 | `SUPPORT_EMAIL` | your support mailbox |
-| `SMTP_*`, `EMAIL_FROM` | optional — see §5d |
+| `BREVO_API_KEY` + `EMAIL_FROM` | email delivery — see §5d |
+| `SMTP_*` | alternative to Brevo — see §5d |
 | `CRON_SECRET` | optional — enables the daily reminder cron (§5e) |
 
 ### 5c. Deploy
@@ -162,25 +163,37 @@ First build takes ~2–4 minutes (`npm ci` for the monorepo + `prisma generate`)
 
 ### 5d. Email
 
-Serverless functions can reach any SMTP port, so Gmail app-passwords work here
-(unlike Render's free tier). Two no-card options:
+Delivery order: **Brevo HTTP API → SMTP relay → dev outbox**. Brevo is preferred
+on serverless because it is one HTTPS call — no SMTP handshake, no port blocks.
 
-**Brevo (recommended — 300 emails/day):**
+**Brevo (recommended — 300 emails/day, no card):**
 
-1. Create a free account, then **SMTP & API → SMTP** and generate an SMTP key.
-2. **Senders & IP → Senders** → verify the address you will send from.
-3. Set:
+1. Create a free account at <https://app.brevo.com/>.
+2. **Senders & IP → Senders** → add and verify the address you will send from.
+3. **SMTP & API → API Keys** → create a v3 key.
+4. Save and validate in one command (writes `BREVO_API_KEY` and `EMAIL_FROM`
+   into `apps/api/.env`, then checks the key and sender against Brevo):
 
-   ```
-   SMTP_HOST=smtp-relay.brevo.com
-   SMTP_PORT=2525
-   SMTP_SECURE=false
-   SMTP_USER=<Brevo SMTP login, looks like 8xxxxx@smtp-brevo.com>
-   SMTP_PASS=<Brevo SMTP key>
-   EMAIL_FROM="Community Events <verified-sender@example.com>"
+   ```powershell
+   npm run brevo:check --workspace apps/api -- <BREVO_API_KEY> you@example.com
    ```
 
-**Gmail (500 recipients/day, needs 2FA + an App Password):**
+   Success looks like:
+
+   ```
+   PASS  Account: you@example.com (…) plan=free
+   PASS  Sender verified: you@example.com
+   ```
+
+5. Add the same two vars to the API project and redeploy:
+
+   ```powershell
+   npx vercel env add BREVO_API_KEY production
+   npx vercel env add EMAIL_FROM production   # "Community Events <you@example.com>"
+   npx vercel deploy --prod
+   ```
+
+**SMTP fallback (any relay; Gmail needs 2FA + an App Password):**
 
 ```
 SMTP_HOST=smtp.gmail.com
@@ -191,16 +204,18 @@ SMTP_PASS=<16-character App Password, not your normal password>
 EMAIL_FROM="Community Events <you@gmail.com>"
 ```
 
-Verify delivery from your machine (reads `apps/api/.env`) or from the API
-project after adding the vars and redeploying:
+Brevo's SMTP relay (`smtp-relay.brevo.com:2525`) also works if you prefer it.
+
+Verify delivery from your machine (reads `apps/api/.env`) or from a shell with
+the production env vars:
 
 ```powershell
 npm run email:test --workspace apps/api -- you@example.com
 ```
 
-With no SMTP configured, emails are **not delivered** — the API logs
-`[email] SMTP is not configured … was NOT sent` and writes HTML to `/tmp/outbox`.
-Set `SMTP_PORT=2525` on Brevo: some hosts block 25/587, and 2525 is accepted.
+With neither `BREVO_API_KEY` nor `SMTP_HOST`, emails are **not delivered** — the
+API logs `[email] No email transport configured … was NOT sent` at boot and on
+each attempt, and writes HTML to `/tmp/outbox`.
 
 ### 5e. Reminder cron (Vercel)
 
@@ -307,8 +322,9 @@ Log in at `https://islamic-event-web.vercel.app/login`.
 | `CORS_ORIGINS` | yes | web origin, comma-separated for more |
 | `APP_URL` | yes | web URL — used in email links |
 | `SUPPORT_EMAIL` | no | shown in email footers |
-| `SMTP_HOST` / `PORT` / `SECURE` / `USER` / `PASS` | no | empty = emails logged, not sent |
-| `EMAIL_FROM` | no | defaults to `Community Events <SMTP_USER>` |
+| `BREVO_API_KEY` | no | preferred email transport — §5d |
+| `EMAIL_FROM` | no | sender address; must be verified in Brevo |
+| `SMTP_HOST` / `PORT` / `SECURE` / `USER` / `PASS` | no | fallback when `BREVO_API_KEY` is empty; empty = emails logged, not sent |
 | `CRON_SECRET` | no | bearer token for `GET /api/v1/internal/reminders`; empty disables it |
 | `PORT` | no | ignored on Vercel |
 
@@ -389,7 +405,9 @@ interactive and can reset data.
 | Every page empty, `/health` 404 with `x-vercel-routing` | Wrong project or wrong alias — check `vercel ls` and the project's Domains |
 | Vercel upload: `Too many requests … api-upload-free` | Add `--archive=tgz` |
 | `No Output Directory named 'public' found` | `apps/api/public/` was deleted — restore `apps/api/public/robots.txt` |
-| `[email] SMTP is not configured … NOT sent` | Set the `SMTP_*` vars (§5d) |
+| `[email] No email transport configured … NOT sent` | Set `BREVO_API_KEY` or the `SMTP_*` vars (§5d) |
+| Brevo `401 Unauthorized` | Key wrong/revoked — recreate it in SMTP & API → API Keys |
+| Brevo `400 … sender … not valid` | `EMAIL_FROM` must be a verified sender in Senders & IP → Senders |
 | `P1001: Can't reach database server` | `DATABASE_URL` typo, or drop `?sslmode=require` |
 | `P1001` only locally, `psql`/ping works | Broken IPv6 route: Neon's AAAA records are tried first. Disable IPv6 on the adapter, or append `&connect_timeout=150&pool_timeout=200` |
 | `prisma generate` fails locally with `EPERM: rename … query_engine-windows.dll.node` | Antivirus/Defender holds the DLL just written. Retry, or add `node_modules\.prisma` to the AV exclusion list. (Does not affect CI or Vercel — they run on Linux.) |

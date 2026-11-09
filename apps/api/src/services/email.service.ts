@@ -10,6 +10,15 @@ import { config } from "../config";
 
 let transporter: Transporter | null = null;
 
+// Loud, once-per-process signal for production deploys without SMTP. Without
+// it every verification/reset/moderation email is written to /tmp and lost.
+if (config.nodeEnv === "production" && !config.smtp.host) {
+  console.warn(
+    "[email] SMTP is NOT configured — outbound email is disabled. " +
+      "Set SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS and EMAIL_FROM."
+  );
+}
+
 function getTransporter(): Transporter | null {
   if (!config.smtp.host) return null;
   if (!transporter) {

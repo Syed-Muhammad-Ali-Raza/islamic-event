@@ -174,4 +174,11 @@ export const config = {
     allowedMimeTypes: ["image/jpeg", "image/jpg", "image/png", "image/webp"],
     allowedExtensions: [".jpg", ".jpeg", ".png", ".webp"],
   },
+
+  // Vercel Cron calls GET /internal/reminders with "Authorization: Bearer
+  // <CRON_SECRET>" when this env var is set. Empty means the endpoint is
+  // disabled (503) — it must never be publicly triggerable.
+  cron: {
+    secret: process.env.CRON_SECRET?.trim() ?? "",
+  },
 } as const;

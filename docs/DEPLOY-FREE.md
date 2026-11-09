@@ -34,7 +34,7 @@ The Express API runs unchanged inside one Vercel function. Three consequences:
 
 | Limitation | Impact | Mitigation |
 | --- | --- | --- |
-| The process is not long-lived | The hourly RSVP-reminder sweep (`setInterval` in `server.ts`) never runs | Trigger `runEventReminders()` from a free cron (cron-job.org → `POST /api/v1/internal/reminders` behind a secret) or move the API to a VM (§13) |
+| The process is not long-lived | The hourly RSVP-reminder sweep (`setInterval` in `server.ts`) never runs | Vercel Cron calls `GET /api/v1/internal/reminders` once a day on Hobby (§5e); use an external cron for hourly runs |
 | 30 s request cap (`maxDuration` in `vercel.json`) | Long report/export queries could time out | Already capped by pagination; raise to 60 s if needed |
 | No writable disk | The dev email outbox used to write `logs/outbox/` | `outboxDir()` now falls back to the OS temp dir — emails are still not *delivered* without SMTP, just logged |
 | Cold starts | First request after idle takes ~1–3 s (plus Neon wake ~0.5 s) | Acceptable; a free monitor pinging `/health` every 10 min keeps it warm |
@@ -144,6 +144,7 @@ Preview). `NODE_ENV` is injected by Vercel — do not set it.
 | `APP_URL` | same web URL (used in email links) |
 | `SUPPORT_EMAIL` | your support mailbox |
 | `SMTP_*`, `EMAIL_FROM` | optional — see §5d |
+| `CRON_SECRET` | optional — enables the daily reminder cron (§5e) |
 
 ### 5c. Deploy
 
@@ -159,24 +160,66 @@ npx vercel deploy --prod --yes --archive=tgz
 
 First build takes ~2–4 minutes (`npm ci` for the monorepo + `prisma generate`).
 
-### 5d. Email (optional)
+### 5d. Email
 
 Serverless functions can reach any SMTP port, so Gmail app-passwords work here
-(unlike Render's free tier). For a relay:
+(unlike Render's free tier). Two no-card options:
+
+**Brevo (recommended — 300 emails/day):**
+
+1. Create a free account, then **SMTP & API → SMTP** and generate an SMTP key.
+2. **Senders & IP → Senders** → verify the address you will send from.
+3. Set:
+
+   ```
+   SMTP_HOST=smtp-relay.brevo.com
+   SMTP_PORT=2525
+   SMTP_SECURE=false
+   SMTP_USER=<Brevo SMTP login, looks like 8xxxxx@smtp-brevo.com>
+   SMTP_PASS=<Brevo SMTP key>
+   EMAIL_FROM="Community Events <verified-sender@example.com>"
+   ```
+
+**Gmail (500 recipients/day, needs 2FA + an App Password):**
 
 ```
-SMTP_HOST=smtp-relay.brevo.com
-SMTP_PORT=2525
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
 SMTP_SECURE=false
-SMTP_USER=<Brevo SMTP login>
-SMTP_PASS=<Brevo SMTP key>
-EMAIL_FROM="Community Events <verified-sender@example.com>"
+SMTP_USER=you@gmail.com
+SMTP_PASS=<16-character App Password, not your normal password>
+EMAIL_FROM="Community Events <you@gmail.com>"
+```
+
+Verify delivery from your machine (reads `apps/api/.env`) or from the API
+project after adding the vars and redeploying:
+
+```powershell
+npm run email:test --workspace apps/api -- you@example.com
 ```
 
 With no SMTP configured, emails are **not delivered** — the API logs
 `[email] SMTP is not configured … was NOT sent` and writes HTML to `/tmp/outbox`.
+Set `SMTP_PORT=2525` on Brevo: some hosts block 25/587, and 2525 is accepted.
 
-### 5e. Confirm the API is alive
+### 5e. Reminder cron (Vercel)
+
+`vercel.json` schedules one daily call to `GET /api/v1/internal/reminders`.
+Vercel attaches `Authorization: Bearer <CRON_SECRET>` automatically when the
+`CRON_SECRET` env var exists on the project:
+
+```powershell
+$secret = node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+$secret | npx vercel env add CRON_SECRET production
+```
+
+Without `CRON_SECRET` the endpoint answers `503`; with a wrong/missing bearer
+token it answers `401`. Vercel Hobby runs crons **once per day** (schedule
+`0 4 * * *` = 09:00 PKT), so the "24 hours before" reminder window is checked
+daily rather than hourly. For hourly runs, point a free external cron
+(cron-job.org) at the same URL with the same bearer header.
+
+### 5f. Confirm the API is alive
 
 ```powershell
 & curl.exe -s https://islamic-event-api.vercel.app/health
@@ -240,7 +283,7 @@ select email, role from users where role = 'SUPER_ADMIN';
 Log in at `https://islamic-event-web.vercel.app/login`.
 
 > **Windows gotcha:** `npm` prints notices to stderr, so PowerShell may report
-> exit code 1 even on success. Judge by the `✓ … seeded` lines.
+> exit code 1 even on success. Judge by the `[ok] … seeded` lines.
 
 ---
 
@@ -266,6 +309,7 @@ Log in at `https://islamic-event-web.vercel.app/login`.
 | `SUPPORT_EMAIL` | no | shown in email footers |
 | `SMTP_HOST` / `PORT` / `SECURE` / `USER` / `PASS` | no | empty = emails logged, not sent |
 | `EMAIL_FROM` | no | defaults to `Community Events <SMTP_USER>` |
+| `CRON_SECRET` | no | bearer token for `GET /api/v1/internal/reminders`; empty disables it |
 | `PORT` | no | ignored on Vercel |
 
 ### Web (Vercel)
@@ -283,6 +327,7 @@ Log in at `https://islamic-event-web.vercel.app/login`.
 
 - [ ] `GET https://<api>/health` → `"status":"ok"`, `"database":"up"`, `"env":"production"`
 - [ ] `GET https://<api>/api/v1/categories` → 16 rows
+- [ ] `GET https://<api>/api/v1/internal/reminders` → 401 without the bearer token
 - [ ] `GET https://<api>/api/v1/events?category=expo&limit=3` → data
 - [ ] Web `/` and `/darbars` render rows (not an empty shell)
 - [ ] `/categories/expo` → 42 events; a detail page renders venue + map
@@ -300,7 +345,9 @@ Vercel scales functions to zero. The first request after idle costs ~1–3 s
 - **Ping `/health` every 10 minutes** with [cron-job.org](https://cron-job.org)
   or UptimeRobot to keep one instance warm and get uptime alerts.
 
-Background jobs do **not** run on serverless (see §1).
+Background jobs do not run on serverless; the only scheduled work is the daily
+reminder cron in §5e (Hobby allows one run per day). Ping `/health` separately
+if you want uptime alerts.
 
 ---
 

@@ -18,3 +18,4 @@ process.env.CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME ?? "test-c
 process.env.CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY ?? "test-key";
 process.env.CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET ?? "test-secret";
 process.env.APP_URL = process.env.APP_URL ?? "http://localhost:3000";
+process.env.CRON_SECRET = process.env.CRON_SECRET ?? "test-cron-secret";

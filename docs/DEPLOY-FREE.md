@@ -171,11 +171,12 @@ on serverless because it is one HTTPS call — no SMTP handshake, no port blocks
 1. Create a free account at <https://app.brevo.com/>.
 2. **Senders & IP → Senders** → add and verify the address you will send from.
 3. **SMTP & API → API Keys** → create a v3 key.
-4. Save and validate in one command (writes `BREVO_API_KEY` and `EMAIL_FROM`
-   into `apps/api/.env`, then checks the key and sender against Brevo):
+4. Save, validate and push to Vercel in one command (writes `BREVO_API_KEY`
+   and `EMAIL_FROM` into `apps/api/.env`, checks the key + sender against
+   Brevo, then updates the API project's Production env vars):
 
    ```powershell
-   npm run brevo:check --workspace apps/api -- <BREVO_API_KEY> you@example.com
+   npm run brevo:check --workspace apps/api -- <BREVO_API_KEY> you@example.com --push
    ```
 
    Success looks like:
@@ -183,14 +184,18 @@ on serverless because it is one HTTPS call — no SMTP handshake, no port blocks
    ```
    PASS  Account: you@example.com (…) plan=free
    PASS  Sender verified: you@example.com
+   PASS  Pushed BREVO_API_KEY to Vercel Production.
+   PASS  Pushed EMAIL_FROM to Vercel Production.
    ```
 
-5. Add the same two vars to the API project and redeploy:
+   `--push` needs a logged-in Vercel CLI (`npx vercel login`) and access to the
+   team. Without it the command only validates and prints the `vercel env add`
+   lines to run yourself.
+
+5. Redeploy so the new env vars take effect:
 
    ```powershell
-   npx vercel env add BREVO_API_KEY production
-   npx vercel env add EMAIL_FROM production   # "Community Events <you@example.com>"
-   npx vercel deploy --prod
+   npx vercel deploy --prod --archive=tgz
    ```
 
 **SMTP fallback (any relay; Gmail needs 2FA + an App Password):**

@@ -17,11 +17,14 @@
  */
 import fs from "fs";
 import path from "path";
+import { spawnSync } from "child_process";
 import { config } from "../src/config";
 import { parseSender } from "../src/services/email.service";
 
 const API = "https://api.brevo.com/v3";
 const ENV_FILE = path.resolve(__dirname, "..", ".env");
+const REPO_ROOT = path.resolve(__dirname, "..", "..", "..");
+const VERCEL_PROJECT = "islamic-event-api";
 
 function upsertEnv(key: string, value: string): void {
   // EMAIL_FROM contains spaces ("Name <a@b>") and must be quoted.
@@ -60,7 +63,9 @@ function currentSender(): string {
 }
 
 async function main() {
-  const [argKey, argSender] = process.argv.slice(2);
+  const args = process.argv.slice(2);
+  const push = args.includes("--push");
+  const [argKey, argSender] = args.filter((a) => !a.startsWith("--"));
 
   if (argKey) upsertEnv("BREVO_API_KEY", argKey.trim());
   if (argSender) {
@@ -124,10 +129,43 @@ async function main() {
   }
   console.log(`PASS  Sender verified: ${match.email}${match.active === false ? " (INACTIVE)" : ""}`);
 
+  if (push) {
+    // Non-interactive: --value + --force updates Production in place. Needs a
+    // logged-in Vercel CLI (`npx vercel login`) with access to the team.
+    for (const [name, value] of [
+      ["BREVO_API_KEY", apiKey],
+      ["EMAIL_FROM", currentSender()],
+    ] as const) {
+      const res = spawnSync(
+        `npx vercel env add ${name} --environment production --force --yes --project ${VERCEL_PROJECT}`,
+        {
+          cwd: REPO_ROOT,
+          stdio: ["pipe", "inherit", "inherit"],
+          input: value,
+          shell: true,
+        }
+      );
+      if (res.status !== 0) {
+        console.error(`FAIL  Could not push ${name} to Vercel (exit ${res.status}).`);
+        process.exit(1);
+      }
+      console.log(`PASS  Pushed ${name} to Vercel Production.`);
+    }
+    console.log(
+      "\nEnv vars updated. Redeploy for them to take effect:\n  npx vercel deploy --prod --archive=tgz"
+    );
+    return;
+  }
+
   console.log(
     [
       "",
-      "Next: add the same values to the API Vercel project, then redeploy:",
+      "Next: add the same values to the API Vercel project, then redeploy.",
+      "Let this script do it (requires a logged-in Vercel CLI):",
+      "",
+      "  npm run brevo:check --workspace apps/api -- <key> <sender> --push",
+      "",
+      "Or do it by hand:",
       "",
       "  vercel env add BREVO_API_KEY production",
       '  vercel env add EMAIL_FROM production   # "Community Events <' + sender.email + '>"',

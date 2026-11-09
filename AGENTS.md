@@ -28,6 +28,7 @@ npm run typecheck        # tsc both
 npm run lint --workspace apps/web         # eslint (web only; API has no lint script — tsc covers it)
 npm run db:seed --workspace apps/api      # idempotent seed from prisma/data/*.json
 npm run db:push --workspace apps/api      # schema push (also regenerates client)
+npm run brevo:check --workspace apps/api -- <key> <sender> [--push]  # validate + push email env
 npx prisma generate --schema apps/api/prisma/schema.prisma
 ```
 

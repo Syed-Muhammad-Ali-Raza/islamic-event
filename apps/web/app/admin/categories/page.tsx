@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Pencil, PlusCircle, Tags, X } from "lucide-react";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
+import { Pencil, PlusCircle, X } from "lucide-react";
 import { useAdminCategories, useCategoryAction } from "@/hooks/useAdmin";
 import { Input } from "@/components/ui/FormField";
 import type { AdminCategory } from "@/services/admin.service";
@@ -15,7 +16,6 @@ const CategorySchema = z.object({
     .min(2, "Name must be at least 2 characters")
     .max(80, "Name must be under 80 characters"),
   description: z.string().max(500, "Description must be under 500 characters"),
-  icon: z.string().max(10, "Icon must be short"),
   sortOrder: z.coerce.number().int("Must be a whole number").min(0, "Cannot be negative"),
 });
 
@@ -29,7 +29,6 @@ function CategoryFormCard({ editing, onClose }: { editing: AdminCategory | null;
     defaultValues: {
       name: editing?.name ?? "",
       description: editing?.description ?? "",
-      icon: editing?.icon ?? "",
       sortOrder: editing?.sortOrder ?? 0,
     },
   });
@@ -38,7 +37,6 @@ function CategoryFormCard({ editing, onClose }: { editing: AdminCategory | null;
     const payload = {
       name: data.name,
       description: data.description || undefined,
-      icon: data.icon || undefined,
       sortOrder: data.sortOrder,
     };
 
@@ -74,13 +72,6 @@ function CategoryFormCard({ editing, onClose }: { editing: AdminCategory | null;
           placeholder="e.g. Milad"
           error={form.formState.errors.name?.message}
           {...form.register("name")}
-        />
-        <Input
-          id="category-icon"
-          label="Icon (emoji)"
-          placeholder="🕌"
-          error={form.formState.errors.icon?.message}
-          {...form.register("icon")}
         />
         <Input
           id="category-description"
@@ -199,8 +190,8 @@ export default function AdminCategoriesPage() {
                   >
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-brand-50 border border-brand-100 flex items-center justify-center text-lg shrink-0">
-                          {cat.icon ?? <Tags size={15} className="text-brand-600" />}
+                        <div className="w-9 h-9 rounded-lg bg-brand-50 border border-brand-100 flex items-center justify-center shrink-0">
+                          <CategoryIcon slug={cat.slug} className="h-[18px] w-[18px] text-brand-600" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-slate-900 font-medium truncate">{cat.name}</p>

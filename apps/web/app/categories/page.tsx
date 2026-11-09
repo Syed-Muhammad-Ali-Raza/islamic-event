@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CATEGORY_ICONS } from "@/lib/constants";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchFromApi } from "@/lib/server-api";
@@ -57,8 +57,8 @@ export default async function CategoriesPage() {
               href={`/categories/${cat.slug}`}
               className="group card-glass p-6 text-center hover:border-brand-600/50 hover:-translate-y-1 transition-all duration-200"
             >
-              <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-200">
-                {CATEGORY_ICONS[cat.slug] ?? "📅"}
+              <div className="mb-3 flex justify-center group-hover:scale-110 transition-transform duration-200">
+                <CategoryIcon slug={cat.slug} className="h-9 w-9 text-brand-600" />
               </div>
               <p className="text-slate-900 font-medium text-sm group-hover:text-brand-700 transition-colors">
                 {cat.name}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCategories } from "@/hooks/useCategories";
-import { CATEGORY_ICONS } from "@/lib/constants";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { ArrowRight, Compass } from "lucide-react";
 
 export function CategoryGrid() {
@@ -47,8 +47,11 @@ export function CategoryGrid() {
                 id={`category-${cat.slug}`}
                 className="group relative bg-white border border-slate-200/90 hover:border-brand-500/50 p-4 rounded-2xl text-center shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col items-center justify-center min-h-[110px]"
               >
-                <div className="w-12 h-12 rounded-xl bg-emerald-50/70 border border-emerald-100/60 flex items-center justify-center text-2xl mb-2.5 group-hover:scale-110 group-hover:bg-brand-50 group-hover:border-brand-200 transition-all duration-200">
-                  {CATEGORY_ICONS[cat.slug] ?? "📅"}
+                <div className="w-12 h-12 rounded-xl bg-emerald-50/70 border border-emerald-100/60 flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-brand-50 group-hover:border-brand-200 transition-all duration-200">
+                  <CategoryIcon
+                    slug={cat.slug}
+                    className="h-6 w-6 text-brand-600 group-hover:text-brand-700 transition-colors"
+                  />
                 </div>
                 <p className="text-slate-800 group-hover:text-brand-700 text-xs font-semibold leading-tight transition-colors">
                   {cat.name}

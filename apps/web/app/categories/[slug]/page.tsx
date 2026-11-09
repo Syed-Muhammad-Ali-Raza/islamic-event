@@ -4,7 +4,7 @@ import { CategoryEvents } from "@/components/events/CategoryEvents";
 import { MuharramJaloos } from "@/components/events/MuharramJaloos";
 import { CharityDirectory } from "@/components/events/CharityDirectory";
 import { UpcomingUrs } from "@/components/events/UpcomingUrs";
-import { CATEGORY_ICONS } from "@/lib/constants";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchFromApi, fetchList, fetchPaginated, buildQuery, sanitizePage } from "@/lib/server-api";
@@ -132,7 +132,9 @@ export default async function CategoryDetailPage({ params, searchParams }: Props
       />
       {/* Header */}
       <div className="card-glass p-6 sm:p-8 mb-8 text-center">
-        <div className="text-5xl mb-3">{CATEGORY_ICONS[category.slug] ?? "📅"}</div>
+        <div className="mb-3 flex justify-center">
+          <CategoryIcon slug={category.slug} className="h-12 w-12 text-brand-600" />
+        </div>
         <h1 className="text-3xl font-bold text-slate-900">{category.name}</h1>
         {category.description && (
           <p className="text-slate-500 text-sm mt-2 max-w-xl mx-auto leading-relaxed">

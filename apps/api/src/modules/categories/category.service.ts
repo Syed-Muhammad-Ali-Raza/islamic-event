@@ -4,10 +4,21 @@ import { generateSlug } from "../../utils/helpers";
 
 // ─── List all active categories ───────────────────────────────────────────────
 
+// Only the fields the public UI renders. Keeps internal columns (icon, audit
+// timestamps) out of the public payload.
+const PUBLIC_CATEGORY_SELECT = {
+  id: true,
+  name: true,
+  slug: true,
+  description: true,
+  sortOrder: true,
+} as const;
+
 export async function listCategories() {
   return prisma.category.findMany({
     where: { isActive: true },
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    select: PUBLIC_CATEGORY_SELECT,
   });
 }
 
@@ -25,7 +36,8 @@ export async function listAllCategories() {
 export async function getCategoryBySlug(slug: string) {
   const category = await prisma.category.findUnique({
     where: { slug },
-    include: {
+    select: {
+      ...PUBLIC_CATEGORY_SELECT,
       _count: { select: { events: { where: { status: "APPROVED" } } } },
     },
   });

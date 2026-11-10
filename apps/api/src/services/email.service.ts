@@ -18,7 +18,9 @@ export type EmailProvider = "brevo" | "smtp" | "outbox";
 
 export function emailProvider(): EmailProvider {
   if (config.brevo.apiKey) return "brevo";
-  if (config.smtp.host) return "smtp";
+  // Authenticated submission is the only supported SMTP mode; a host without
+  // credentials is treated as "not configured" instead of failing per request.
+  if (config.smtp.host && config.smtp.user && config.smtp.pass) return "smtp";
   return "outbox";
 }
 
@@ -29,6 +31,10 @@ if (config.nodeEnv === "production" && emailProvider() === "outbox") {
   console.warn(
     "[email] No email transport configured — outbound email is disabled. " +
       "Set BREVO_API_KEY (preferred) or SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS, plus EMAIL_FROM."
+  );
+} else if (config.nodeEnv === "production" && config.smtp.host && !config.smtp.pass) {
+  console.warn(
+    "[email] SMTP_HOST is set but SMTP_PASS is empty — falling back to the outbox (no delivery)."
   );
 }
 
@@ -141,7 +147,7 @@ export async function sendEmailStrict(email: RawEmail): Promise<EmailProvider> {
     return "brevo";
   }
   const transport = getTransporter();
-  if (transport) {
+  if (emailProvider() === "smtp" && transport) {
     await transport.sendMail({
       from: config.smtp.from,
       to: email.to,
@@ -153,7 +159,7 @@ export async function sendEmailStrict(email: RawEmail): Promise<EmailProvider> {
     return "smtp";
   }
   throw new Error(
-    "No email transport configured — set BREVO_API_KEY or SMTP_HOST before sending."
+    "No email transport configured — set BREVO_API_KEY or SMTP_HOST/SMTP_USER/SMTP_PASS before sending."
   );
 }
 
@@ -166,18 +172,20 @@ export async function sendEmail(email: RawEmail): Promise<void> {
       return;
     }
 
-    // 2. SMTP relay.
-    const transport = getTransporter();
-    if (transport) {
-      await transport.sendMail({
-        from: config.smtp.from,
-        to: email.to,
-        subject: email.subject,
-        html: email.html,
-        text: email.text,
-      });
-      console.log(`[email] sent to ${email.to}: ${email.subject}`);
-      return;
+    // 2. SMTP relay (host + credentials).
+    if (emailProvider() === "smtp") {
+      const transport = getTransporter();
+      if (transport) {
+        await transport.sendMail({
+          from: config.smtp.from,
+          to: email.to,
+          subject: email.subject,
+          html: email.html,
+          text: email.text,
+        });
+        console.log(`[email] sent to ${email.to}: ${email.subject}`);
+        return;
+      }
     }
 
     // 3. No transport configured. In production this means the email is NOT

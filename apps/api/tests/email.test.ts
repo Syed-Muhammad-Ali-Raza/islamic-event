@@ -33,12 +33,24 @@ describe("email transport", () => {
     expect(svc.emailProvider()).toBe("brevo");
   });
 
-  it("uses SMTP when only SMTP is configured", () => {
+  it("uses SMTP when host and credentials are configured", () => {
     delete process.env.BREVO_API_KEY;
     process.env.SMTP_HOST = "smtp.example.com";
+    process.env.SMTP_USER = "user@example.com";
+    process.env.SMTP_PASS = "secret";
     jest.resetModules();
     const svc = require("../src/services/email.service") as typeof import("../src/services/email.service");
     expect(svc.emailProvider()).toBe("smtp");
+  });
+
+  it("ignores an SMTP host with no password", () => {
+    delete process.env.BREVO_API_KEY;
+    process.env.SMTP_HOST = "smtp.example.com";
+    process.env.SMTP_USER = "user@example.com";
+    delete process.env.SMTP_PASS;
+    jest.resetModules();
+    const svc = require("../src/services/email.service") as typeof import("../src/services/email.service");
+    expect(svc.emailProvider()).toBe("outbox");
   });
 
   it("falls back to the outbox when nothing is configured", () => {

@@ -198,7 +198,20 @@ on serverless because it is one HTTPS call — no SMTP handshake, no port blocks
    npx vercel deploy --prod --archive=tgz
    ```
 
-**SMTP fallback (any relay; Gmail needs 2FA + an App Password):**
+**Brevo over SMTP (if you created an SMTP key instead of an API key):**
+
+```powershell
+npm run brevo:smtp --workspace apps/api -- `
+  c20fba001@smtp-brevo.com <SMTP_KEY> you@example.com --to you@example.com --push
+```
+
+It writes `SMTP_HOST=smtp-relay.brevo.com`, `SMTP_PORT=587`,
+`SMTP_SECURE=false`, `SMTP_USER/SMTP_PASS`, then opens a real STARTTLS
+connection, authenticates, optionally sends a test message, and (with `--push`)
+updates the API project's Production env. The SMTP key starts with `xsmtpsib-`;
+the API key (`xkeysib-`) is a different credential and does not work over SMTP.
+
+**Other SMTP relays (Gmail needs 2FA + an App Password):**
 
 ```
 SMTP_HOST=smtp.gmail.com

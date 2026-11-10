@@ -29,6 +29,7 @@ npm run lint --workspace apps/web         # eslint (web only; API has no lint sc
 npm run db:seed --workspace apps/api      # idempotent seed from prisma/data/*.json
 npm run db:push --workspace apps/api      # schema push (also regenerates client)
 npm run brevo:check --workspace apps/api -- <key> <sender> [--push]  # validate + push email env
+npm run brevo:smtp --workspace apps/api -- <login> <smtp-key> <sender> [--to me@x.com] [--push]
 npx prisma generate --schema apps/api/prisma/schema.prisma
 ```
 

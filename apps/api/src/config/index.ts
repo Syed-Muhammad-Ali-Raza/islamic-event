@@ -15,7 +15,13 @@ function findEnvFile(): string {
   return path.resolve(__dirname, "../../../../.env");
 }
 
-dotenv.config({ path: findEnvFile() });
+// Tests supply their own environment (tests/setup-env.ts) and must never
+// inherit a developer's .env -- it may hold production SMTP or bucket
+// credentials, which would make test runs deliver real email or write to a real
+// bucket. Skipping the load also keeps `delete process.env.X` meaningful.
+if (process.env.NODE_ENV !== "test") {
+  dotenv.config({ path: findEnvFile() });
+}
 
 const PLACEHOLDER_SECRETS = new Set([
   "your-access-secret-min-32-chars",
@@ -38,6 +44,16 @@ function looksLikePlaceholder(value: string): boolean {
   );
 }
 
+// First non-empty, trimmed value -- lets the same setting be supplied under a
+// project-specific name (S3_*) or the AWS-standard one the SDK reads (AWS_*).
+function firstNonEmpty(...values: Array<string | undefined>): string {
+  for (const value of values) {
+    const trimmed = value?.trim();
+    if (trimmed) return trimmed;
+  }
+  return "";
+}
+
 // Startup validation — fails fast with key names only (never values).
 const EnvSchema = z
   .object({
@@ -51,15 +67,13 @@ const EnvSchema = z
     JWT_REFRESH_SECRET: z
       .string({ required_error: "JWT_REFRESH_SECRET is required" })
       .min(1, "JWT_REFRESH_SECRET is required"),
-    CLOUDINARY_CLOUD_NAME: z
-      .string({ required_error: "CLOUDINARY_CLOUD_NAME is required" })
-      .min(1, "CLOUDINARY_CLOUD_NAME is required"),
-    CLOUDINARY_API_KEY: z
-      .string({ required_error: "CLOUDINARY_API_KEY is required" })
-      .min(1, "CLOUDINARY_API_KEY is required"),
-    CLOUDINARY_API_SECRET: z
-      .string({ required_error: "CLOUDINARY_API_SECRET is required" })
-      .min(1, "CLOUDINARY_API_SECRET is required"),
+    // Optional: the S3-compatible store (Neon Object Storage) is the default
+    // image backend. Cloudinary stays supported as a fallback, so neither is
+    // required to boot -- uploads return 503 with a clear message when neither
+    // has usable credentials.
+    CLOUDINARY_CLOUD_NAME: z.string().optional().default(""),
+    CLOUDINARY_API_KEY: z.string().optional().default(""),
+    CLOUDINARY_API_SECRET: z.string().optional().default(""),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV !== "production") return;
@@ -130,6 +144,19 @@ export const config = {
     cloudName: env.CLOUDINARY_CLOUD_NAME,
     apiKey: env.CLOUDINARY_API_KEY,
     apiSecret: env.CLOUDINARY_API_SECRET,
+  },
+
+  // S3-compatible object storage. Neon Object Storage injects AWS-standard
+  // names for the production branch; both spellings work here.
+  storage: {
+    endpoint: firstNonEmpty(process.env.S3_ENDPOINT_URL, process.env.AWS_ENDPOINT_URL_S3),
+    region: firstNonEmpty(process.env.S3_REGION, process.env.AWS_REGION) || "us-east-2",
+    bucket: firstNonEmpty(process.env.S3_BUCKET),
+    accessKeyId: firstNonEmpty(process.env.S3_ACCESS_KEY_ID, process.env.AWS_ACCESS_KEY_ID),
+    secretAccessKey: firstNonEmpty(process.env.S3_SECRET_ACCESS_KEY, process.env.AWS_SECRET_ACCESS_KEY),
+    // Anonymous read base for public_read buckets. Defaults to
+    // "<endpoint>/<bucket>", which is the Neon storage URL shape.
+    publicBaseUrl: firstNonEmpty(process.env.S3_PUBLIC_BASE_URL),
   },
 
   app: {

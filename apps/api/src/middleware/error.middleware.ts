@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
+import multer from "multer";
 import { AppError } from "../utils/AppError";
 import { config } from "../config";
 
@@ -36,6 +37,20 @@ export function errorHandler(
       success: false,
       message: err.message,
       code: err.code,
+    });
+    return;
+  }
+
+  // Multer upload limits (file too large, wrong field) -- without this they
+  // surface as a 500, which tells the user nothing.
+  if (err instanceof multer.MulterError) {
+    const isTooLarge = err.code === "LIMIT_FILE_SIZE";
+    res.status(isTooLarge ? 413 : 400).json({
+      success: false,
+      message: isTooLarge
+        ? `Image is too large. Maximum size is ${config.upload.maxFileSizeMb} MB.`
+        : `Upload failed: ${err.message}`,
+      code: isTooLarge ? "PAYLOAD_TOO_LARGE" : "UPLOAD_ERROR",
     });
     return;
   }

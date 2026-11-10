@@ -38,6 +38,12 @@ export const Errors = {
   tooManyAttempts: (msg: string, code = "TOO_MANY_ATTEMPTS") =>
     new AppError(msg, 429, code),
 
+  payloadTooLarge: (msg: string, code = "PAYLOAD_TOO_LARGE") =>
+    new AppError(msg, 413, code),
+
+  serviceUnavailable: (msg: string, code = "SERVICE_UNAVAILABLE") =>
+    new AppError(msg, 503, code),
+
   internal: (msg = "Something went wrong. Please try again.") =>
     new AppError(msg, 500, "INTERNAL_ERROR"),
 };

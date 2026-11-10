@@ -53,7 +53,7 @@ npx prisma generate --schema apps/api/prisma/schema.prisma
 - Helpers (`apps/api/tests/helpers.ts`): `api()`, `unique(prefix)`, `registerUser(prefix)`, `createAdmin`, `createCategory`, `createEventAs(creatorId, categoryId, overrides?)`.
 - Test API conventions: 422 zod, 401 unauth, 403 role/origin, 404 notFound, 409 conflict, 429 rate/lockout.
 - Web: vitest (`lib/i18n.test.ts` enforces exact i18n key parity across 4 locales).
-- **E2E (Playwright)**: root `e2e/` + `playwright.config.ts`. Run `npm run test:e2e` (or `test:e2e:ui`). `workers: 1` is intentional — auth rate limit is 20/15 min. `webServer` auto-starts API+web with full-path npm on Windows and reuses already-running servers (`reuseExistingServer: !CI`). CI: the `e2e` job in `.github/workflows/ci.yml` (`needs: ci`) pushes+seeds the DB, sets placeholder `CLOUDINARY_*` (api config `requireEnv()`s them) and runs the suite headless; report/traces upload as artifacts on failure. Helpers in `e2e/fixtures.ts`: `registerViaApi`, `loginViaApi`, `loginAdminViaApi`, `seedAuth` (zustand `auth-storage` shape `{ state: { user, accessToken, refreshToken, isAuthenticated }, version: 0 }`), `createEventViaApi` (returns `body.data.event`), `approveEventViaApi` (admin PATCH). Seeded super admin comes from `SEED_SUPER_ADMIN_EMAIL`/`SEED_SUPER_ADMIN_PASSWORD` env (no hardcoded password — the seed throws if the password var is missing; CI sets a throwaway value; `playwright.config.ts` loads apps/api/.env + root .env so local e2e matches local seed; existing user's password is never overwritten; production requires 12+ chars). Event-create wizard: Continue→Submit buttons swap on the last step — wait for step content (`aria-current="step"`) not just button text. Created events are `PENDING_REVIEW` and detail 404s until approved.
+- **E2E (Playwright)**: root `e2e/` + `playwright.config.ts`. Run `npm run test:e2e` (or `test:e2e:ui`). `workers: 1` is intentional — auth rate limit is 20/15 min. `webServer` auto-starts API+web with full-path npm on Windows and reuses already-running servers (`reuseExistingServer: !CI`). CI: the `e2e` job in `.github/workflows/ci.yml` (`needs: ci`) pushes+seeds the DB, sets placeholder `CLOUDINARY_*` (harmless leftovers — image vars are optional since Phase 44) and runs the suite headless; report/traces upload as artifacts on failure. Helpers in `e2e/fixtures.ts`: `registerViaApi`, `loginViaApi`, `loginAdminViaApi`, `seedAuth` (zustand `auth-storage` shape `{ state: { user, accessToken, refreshToken, isAuthenticated }, version: 0 }`), `createEventViaApi` (returns `body.data.event`), `approveEventViaApi` (admin PATCH). Seeded super admin comes from `SEED_SUPER_ADMIN_EMAIL`/`SEED_SUPER_ADMIN_PASSWORD` env (no hardcoded password — the seed throws if the password var is missing; CI sets a throwaway value; `playwright.config.ts` loads apps/api/.env + root .env so local e2e matches local seed; existing user's password is never overwritten; production requires 12+ chars). Event-create wizard: Continue→Submit buttons swap on the last step — wait for step content (`aria-current="step"`) not just button text. Created events are `PENDING_REVIEW` and detail 404s until approved.
 
 ## Conventions
 
@@ -67,6 +67,14 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 - Public list routes use `validateQuery` + `sendPaginated`; `q` search is case-insensitive (`mode: "insensitive"`).
 - Mount in `src/app.ts`; rate-limit public GETs with the existing public limiter.
 
+### Image uploads
+
+- One endpoint: `POST /api/v1/upload/poster` (auth + optional `eventId`), returning `{ url, publicId, width, height, format, bytes, provider }`.
+- Backend selection lives in `apps/api/src/modules/upload/storage.service.ts`: S3-compatible (`S3_*` or `AWS_*` env) first, Cloudinary only as a fallback, `503 IMAGE_STORAGE_UNAVAILABLE` when neither. Never make Cloudinary boot-required again.
+- Uploads are re-encoded with `sharp` to WebP at ≤1600 px (best effort — undecodable files are stored as-is). Keys are `events/<yyyy-mm>/<uuid>.<ext>`, immutable, `Cache-Control: public, max-age=31536000, immutable`. `publicId` is the object key, so deletes are `DeleteObject`.
+- Bucket must be `public_read`; the public URL is `<S3_ENDPOINT_URL>/<S3_BUCKET>/<key>` (override with `S3_PUBLIC_BASE_URL`). New bucket hosts must be allow-listed for `next/image` via `NEXT_PUBLIC_IMAGE_HOSTS` in `apps/web/next.config.js`.
+- Multer failures map to `413 PAYLOAD_TOO_LARGE` (over 10 MB) and `400 INVALID_FILE_TYPE` (extension + MIME must both be jpg/png/webp) — keep it that way instead of a generic 500.
+
 ### Web
 
 - Category-conditional sections render inside `app/categories/[slug]/page.tsx` (slug === "muharram" → Jaloos, "charity" → CharityDirectory, "urs" → UpcomingUrs). Server-fetch via `fetchPaginated`, pass to a `"use client"` component.
@@ -77,7 +85,7 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 
 1. `npx tsc --noEmit -p apps/api`, `-p apps/api/prisma` and `-p apps/web` (from repo root)
 2. `npm run lint --workspace apps/web`
-3. `npm run test --workspace apps/api` (expect ~144+ tests) + web vitest
+3. `npm run test --workspace apps/api` (expect 27 suites / 252 tests) + web vitest
 4. Kill servers → `npm run build` (check `$LASTEXITCODE`) → restart via full path
 5. Live smoke: `curl` API endpoint + rendered HTML contains expected markers (`-join ""` first)
 
@@ -87,4 +95,4 @@ Curated JSON in `apps/api/prisma/data/`: dastarkhwan-points, imambargahs, pakist
 
 ## Security baseline (already in place — don't regress)
 
-helmet, CORS allow-list, rate limiting, bcrypt, JWT, zod validation, upload allow-list (jpeg/png/webp, 10MB), account lockout (5 fails/15 min → 429 `ACCOUNT_LOCKED`), CSRF origin guard on state-changing requests, `trust proxy` in production, Next.js security headers (Referrer-Policy, Permissions-Policy). Cloudinary creds are placeholders — uploads fail (known).
+helmet, CORS allow-list, rate limiting, bcrypt, JWT, zod validation, upload allow-list (jpeg/png/webp, 10 MB), account lockout (5 fails/15 min → 429 `ACCOUNT_LOCKED`), CSRF origin guard on state-changing requests, `trust proxy` in production, Next.js security headers (Referrer-Policy, Permissions-Policy). Image storage is S3-compatible (Neon Object Storage, `public_read` bucket) with Cloudinary only as a fallback; `CLOUDINARY_*` is **not** boot-required. Uploads fail closed: `503 IMAGE_STORAGE_UNAVAILABLE` when no backend is configured.

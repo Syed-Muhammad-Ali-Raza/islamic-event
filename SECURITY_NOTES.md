@@ -39,7 +39,7 @@ Last audited: 2026-10-13 · Scope: working tree + full local git history (`git l
 
 `apps/api/src/config/index.ts` validates the environment with zod **at import time** (fail-fast on server boot, tests, scripts):
 
-- Required: `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` — missing/empty → boot aborts with a list of key **names** (values are never printed).
+- Required: `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`; image storage (`S3_*` or `CLOUDINARY_*`) is optional and uploads answer `503` when absent — missing/empty → boot aborts with a list of key **names** (values are never printed).
 - In `NODE_ENV=production` additionally:
   - each JWT secret must be ≥32 characters,
   - placeholder values (`your-*`, `changeme`, `ci-*`, `test-*`, `secret`) are rejected,

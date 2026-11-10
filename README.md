@@ -53,12 +53,12 @@ _Coming soon — homepage, events list (map view), and event detail (desktop + m
 | Forms    | React Hook Form + Zod                          |
 | Backend  | Node.js, Express, TypeScript                   |
 | Database | PostgreSQL + Prisma ORM                        |
-| Storage  | Cloudinary                                     |
+| Storage  | Neon Object Storage (S3-compatible), Cloudinary fallback |
 | Auth     | JWT (access + refresh), bcrypt                 |
 
 ```
 Browser → Next.js → Express API → PostgreSQL
-                             ↘ Cloudinary
+                             ↘ object storage (S3 API)
 ```
 
 ```
@@ -78,14 +78,14 @@ community-events/
 
 ## Getting Started
 
-**Prerequisites:** Node.js >= 20, PostgreSQL, a Cloudinary account (uploads fail without real credentials).
+**Prerequisites:** Node.js >= 20, PostgreSQL, and an S3-compatible bucket for poster uploads (Neon Object Storage on the hosted setup; Cloudinary also works). Uploads return `503 IMAGE_STORAGE_UNAVAILABLE` when neither is configured — every other feature works.
 
 ```bash
 # 1. Environment — two copies: the API server walks up to the repo root,
 #    but the Prisma CLI and seed only read apps/api/.env
 cp .env.example .env
 cp .env.example apps/api/.env
-# Fill in DATABASE_URL, JWT secrets, and Cloudinary credentials
+# Fill in DATABASE_URL, JWT secrets, and the S3_* (or CLOUDINARY_*) storage vars
 
 # 2. Install
 npm install
@@ -159,29 +159,29 @@ Directory endpoints (cities, scholars, melas, charities, processions, and others
 
 ## Environment Variables
 
-See `.env.example` for all required variables (`DATABASE_URL`, JWT secrets, `CLOUDINARY_*`, SMTP, CORS).
+See `.env.example` for all required variables (`DATABASE_URL`, JWT secrets, `S3_*` or `CLOUDINARY_*`, SMTP/Brevo, CORS).
 
 ---
 
 ## Deployment
 
 > **Deploying at zero cost?** Follow the step-by-step guide in
-> [`docs/DEPLOY-FREE.md`](docs/DEPLOY-FREE.md): Vercel (web) + Render free (API)
-> + Neon free (Postgres) + Cloudinary + Brevo email, with the free-tier gotchas
-> spelled out (Render blocks SMTP ports 25/465/587, Neon needs the direct URL,
-> seeding runs from your machine, keeping the API warm).
+> [`docs/DEPLOY-FREE.md`](docs/DEPLOY-FREE.md): Vercel (web) + Vercel serverless
+> (API) + Neon free (Postgres + object storage) + Gmail SMTP or Brevo email,
+> with the free-tier gotchas spelled out (Neon needs the direct URL for the
+> Prisma CLI, seeding runs from your machine, keeping the API warm).
 
 Recommended production setup:
 
 | Piece | Recommended | Notes |
 | --- | --- | --- |
 | Web | **Vercel** (Next.js) | Set every `NEXT_PUBLIC_*` var in project settings — they are inlined at build time |
-| API | **Render** or **Railway** (Docker works out of the box) | Expose port `4000`; health check path `/health` |
+| API | **Vercel** (serverless Express) or **Railway** (Docker works out of the box) | Vercel: `apps/api` root dir, 30 s max duration. Railway/Render: expose `4000`, health check `/health` |
 | Database | **Neon** or **Supabase** (managed Postgres) | Use the direct (non-pooled) URL for the long-running API server; backups on by default |
-| Images | **Cloudinary** | Required for event image uploads |
-| Email | **Brevo** (`smtp-relay.brevo.com:2525`) | Gmail SMTP works only on hosts that allow 465/587 — Render free does not |
+| Images | **Neon Object Storage** (or Cloudinary) | S3-compatible bucket; `public_read` so poster URLs are readable |
+| Email | **Gmail SMTP** (`smtp.gmail.com:587`, app password) or **Brevo** | Gmail needs no domain; Brevo needs a verified sender/domain |
 
-**Required environment variables (API):** `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET` (random, ≥ 32 chars — `openssl rand -hex 32`), `CLOUDINARY_CLOUD_NAME/API_KEY/API_SECRET`, `CORS_ORIGINS` (your web origin), `APP_URL`. **Web:** `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_APP_URL`. The API validates these at boot and refuses weak/placeholder JWT secrets in production.
+**Required environment variables (API):** `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET` (random, ≥ 32 chars — `openssl rand -hex 32`), `CORS_ORIGINS` (your web origin), `APP_URL`. For poster uploads: `S3_ENDPOINT_URL`/`S3_REGION`/`S3_BUCKET`/`S3_ACCESS_KEY_ID`/`S3_SECRET_ACCESS_KEY` (or `CLOUDINARY_CLOUD_NAME/API_KEY/API_SECRET`). **Web:** `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_APP_URL`, and `NEXT_PUBLIC_IMAGE_HOSTS` if posters come from a host other than the built-in default. The API validates these at boot and refuses weak/placeholder JWT secrets in production.
 
 **Migrate & seed:**
 
@@ -206,7 +206,7 @@ SEED_SUPER_ADMIN_PASSWORD="your-strong-password" npm run db:seed --workspace app
 - [ ] `CORS_ORIGINS` contains the exact production web origin(s)
 - [ ] Web build has the production `NEXT_PUBLIC_API_URL` (inlined at build time)
 - [ ] Admin seeded and the initial password changed
-- [ ] Cloudinary upload tested with a real image
+- [ ] Poster upload tested with a real image (event page renders it)
 - [ ] HTTPS enforced by the host; custom domain + DNS verified
 
 ---

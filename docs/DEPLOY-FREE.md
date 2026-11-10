@@ -6,7 +6,7 @@ patch: both apps run on Vercel Hobby and the database is Neon's free plan.
 ```
 Browser ──► Vercel (Next.js web) ──► Vercel serverless fn (Express API) ──► Neon Postgres
                   │                             │
-                  └── Cloudinary (images)       └── Brevo / SMTP (email)
+                  └── Neon Object Storage       └── Gmail SMTP / Brevo (email)
 ```
 
 | Piece | Service | Free tier | Notes |
@@ -14,8 +14,8 @@ Browser ──► Vercel (Next.js web) ──► Vercel serverless fn (Express A
 | Web | Vercel Hobby | 100 GB bandwidth | Next.js preset, root dir `apps/web` |
 | API | Vercel Hobby (serverless function) | 100 GB-hours, 1M invocations | Cold start 1–3 s; 30 s max duration |
 | Database | Neon free | 1 GB storage, 100 CU-hours | Permanent (no 30-day expiry), scales to zero |
-| Images | Cloudinary free | ~25 credits/month | Uploads stay broken until real keys are set |
-| Email | Brevo API (or any SMTP relay) | 300 emails/day (Brevo) | Requires a verified sender — see §5d |
+| Images | Neon Object Storage | 5 GB per project | S3-compatible, branches with the DB, `public_read` bucket — §4 |
+| Email | Gmail SMTP or Brevo API | 500/day (Gmail) · 300/day (Brevo) | Gmail needs no domain; Brevo needs a verified sender — §5d |
 
 > Free tiers are for demos and small communities, not an SLA. Moving to paid
 > plans later requires no code change.
@@ -48,8 +48,9 @@ limiting, helmet, zod validation, JWT auth, Prisma.
 
 - Repo pushed to GitHub (`origin` already points at
   `https://github.com/Syed-Muhammad-Ali-Raza/islamic-event.git`).
-- Accounts: [Neon](https://neon.com), [Vercel](https://vercel.com),
-  [Cloudinary](https://cloudinary.com), optionally [Brevo](https://brevo.com).
+- Accounts: [Neon](https://neon.com) (database + object storage),
+  [Vercel](https://vercel.com), optionally [Brevo](https://brevo.com) for a
+  branded sending domain. Cloudinary is no longer needed.
 - Vercel CLI: `npx vercel login` (or run `vercel` once and follow the device
   link). GitHub auto-connect is **not** required — CLI deploys work without it.
 - Two random JWT secrets:
@@ -87,18 +88,48 @@ limiting, helmet, zod validation, JWT auth, Prisma.
 
 ---
 
-## 4. Step 2 — Cloudinary (image uploads)
+## 4. Step 2 — Image storage (Neon Object Storage, or Cloudinary)
 
-The API **refuses to boot in production** without `CLOUDINARY_*` — config
-validation treats them as required.
+Poster uploads need an S3-compatible bucket. The zero-extra-account option is
+**Neon Object Storage**, which lives in the same project as the database, is
+included in the Free plan (5 GB), and branches with it.
 
-1. Cloudinary Console → **Programmable Media → Dashboard**.
-2. Copy **Cloud name**, **API Key**, **API Secret**.
-3. Paste them into the API's env vars (§5).
+1. In the Neon console open the project → **Storage** (or use `neon bucket create
+   event-posters --access public_read`).
+2. Create a bucket named `event-posters` with **public read** access.
+3. Create a **storage credential** for the production branch (scopes
+   `storage:read`, `storage:write`). It returns a token id and secret.
+4. Add these to the API's env vars (§5b):
 
-Until these are real values, event image uploads return an error; seeded data
-and every other feature work fine. (`placeholder-cloud` / `000000000000000` /
-`placeholder-secret` satisfy the boot check.)
+   ```
+   S3_ENDPOINT_URL=https://<branch-endpoint>.storage.<region>.aws.neon.tech
+   S3_REGION=us-east-2
+   S3_BUCKET=event-posters
+   S3_ACCESS_KEY_ID=<credential token id>
+   S3_SECRET_ACCESS_KEY=<credential secret>
+   ```
+
+   AWS-standard names (`AWS_ENDPOINT_URL_S3`, `AWS_REGION`, `AWS_ACCESS_KEY_ID`,
+   `AWS_SECRET_ACCESS_KEY`) work too — the code prefers the `S3_*` spelling.
+
+The public URL shape is `<S3_ENDPOINT_URL>/<S3_BUCKET>/<key>`, which is exactly
+what the API returns. Set `S3_PUBLIC_BASE_URL` if you later put a CDN or custom
+domain in front of the bucket.
+
+Uploads are re-encoded to WebP at ≤1600 px (EXIF rotation honoured) so a 6 MB
+phone photo lands as ~150–250 KB; keys are immutable and served with
+`Cache-Control: public, max-age=31536000, immutable`.
+
+The web app renders posters with `next/image`, so the bucket host must be
+allow-listed — `apps/web/next.config.js` includes the production branch endpoint
+and accepts a comma-separated `NEXT_PUBLIC_IMAGE_HOSTS` override (needed for
+preview branches, which get their own storage endpoint).
+
+**Fallback: Cloudinary.** If `CLOUDINARY_CLOUD_NAME` / `_API_KEY` / `_API_SECRET`
+are real values, Cloudinary is used when no `S3_*` set is present. Placeholders
+(`your-*`, `placeholder-*`) are ignored. With **neither** backend configured the
+API still boots, logs `[storage] No image storage configured`, and uploads return
+`503 IMAGE_STORAGE_UNAVAILABLE` instead of a mystery 500.
 
 ---
 
@@ -139,7 +170,8 @@ Preview). `NODE_ENV` is injected by Vercel — do not set it.
 | `JWT_REFRESH_SECRET` | different 64-char hex |
 | `JWT_ACCESS_EXPIRES_IN` | `15m` |
 | `JWT_REFRESH_EXPIRES_IN` | `7d` |
-| `CLOUDINARY_CLOUD_NAME` / `_API_KEY` / `_API_SECRET` | real keys, or the placeholders from §4 |
+| `S3_ENDPOINT_URL` / `S3_REGION` / `S3_BUCKET` / `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` | image uploads — see §4 |
+| `CLOUDINARY_CLOUD_NAME` / `_API_KEY` / `_API_SECRET` | optional fallback only (§4) |
 | `CORS_ORIGINS` | the web URL, e.g. `https://islamic-event-web.vercel.app` |
 | `APP_URL` | same web URL (used in email links) |
 | `SUPPORT_EMAIL` | your support mailbox |
@@ -366,9 +398,12 @@ Log in at `https://islamic-event-web.vercel.app/login`.
 | `JWT_REFRESH_SECRET` | yes | ≥ 32 chars |
 | `JWT_ACCESS_EXPIRES_IN` | no | `15m` |
 | `JWT_REFRESH_EXPIRES_IN` | no | `7d` |
-| `CLOUDINARY_CLOUD_NAME` | yes | boot fails without it |
-| `CLOUDINARY_API_KEY` | yes | boot fails without it |
-| `CLOUDINARY_API_SECRET` | yes | boot fails without it |
+| `S3_ENDPOINT_URL` | for uploads | Neon storage endpoint for the production branch — §4 |
+| `S3_REGION` | for uploads | e.g. `us-east-2` |
+| `S3_BUCKET` | for uploads | `event-posters` (public_read) |
+| `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` | for uploads | branch storage credential |
+| `S3_PUBLIC_BASE_URL` | no | CDN/custom domain in front of the bucket |
+| `CLOUDINARY_CLOUD_NAME` / `_API_KEY` / `_API_SECRET` | no | fallback image backend; placeholders ignored |
 | `CORS_ORIGINS` | yes | web origin, comma-separated for more |
 | `APP_URL` | yes | web URL — used in email links |
 | `SUPPORT_EMAIL` | no | shown in email footers |
@@ -385,6 +420,7 @@ Log in at `https://islamic-event-web.vercel.app/login`.
 | `NEXT_PUBLIC_API_URL` | yes | inlined at build — changing it needs a redeploy |
 | `NEXT_PUBLIC_APP_URL` | yes | inlined at build (canonical/OG URLs, sitemap) |
 | `NEXT_PUBLIC_APP_NAME` | no | defaults to `Community Events` |
+| `NEXT_PUBLIC_IMAGE_HOSTS` | no | comma-separated extra `next/image` hosts (e.g. a preview branch's storage endpoint) |
 | `API_INTERNAL_URL` | no | overrides the server-component fetch URL at runtime |
 
 ---
@@ -398,6 +434,8 @@ Log in at `https://islamic-event-web.vercel.app/login`.
 - [ ] Web `/` and `/darbars` render rows (not an empty shell)
 - [ ] `/categories/expo` → 42 events; a detail page renders venue + map
 - [ ] Login as the seeded super admin → `/admin` dashboard shows 42 events
+- [ ] Create an event with a poster → upload returns `201`, the returned
+      storage URL serves the image (`200 image/webp`), and the event page shows it
 - [ ] `CORS_ORIGINS` matches the web origin exactly (no trailing slash)
 
 ---
@@ -448,7 +486,13 @@ interactive and can reset data.
 | Symptom | Cause / fix |
 | --- | --- |
 | Function returns 500, log `PrismaClientInitializationError … could not locate the Query Engine` | `binaryTargets` missing `rhel-openssl-3.0.x`, or `prisma generate` did not run — check the build log for `vercel-build` |
-| Boot fails: `Invalid environment configuration … CLOUDINARY_*` | Add all three Cloudinary vars |
+| Boot fails: `Invalid environment configuration … CLOUDINARY_*` | Removed — Cloudinary is optional now; if you see this, the deployment is older than the §4 change |
+| Uploads return `503 IMAGE_STORAGE_UNAVAILABLE` | No usable image backend: set the `S3_*` vars from §4 (or real `CLOUDINARY_*` values) and redeploy |
+| Upload `201` but the image URL 404s | Bucket is not `public_read`, or `S3_PUBLIC_BASE_URL` points somewhere other than `<endpoint>/<bucket>` |
+| `AccessDenied` / `SignatureDoesNotMatch` on upload | Wrong credential pair, or the credential was revoked/rotated — issue a new one and update `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` |
+| Event page poster blank, optimizer 400 | Bucket host missing from `next/image` allow-list — set `NEXT_PUBLIC_IMAGE_HOSTS` and redeploy the **web** project |
+| Upload `413 PAYLOAD_TOO_LARGE` | Poster exceeds 10 MB; the browser accepts JPG/PNG/WEBP only |
+| Upload `400 INVALID_FILE_TYPE` | File extension and MIME type must both be JPG/PNG/WEBP |
 | `JWT_ACCESS_SECRET must be at least 32 characters` | Use a real 64-char hex secret, not `your-…` |
 | Browser console: blocked by CORS | `CORS_ORIGINS` must be the exact web origin, no trailing slash |
 | `POST /api/v1/auth/login` → `429 ACCOUNT_LOCKED` | 5 failed logins in 15 min; wait or reset the counter in the DB |
@@ -465,7 +509,7 @@ interactive and can reset data.
 | `P1001` only locally, `psql`/ping works | Broken IPv6 route: Neon's AAAA records are tried first. Disable IPv6 on the adapter, or append `&connect_timeout=150&pool_timeout=200` |
 | `prisma generate` fails locally with `EPERM: rename … query_engine-windows.dll.node` | Antivirus/Defender holds the DLL just written. Retry, or add `node_modules\.prisma` to the AV exclusion list. (Does not affect CI or Vercel — they run on Linux.) |
 | Vercel build error about files outside the project root | Web root directory must be `apps/web`; the custom `outputFileTracingRoot` is skipped on Vercel |
-| Uploads fail with a Cloudinary error | Placeholder/invalid keys, or the upload preset is disabled |
+| Uploads fail with a Cloudinary error | Placeholder/invalid keys. Prefer Neon Object Storage (§4); Cloudinary is only the fallback |
 
 ---
 
@@ -493,7 +537,6 @@ The Vercel front end can keep talking to either over HTTPS — only
 | --- | --- |
 | Vercel Hobby (web) | $0 |
 | Vercel Hobby (API function) | $0 |
-| Neon free | $0 |
-| Cloudinary free | $0 |
-| Brevo free (optional, 300/day) | $0 |
+| Neon free (Postgres + 5 GB object storage) | $0 |
+| Email: Gmail SMTP (500/day) or Brevo free (300/day) | $0 |
 | **Total** | **$0** |

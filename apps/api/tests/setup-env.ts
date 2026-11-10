@@ -19,3 +19,15 @@ process.env.CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY ?? "test-key";
 process.env.CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET ?? "test-secret";
 process.env.APP_URL = process.env.APP_URL ?? "http://localhost:3000";
 process.env.CRON_SECRET = process.env.CRON_SECRET ?? "test-cron-secret";
+
+// Tests must never deliver real email or write to a real bucket: apps/api/.env
+// may carry production SMTP / object-storage credentials for local smoke tests.
+// Suites that exercise a transport set their own fake values explicitly.
+delete process.env.BREVO_API_KEY;
+process.env.SMTP_HOST = "";
+process.env.SMTP_USER = "";
+process.env.SMTP_PASS = "";
+process.env.S3_ENDPOINT_URL = "";
+process.env.S3_ACCESS_KEY_ID = "";
+process.env.S3_SECRET_ACCESS_KEY = "";
+process.env.S3_BUCKET = "";

@@ -1,13 +1,11 @@
 import multer from "multer";
 import path from "path";
 import { Request } from "express";
-import { cloudinary } from "../../config/cloudinary";
 import { config } from "../../config";
 import { Errors } from "../../utils/AppError";
+import { uploadImage } from "./storage.service";
 
-// ─── Multer: store in memory, validate type ───────────────────────────────────
-
-const storage = multer.memoryStorage();
+// ─── Multer: memory storage + allow-list ─────────────────────────────────────
 
 function fileFilter(_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) {
   const ext = path.extname(file.originalname).toLowerCase();
@@ -17,61 +15,25 @@ function fileFilter(_req: Request, file: Express.Multer.File, cb: multer.FileFil
   if (isAllowedExt && isAllowedMime) {
     cb(null, true);
   } else {
-    cb(new Error("Only JPG, PNG, and WEBP images are allowed."));
+    // AppError (not a bare Error) so the handler answers 400 with a code
+    // instead of a 500.
+    cb(Errors.badRequest("Only JPG, PNG, and WEBP images are allowed.", "INVALID_FILE_TYPE"));
   }
 }
 
 export const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   fileFilter,
   limits: {
     fileSize: config.upload.maxFileSizeMb * 1024 * 1024,
   },
 });
 
-// ─── Upload to Cloudinary ─────────────────────────────────────────────────────
+// ─── Upload to the configured image backend (S3-compatible or Cloudinary) ────
 
-interface UploadResult {
-  url: string;
-  publicId: string;
-  width: number;
-  height: number;
-  format: string;
-  bytes: number;
-}
+export { deleteImage, imageProvider, isStorageConfigured } from "./storage.service";
+export type { ImageProvider, UploadedImage } from "./storage.service";
 
-export async function uploadEventPoster(buffer: Buffer, folder = "events"): Promise<UploadResult> {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        folder,
-        resource_type: "image",
-        transformation: [
-          { width: 1200, height: 1200, crop: "limit" },
-          { quality: "auto:good" },
-          { fetch_format: "auto" },
-        ],
-      },
-      (error, result) => {
-        if (error || !result) {
-          reject(Errors.internal("Image upload failed. Please try again."));
-        } else {
-          resolve({
-            url: result.secure_url,
-            publicId: result.public_id,
-            width: result.width,
-            height: result.height,
-            format: result.format,
-            bytes: result.bytes,
-          });
-        }
-      }
-    );
-
-    stream.end(buffer);
-  });
-}
-
-export async function deleteImage(publicId: string): Promise<void> {
-  await cloudinary.uploader.destroy(publicId);
+export function uploadEventPoster(buffer: Buffer, folder = "events") {
+  return uploadImage(buffer, folder);
 }

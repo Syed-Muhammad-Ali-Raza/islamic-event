@@ -1,6 +1,6 @@
 # Requirements — Community Events Platform
 
-Last updated: 2026-10-13 · Status: Phases 1–43 delivered (see `docs/PHASES.md` phase checklist).
+Last updated: 2026-11-10 · Status: Phases 1–44 delivered (see `docs/PHASES.md` phase checklist).
 
 ## 1. Overview
 
@@ -26,7 +26,7 @@ A Pakistan-focused community events platform where organizers publish events, us
 - **FR-A4** Account lockout: 5 failed logins in 15 min → `429 ACCOUNT_LOCKED` (counters reset on success; ghost emails never lock).
 
 ### 3.2 Events (Phases 4, 6, 9, 14, 16, 18, 19)
-- **FR-E1** CRUD events with slug, category, organizer, status (`DRAFT → PENDING_REVIEW → APPROVED`), date range, venue + coordinates, images (Cloudinary, allow-list jpeg/png/webp, 10 MB).
+- **FR-E1** CRUD events with slug, category, organizer, status (`DRAFT → PENDING_REVIEW → APPROVED`), date range, venue + coordinates, images (Neon Object Storage via the S3 API, Cloudinary fallback; allow-list jpeg/png/webp, 10 MB; re-encoded to WebP ≤1600 px).
 - **FR-E2** Search + filter (category, city, date range, keyword), pagination; case-insensitive `q`.
 - **FR-E3** Views: list, **calendar** month grid, **map** (Leaflet markers from coordinates) — one toggle control.
 - **FR-E4** Share: WhatsApp / X / Facebook, copy-link, QR code on event detail.
@@ -74,14 +74,14 @@ A Pakistan-focused community events platform where organizers publish events, us
 | Area | Requirement |
 |---|---|
 | Security | helmet, CORS allow-list, rate limiting, zod validation everywhere, JWT, account lockout, CSRF origin guard (state-changing verbs), `trust proxy` in prod, Next.js security headers (Referrer-Policy, Permissions-Policy), upload allow-list |
-| Testing | API: jest + supertest (~166 tests); web: vitest (incl. i18n parity); E2E: Playwright 13-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api` |
+| Testing | API: jest + supertest (27 suites / 252 tests); web: vitest (incl. i18n parity); E2E: Playwright 13-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
 | Data integrity | Idempotent seeds, `unique()`-suffixed fixtures in tests (shared test DB), zod 422 contract |
 | Perf | Server components + `fetchPaginated` with revalidate, TanStack Query staleTime 60 s client-side |
-| Known gaps | Cloudinary creds are placeholders (uploads fail); E2E is smoke-level only (no visual regression) |
+| Known gaps | No CDN in front of the object-storage bucket (every poster view is direct egress; 5 GB free tier); E2E is smoke-level only (no visual regression) |
 
 ## 5. Out of scope / backlog candidates
 
-- Real Cloudinary (or S3) image pipeline
+- CDN in front of the object-storage bucket (custom domain / Cloudflare)
 - E2E visual regression (CI job for the Playwright suite is in place)
 - SMS/WhatsApp notifications
 - i18n for category-page sections (Charity/Muharram Jaloos/Urs sections are English-only; explorers from Phase 36 + scholars/melas are translated)

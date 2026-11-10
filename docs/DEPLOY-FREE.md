@@ -181,9 +181,9 @@ Delivery order: **Brevo HTTP API → SMTP relay → dev outbox**.
 3. One command — writes the env, authenticates, sends a test, pushes to Vercel:
 
    ```powershell
-   npm run smtp:setup --workspace apps/api -- `
+   npm run smtp:setup:push --workspace apps/api -- `
      gmail you@gmail.com "<app-password>" you@gmail.com `
-     --to you@gmail.com --push
+     --to you@gmail.com
    ```
 
    Success looks like:
@@ -194,8 +194,10 @@ Delivery order: **Brevo HTTP API → SMTP relay → dev outbox**.
    PASS  Pushed SMTP_PASS to Vercel Production.
    ```
 
-   `--push` needs a logged-in Vercel CLI. Without it the command only writes
-   `apps/api/.env`, verifies the login and prints the `vercel env add` lines.
+   The `:push` variant needs a logged-in Vercel CLI. `npm run smtp:setup` (no
+   `:push`) only writes `apps/api/.env`, verifies the login and prints the
+   `vercel env add` lines. Use `:push` because npm swallows `--push` when it is
+   passed through `npm run`.
 4. Redeploy: `npx vercel deploy --prod --archive=tgz`.
 
 Gmail always sends as the authenticated account (or a verified "Send mail as"
@@ -215,7 +217,7 @@ cloud IPs; if that happens, switch to Brevo with your own domain.
    Brevo, then updates the API project's Production env vars):
 
    ```powershell
-   npm run brevo:check --workspace apps/api -- <BREVO_API_KEY> you@example.com --push
+   npm run brevo:check:push --workspace apps/api -- <BREVO_API_KEY> you@example.com
    ```
 
    Success looks like:
@@ -236,19 +238,20 @@ cloud IPs; if that happens, switch to Brevo with your own domain.
 **Brevo over SMTP (SMTP key instead of an API key):**
 
 ```powershell
-npm run smtp:setup --workspace apps/api -- `
-  brevo c20fba001@smtp-brevo.com <SMTP_KEY> you@example.com --push
+npm run smtp:setup:push --workspace apps/api -- `
+  brevo c20fba001@smtp-brevo.com <SMTP_KEY> you@example.com
 ```
 
 It writes `SMTP_HOST=smtp-relay.brevo.com`, `SMTP_PORT=587`,
 `SMTP_SECURE=false`, `SMTP_USER/SMTP_PASS`, then opens a real STARTTLS
-connection, authenticates, and (with `--push`) updates Production. The SMTP key
-starts with `xsmtpsib-`; the API key (`xkeysib-`) does not work over SMTP.
+connection, authenticates, and updates Production (the `:push` script variant).
+The SMTP key starts with `xsmtpsib-`; the API key (`xkeysib-`) does not work
+over SMTP.
 
 **Any other relay** — same command with `host:port`:
 
 ```powershell
-npm run smtp:setup --workspace apps/api -- smtp.example.com:587 user pass from@example.com --push
+npm run smtp:setup:push --workspace apps/api -- smtp.example.com:587 user pass from@example.com
 ```
 
 Verify delivery from your machine (reads `apps/api/.env`) or from a shell with

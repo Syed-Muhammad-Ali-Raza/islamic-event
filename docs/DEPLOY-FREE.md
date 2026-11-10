@@ -163,13 +163,52 @@ First build takes ~2–4 minutes (`npm ci` for the monorepo + `prisma generate`)
 
 ### 5d. Email
 
-Delivery order: **Brevo HTTP API → SMTP relay → dev outbox**. Brevo is preferred
-on serverless because it is one HTTPS call — no SMTP handshake, no port blocks.
+Delivery order: **Brevo HTTP API → SMTP relay → dev outbox**.
 
-**Brevo (recommended — 300 emails/day, no card):**
+**Choosing a sender**
+
+| Situation | Use | Deliverability |
+| --- | --- | --- |
+| No domain (most demos) | **Gmail SMTP + App Password** | Good — Google signs as `gmail.com` |
+| Domain you control | Brevo with the domain authenticated (DKIM/SPF) | Best — branded `no-reply@…` |
+| Gmail address sent *through Brevo* | Brevo, verified single sender | Poor — From domain ≠ signing domain, often spam |
+
+**Gmail SMTP — no domain needed, 500 recipients/day, $0**
+
+1. Google Account → **Security** → turn on **2-Step Verification**.
+2. Same page → **App passwords** → create one named "Community Events API"
+   (16 characters, shown in groups of four).
+3. One command — writes the env, authenticates, sends a test, pushes to Vercel:
+
+   ```powershell
+   npm run smtp:setup --workspace apps/api -- `
+     gmail you@gmail.com "<app-password>" you@gmail.com `
+     --to you@gmail.com --push
+   ```
+
+   Success looks like:
+
+   ```
+   PASS  TLS connection + authentication
+   PASS  Message accepted (id <…>) — check you@gmail.com
+   PASS  Pushed SMTP_PASS to Vercel Production.
+   ```
+
+   `--push` needs a logged-in Vercel CLI. Without it the command only writes
+   `apps/api/.env`, verifies the login and prints the `vercel env add` lines.
+4. Redeploy: `npx vercel deploy --prod --archive=tgz`.
+
+Gmail always sends as the authenticated account (or a verified "Send mail as"
+alias), so `EMAIL_FROM` must be that same address. Use a dedicated account
+(e.g. `communityevents.pk@gmail.com`) if you don't want the app sending from
+your personal inbox. Heads-up: Google occasionally flags automated traffic from
+cloud IPs; if that happens, switch to Brevo with your own domain.
+
+**Brevo HTTP API — best once you own a domain (300 emails/day, no card):**
 
 1. Create a free account at <https://app.brevo.com/>.
 2. **Senders & IP → Senders** → add and verify the address you will send from.
+   With a domain, also authenticate it (DKIM/SPF) under **Domains**.
 3. **SMTP & API → API Keys** → create a v3 key.
 4. Save, validate and push to Vercel in one command (writes `BREVO_API_KEY`
    and `EMAIL_FROM` into `apps/api/.env`, checks the key + sender against
@@ -188,41 +227,29 @@ on serverless because it is one HTTPS call — no SMTP handshake, no port blocks
    PASS  Pushed EMAIL_FROM to Vercel Production.
    ```
 
-   `--push` needs a logged-in Vercel CLI (`npx vercel login`) and access to the
-   team. Without it the command only validates and prints the `vercel env add`
-   lines to run yourself.
-
 5. Redeploy so the new env vars take effect:
 
    ```powershell
    npx vercel deploy --prod --archive=tgz
    ```
 
-**Brevo over SMTP (if you created an SMTP key instead of an API key):**
+**Brevo over SMTP (SMTP key instead of an API key):**
 
 ```powershell
-npm run brevo:smtp --workspace apps/api -- `
-  c20fba001@smtp-brevo.com <SMTP_KEY> you@example.com --to you@example.com --push
+npm run smtp:setup --workspace apps/api -- `
+  brevo c20fba001@smtp-brevo.com <SMTP_KEY> you@example.com --push
 ```
 
 It writes `SMTP_HOST=smtp-relay.brevo.com`, `SMTP_PORT=587`,
 `SMTP_SECURE=false`, `SMTP_USER/SMTP_PASS`, then opens a real STARTTLS
-connection, authenticates, optionally sends a test message, and (with `--push`)
-updates the API project's Production env. The SMTP key starts with `xsmtpsib-`;
-the API key (`xkeysib-`) is a different credential and does not work over SMTP.
+connection, authenticates, and (with `--push`) updates Production. The SMTP key
+starts with `xsmtpsib-`; the API key (`xkeysib-`) does not work over SMTP.
 
-**Other SMTP relays (Gmail needs 2FA + an App Password):**
+**Any other relay** — same command with `host:port`:
 
+```powershell
+npm run smtp:setup --workspace apps/api -- smtp.example.com:587 user pass from@example.com --push
 ```
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER=you@gmail.com
-SMTP_PASS=<16-character App Password, not your normal password>
-EMAIL_FROM="Community Events <you@gmail.com>"
-```
-
-Brevo's SMTP relay (`smtp-relay.brevo.com:2525`) also works if you prefer it.
 
 Verify delivery from your machine (reads `apps/api/.env`) or from a shell with
 the production env vars:
@@ -231,9 +258,11 @@ the production env vars:
 npm run email:test --workspace apps/api -- you@example.com
 ```
 
-With neither `BREVO_API_KEY` nor `SMTP_HOST`, emails are **not delivered** — the
-API logs `[email] No email transport configured … was NOT sent` at boot and on
-each attempt, and writes HTML to `/tmp/outbox`.
+With neither `BREVO_API_KEY` nor a complete `SMTP_*` set (`host` + `user` +
+`pass`), emails are **not delivered** — the API logs
+`[email] No email transport configured … was NOT sent` at boot and on each
+attempt, and writes HTML to `/tmp/outbox`. A half-filled SMTP config (password
+missing) falls back to the outbox with a warning instead of failing every send.
 
 ### 5e. Reminder cron (Vercel)
 
@@ -426,6 +455,9 @@ interactive and can reset data.
 | `[email] No email transport configured … NOT sent` | Set `BREVO_API_KEY` or the `SMTP_*` vars (§5d) |
 | Brevo `401 Unauthorized` | Key wrong/revoked — recreate it in SMTP & API → API Keys |
 | Brevo `400 … sender … not valid` | `EMAIL_FROM` must be a verified sender in Senders & IP → Senders |
+| Gmail `535-5.7.8 Username and Password not accepted` | Use a 16-character App Password (2-Step Verification must be on), never the account password |
+| Gmail `534-5.7.9 Application-specific password required` | Same fix: create an App Password |
+| Email lands in spam | `From` domain must match the signing domain — Gmail SMTP for Gmail/Gmail, own domain on Brevo (§5d) |
 | `P1001: Can't reach database server` | `DATABASE_URL` typo, or drop `?sslmode=require` |
 | `P1001` only locally, `psql`/ping works | Broken IPv6 route: Neon's AAAA records are tried first. Disable IPv6 on the adapter, or append `&connect_timeout=150&pool_timeout=200` |
 | `prisma generate` fails locally with `EPERM: rename … query_engine-windows.dll.node` | Antivirus/Defender holds the DLL just written. Retry, or add `node_modules\.prisma` to the AV exclusion list. (Does not affect CI or Vercel — they run on Linux.) |

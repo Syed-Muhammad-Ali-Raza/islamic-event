@@ -17,7 +17,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "email:test": "tsx scripts/send-test-email.ts",
     "brevo:check": "tsx scripts/check-brevo.ts",
-    "brevo:smtp": "tsx scripts/setup-brevo-smtp.ts"
+    "smtp:setup": "tsx scripts/setup-smtp.ts",
+    "brevo:smtp": "tsx scripts/setup-smtp.ts brevo"
   },
   "dependencies": {
     "@prisma/client": "^5.21.0",

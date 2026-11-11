@@ -128,8 +128,27 @@ jobs:
       - name: Seed database
         run: npm run db:seed --workspace=apps/api
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        # The browser CDN flakes often enough to red the whole pipeline; retry
+        # instead of failing the run on a single network hiccup.
+        run: |
+          for attempt in 1 2 3; do
+            if npx playwright install --with-deps chromium; then
+              exit 0
+            fi
+            echo "Playwright browser install failed (attempt ${attempt}/3); retrying in 15s"
+            sleep 15
+          done
+          echo "Playwright browser install failed after 3 attempts" >&2
+          exit 1
 
       - name: Run E2E tests
         run: npm run test:e2e

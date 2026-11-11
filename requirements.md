@@ -74,7 +74,7 @@ A Pakistan-focused community events platform where organizers publish events, us
 | Area | Requirement |
 |---|---|
 | Security | helmet, CORS allow-list, tiered rate limiting (300/15 min global; 60/15 min auth ceiling; 10 failed logins; 12 sign-ups; 5 reset/resend emails; 30 verify; 120 session — all per IP), zod validation everywhere, JWT, account lockout, CSRF origin guard (state-changing verbs), `trust proxy` in prod, Next.js security headers (Referrer-Policy, Permissions-Policy), upload allow-list |
-| Testing | API: jest + supertest (28 suites / 256 tests); web: vitest (incl. i18n parity); E2E: Playwright 13-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
+| Testing | API: jest + supertest (28 suites / 256 tests); web: vitest (incl. i18n parity); E2E: Playwright 16-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
 | Data integrity | Idempotent seeds, `unique()`-suffixed fixtures in tests (shared test DB), zod 422 contract |
 | Perf | Server components + `fetchPaginated` with revalidate, TanStack Query staleTime 60 s client-side |
 | Known gaps | No CDN in front of the object-storage bucket (every poster view is direct egress; 5 GB free tier); E2E is smoke-level only (no visual regression) |

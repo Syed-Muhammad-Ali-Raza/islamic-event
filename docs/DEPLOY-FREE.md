@@ -496,6 +496,7 @@ interactive and can reset data.
 | `JWT_ACCESS_SECRET must be at least 32 characters` | Use a real 64-char hex secret, not `your-…` |
 | Browser console: blocked by CORS | `CORS_ORIGINS` must be the exact web origin, no trailing slash |
 | `POST /api/v1/auth/login` → `429 ACCOUNT_LOCKED` | 5 failed logins in 15 min; wait or reset the counter in the DB |
+| Any auth call → `429 RATE_LIMITED` | Per-IP limits (see `SECURITY_NOTES.md` §4): 10 failed logins, 12 sign-ups, 5 reset emails per 15 min, 60 total on `/auth`. Wait for the `RateLimit-Reset` window; counters are per API instance |
 | Every page empty, `/health` 404 with `x-vercel-routing` | Wrong project or wrong alias — check `vercel ls` and the project's Domains |
 | Vercel upload: `Too many requests … api-upload-free` | Add `--archive=tgz` |
 | `No Output Directory named 'public' found` | `apps/api/public/` was deleted — restore `apps/api/public/robots.txt` |

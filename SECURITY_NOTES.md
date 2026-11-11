@@ -46,6 +46,25 @@ Last audited: 2026-10-13 · Scope: working tree + full local git history (`git l
   - `JWT_ACCESS_SECRET` must differ from `JWT_REFRESH_SECRET`.
 - In development, placeholder JWT secrets only print a one-line warning.
 
-## 4. Reporting
+## 4. Rate limiting
+
+Configured in `apps/api/src/middleware/rateLimit.middleware.ts` and attached in `app.ts` (global) plus `modules/auth/auth.routes.ts` (per route). All windows are 15 minutes and keyed by client IP (`trust proxy` is set to 1 in production so the IP comes from the platform proxy, not a spoofable header).
+
+| Limiter | Max / 15 min | Applies to |
+|---|---|---|
+| `generalLimiter` | 300 | every `/api/v1/*` request |
+| `authLimiter` | 60 | ceiling for everything under `/api/v1/auth` |
+| `loginLimiter` | 10 **failures** | `POST /auth/login` (successful logins are not counted) |
+| `registerLimiter` | 12 | `POST /auth/register` |
+| `passwordResetLimiter` | 5 | `POST /auth/forgot-password`, `POST /auth/resend-verification` (they send email) |
+| `resetPasswordLimiter` | 10 | `POST /auth/reset-password`, `POST /auth/change-password` |
+| `verifyEmailLimiter` | 30 | `POST /auth/verify-email` |
+| `sessionLimiter` | 120 | `POST /auth/refresh`, `POST /auth/logout`, `GET/PATCH /auth/me` |
+
+Exceeding a limit returns `429` with `{ success: false, message, code: "RATE_LIMITED" }` and `RateLimit-*` headers. Login additionally has the DB-backed account lockout (5 failures / 15 min → `429 ACCOUNT_LOCKED`), which works across instances.
+
+**Caveat:** `express-rate-limit`'s default store is in-memory, so on serverless each instance keeps its own counters and a cold start resets them. Treat the IP limits as best-effort abuse friction; the account lockout is the strong control. Tests bypass all limiters (`NODE_ENV=test`); `tests/rate-limit.test.ts` exercises the limiter factory directly so the 429 path stays covered.
+
+## 5. Reporting
 
 Found a secret that this file misses? Open a GitHub issue (without pasting the value) or contact the maintainer privately.

@@ -4,10 +4,10 @@ import cors from "cors";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
-import rateLimit from "express-rate-limit";
 
 import { config } from "./config";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
+import { authLimiter, generalLimiter } from "./middleware/rateLimit.middleware";
 import { requireAuth } from "./middleware/auth.middleware";
 import { prisma } from "./config/prisma";
 
@@ -66,27 +66,9 @@ app.use(
   })
 );
 
-// â”€â”€â”€ General rate limiter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 300,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { success: false, message: "Too many requests, please try again later.", code: "RATE_LIMITED" },
-});
 
-// Tighter limiter for auth endpoints
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { success: false, message: "Too many authentication attempts.", code: "RATE_LIMITED" },
-});
-
-if (config.nodeEnv !== "test") {
-  app.use(limiter);
-}
+// ─── General rate limiter (300 req / 15 min / IP) ────────────────────────────
+app.use(generalLimiter);
 
 // ─── Origin guard (CSRF defense-in-depth for state-changing requests) ─────────
 // Browsers always send Origin on cross-site POST/PUT/PATCH/DELETE. If present
@@ -145,11 +127,7 @@ app.get(`${config.apiPrefix}/health`, healthHandler);
 // â”€â”€â”€ API Routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const api = config.apiPrefix;
 
-if (config.nodeEnv !== "test") {
-  app.use(`${api}/auth`, authLimiter, authRoutes);
-} else {
-  app.use(`${api}/auth`, authRoutes);
-}
+app.use(`${api}/auth`, authLimiter, authRoutes);
 app.use(`${api}/events`, eventRoutes);
 app.use(`${api}/events`, savedEventRoutes);        // Save/unsave nested under events
 app.use(`${api}/categories`, categoryRoutes);

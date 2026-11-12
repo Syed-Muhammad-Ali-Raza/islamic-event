@@ -82,23 +82,64 @@ export function eventJsonLd(event: {
   posterUrl?: string | null;
   venue?: string | null;
   address?: string | null;
+  city?: string | null;
+  country?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  path?: string | null;
   organizer?: { name: string } | null;
 }): JsonLd {
+  // Structured address + geo coordinates make the record citable by answer
+  // engines ("what is on in Lahore on 20 November") instead of just a name.
+  const addressLd =
+    event.address || event.city || event.country
+      ? {
+          "@type": "PostalAddress",
+          ...(event.address ? { streetAddress: event.address } : {}),
+          ...(event.city ? { addressLocality: event.city } : {}),
+          addressCountry: event.country ?? "PK",
+        }
+      : undefined;
+
+  const hasPlace = Boolean(event.venue || event.address || event.city);
+  const hasGeo = event.latitude != null && event.longitude != null;
+
+  // The API sends `date` as a full ISO timestamp ("2026-11-24T00:00:00.000Z"),
+  // so it must be reduced to YYYY-MM-DD before a clock time is appended —
+  // otherwise the emitted startDate is `…000ZT09:00:00`, which is invalid and
+  // drops the event out of Google's event rich results. Times are Pakistan
+  // local, so the +05:00 offset keeps them unambiguous for crawlers.
+  const day = event.date.slice(0, 10);
+  const startDate = event.startTime ? `${day}T${event.startTime}:00+05:00` : day;
+  const endDate = event.endTime ? `${day}T${event.endTime}:00+05:00` : undefined;
+
   return {
     "@context": "https://schema.org",
     "@type": "Event",
     name: event.title,
+    url: event.path ? `${APP_URL}${event.path}` : undefined,
     description: event.description ?? undefined,
-    startDate: `${event.date}T${event.startTime ?? "00:00"}:00`,
-    endDate: event.endTime ? `${event.date}T${event.endTime}:00` : undefined,
+    startDate,
+    endDate,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     image: event.posterUrl ?? undefined,
-    location: event.venue
-      ? { "@type": "Place", name: event.venue, address: event.address ?? undefined }
-      : event.address
-        ? { "@type": "Place", name: event.address }
-        : undefined,
+    location: hasPlace
+      ? {
+          "@type": "Place",
+          name: event.venue ?? event.address ?? event.city ?? undefined,
+          ...(addressLd ? { address: addressLd } : {}),
+          ...(hasGeo
+            ? {
+                geo: {
+                  "@type": "GeoCoordinates",
+                  latitude: event.latitude,
+                  longitude: event.longitude,
+                },
+              }
+            : {}),
+        }
+      : undefined,
     organizer: event.organizer
       ? { "@type": "Organization", name: event.organizer.name }
       : undefined,

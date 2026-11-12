@@ -16,6 +16,12 @@ const notoNaskhArabic = Noto_Naskh_Arabic({
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
+// Search Console / Bing Webmaster verification tokens. Env-driven so a new
+// domain needs no code change: set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION (or
+// NEXT_PUBLIC_BING_SITE_VERIFICATION) in Vercel and redeploy.
+const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
+const bingVerification = process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION;
+
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
@@ -50,7 +56,26 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    // Large image previews + unlimited snippets: required for rich results and
+    // for answer engines to quote the page instead of a truncated fragment.
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
+  ...(googleVerification || bingVerification
+    ? {
+        verification: {
+          ...(googleVerification ? { google: googleVerification } : {}),
+          ...(bingVerification
+            ? { other: { "msvalidate.01": bingVerification } }
+            : {}),
+        },
+      }
+    : {}),
 };
 
 export const viewport: Viewport = {
@@ -64,6 +89,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`dark ${inter.variable} ${notoNaskhArabic.variable}`}>
       <head>
         <JsonLdScript data={[websiteJsonLd(), organizationJsonLd()]} />
+        {/* AEO/GEO: advertise the machine-readable summary to answer engines. */}
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
       </head>
       <body className="min-h-screen flex flex-col">
         <Providers>

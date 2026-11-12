@@ -1,6 +1,6 @@
 # Requirements — Community Events Platform
 
-Last updated: 2026-11-11 · Status: Phases 1–45 delivered (see `docs/PHASES.md` phase checklist).
+Last updated: 2026-11-12 · Status: Phases 1–46 delivered (see `docs/PHASES.md` phase checklist).
 
 ## 1. Overview
 
@@ -68,16 +68,17 @@ A Pakistan-focused community events platform where organizers publish events, us
 ### 3.7 Localization, SEO, performance (Phases 10)
 - **FR-L1** 4 locales: `en`, `ur`, `hi`, `ar` — exact key parity enforced by test; RTL-aware layout.
 - **FR-L2** SEO: metadata, sitemaps, OG/Twitter cards, JSON-LD for events; performance budgets.
+- **FR-L3** AEO/GEO (Phase 46): `/llms.txt` plain-text site map for answer engines, `robots.txt` allow-list naming classic crawlers and AI agents (GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended, …), image sitemap entries from event posters, `googleBot` preview/snippet directives, env-driven Search Console / Bing verification, and structured `Event` data with `PostalAddress` + `GeoCoordinates`.
 
 ## 4. Non-functional requirements
 
 | Area | Requirement |
 |---|---|
 | Security | helmet, CORS allow-list, tiered rate limiting (300/15 min global; 60/15 min auth ceiling; 10 failed logins; 12 sign-ups; 5 reset/resend emails; 30 verify; 120 session — all per IP), zod validation everywhere, JWT, account lockout, CSRF origin guard (state-changing verbs), `trust proxy` in prod, Next.js security headers (Referrer-Policy, Permissions-Policy), upload allow-list |
-| Testing | API: jest + supertest (28 suites / 256 tests); web: vitest (incl. i18n parity); E2E: Playwright 16-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
+| Testing | API: jest + supertest (28 suites / 256 tests); web: vitest 45 tests (incl. i18n parity and JSON-LD regression cases); E2E: Playwright 16-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
 | Data integrity | Idempotent seeds, `unique()`-suffixed fixtures in tests (shared test DB), zod 422 contract |
 | Perf | Server components + `fetchPaginated` with revalidate, TanStack Query staleTime 60 s client-side |
-| Known gaps | No CDN in front of the object-storage bucket (every poster view is direct egress; 5 GB free tier); E2E is smoke-level only (no visual regression) |
+| Known gaps | No CDN in front of the object-storage bucket (every poster view is direct egress; 5 GB free tier); E2E is smoke-level only (no visual regression); search indexing not yet started (no Search Console property, no inbound links) and the 4 UI locales are a localStorage switch, so crawlers only see English (no `hreflang`); seeded events ship without posters, so image-sitemap entries appear only after an organizer uploads one |
 
 ## 5. Out of scope / backlog candidates
 

@@ -47,14 +47,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const [eventRoutes, organizerRoutes, categoriesRes, citiesRes] = await Promise.all([
-    fetchAllPages<{ slug: string; updatedAt?: string; createdAt: string }>("/events", (event) => ({
+    // `images` turns this into an image sitemap for the posters, which lets
+    // Google index poster URLs alongside the event page.
+    fetchAllPages<{
+      slug: string;
+      updatedAt?: string;
+      createdAt: string;
+      posterUrl?: string | null;
+    }>("/events", (event) => ({
       url: `${APP_URL}/events/${event.slug}`,
       lastModified: new Date(event.updatedAt ?? event.createdAt),
       changeFrequency: "weekly",
       priority: 0.8,
+      images: event.posterUrl ? [event.posterUrl] : undefined,
     })),
-    fetchAllPages<{ slug: string }>("/organizers", (org) => ({
+    fetchAllPages<{ slug: string; updatedAt?: string }>("/organizers", (org) => ({
       url: `${APP_URL}/organizers/${org.slug}`,
+      lastModified: org.updatedAt ? new Date(org.updatedAt) : undefined,
       changeFrequency: "weekly",
       priority: 0.6,
     })),
@@ -62,7 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetch(`${API_URL}/cities`, { next: { revalidate: 86400 } }).catch(() => null),
   ]);
 
-  let categoriesJson: { data?: { slug: string }[] } | null = null;
+  let categoriesJson: { data?: { slug: string; updatedAt?: string }[] } | null = null;
   if (categoriesRes?.ok) {
     categoriesJson = await categoriesRes.json().catch(() => null);
   }
@@ -74,6 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const categoryRoutes: MetadataRoute.Sitemap = (categoriesJson?.data ?? []).map((cat) => ({
     url: `${APP_URL}/categories/${cat.slug}`,
+    lastModified: cat.updatedAt ? new Date(cat.updatedAt) : undefined,
     changeFrequency: "weekly",
     priority: 0.6,
   }));

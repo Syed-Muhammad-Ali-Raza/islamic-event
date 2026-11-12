@@ -44,7 +44,7 @@ npx prisma generate --schema apps/api/prisma/schema.prisma
 - Kill stale `node.exe` (next/tsx) **before** `prisma generate` (EPERM = query-engine DLL held by the API server).
 - PowerShell 5.1: no `??`; `-Path` treats `[slug]` as a wildcard → use the read/write/edit tools for bracketed dirs (`app/categories/[slug]/`).
 - `& curl.exe -s` returns a line **array** — `-join ""` before `.Contains()`/`-match`.
-- **Never** PowerShell `-replace` with backtick-escaped strings — use the edit tool.
+- **Never** PowerShell `-replace` with backtick-escaped strings — use the edit tool. Same trap when appending prose: backticks inside a double-quoted string are escapes (`` `r `` = CR, `` `a `` = BEL), which shredded a `docs/PHASES.md` entry — write the text to a file and concatenate it with a node script instead.
 - Mojibake box-drawing comments in `app.ts` can't be matched literally in edit oldStrings — use ASCII anchors.
 
 ## Testing
@@ -52,7 +52,7 @@ npx prisma generate --schema apps/api/prisma/schema.prisma
 - API: jest + supertest, root `npm run test` = `npm run test --workspaces`. Reset test DB once per file run; **tests in the same file share DB** — filter assertions by `unique()`-suffixed city/field or fixtures collide.
 - Helpers (`apps/api/tests/helpers.ts`): `api()`, `unique(prefix)`, `registerUser(prefix)`, `createAdmin`, `createCategory`, `createEventAs(creatorId, categoryId, overrides?)`.
 - Test API conventions: 422 zod, 401 unauth, 403 role/origin, 404 notFound, 409 conflict, 429 rate/lockout.
-- Web: vitest (`lib/i18n.test.ts` enforces exact i18n key parity across 4 locales).
+- Web: vitest (`lib/i18n.test.ts` enforces exact i18n key parity across 4 locales; `lib/seo.test.ts` covers JSON-LD `startDate`/geo/address output).
 - **E2E (Playwright)**: root `e2e/` + `playwright.config.ts`. Run `npm run test:e2e` (or `test:e2e:ui`). `workers: 1` is intentional — the suite registers ~8 accounts per run and the API allows 12 sign-ups / 15 min per IP (plus a 60/15 min ceiling on all `/auth` routes). `webServer` auto-starts API+web with full-path npm on Windows and reuses already-running servers (`reuseExistingServer: !CI`). CI: the `e2e` job in `.github/workflows/ci.yml` (`needs: ci`) pushes+seeds the DB, sets placeholder `CLOUDINARY_*` (harmless leftovers — image vars are optional since Phase 44) and runs the suite headless; report/traces upload as artifacts on failure. The browser download is cached (`~/.cache/ms-playwright`, keyed on `package-lock.json`) and `npx playwright install --with-deps chromium` retries 3× with a 15 s backoff — a single CDN hiccup used to red the whole pipeline and skip Deploy. Helpers in `e2e/fixtures.ts`: `registerViaApi`, `loginViaApi`, `loginAdminViaApi`, `seedAuth` (zustand `auth-storage` shape `{ state: { user, accessToken, refreshToken, isAuthenticated }, version: 0 }`), `createEventViaApi` (returns `body.data.event`), `approveEventViaApi` (admin PATCH). Seeded super admin comes from `SEED_SUPER_ADMIN_EMAIL`/`SEED_SUPER_ADMIN_PASSWORD` env (no hardcoded password — the seed throws if the password var is missing; CI sets a throwaway value; `playwright.config.ts` loads apps/api/.env + root .env so local e2e matches local seed; existing user's password is never overwritten; production requires 12+ chars). Event-create wizard: Continue→Submit buttons swap on the last step — wait for step content (`aria-current="step"`) not just button text. Created events are `PENDING_REVIEW` and detail 404s until approved.
 
 ## Conventions
@@ -80,6 +80,7 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 - Category-conditional sections render inside `app/categories/[slug]/page.tsx` (slug === "muharram" → Jaloos, "charity" → CharityDirectory, "urs" → UpcomingUrs). Server-fetch via `fetchPaginated`, pass to a `"use client"` component.
 - Directory pages pattern: copy JSON → API module → web types + service + hook + page + Navbar link + i18n nav key + ~6-8 jest tests.
 - i18n: 4 locales (en/ur/hi/ar) in `lib/i18n.ts`; nav block at 6-space indent `      nav: {`, keys 8-space. Insert via UTF-8-safe node **script file** at `%TEMP%\opencode\` (inline `node -e` with escaped quotes breaks). i18n parity is test-enforced.
+- SEO/AEO: `app/robots.ts` (named crawler + AI-agent allow-list, private paths closed), `app/sitemap.ts` (paginated API fan-out, image entries from `posterUrl`, real `lastModified`), `app/llms.txt/route.ts` (cached plain-text map for answer engines, linked from `<head>`), `lib/seo.ts` JSON-LD builders (`eventJsonLd` emits `PostalAddress`/`GeoCoordinates` and slices the API's ISO `date` to `YYYY-MM-DD` — never append a time before slicing), `app/organizers/(list)/layout.tsx` + `dashboard`/`approvals` layouts for per-route metadata. Search Console/Bing tokens come from `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` / `NEXT_PUBLIC_BING_SITE_VERIFICATION`, so a new domain needs env + redeploy, not code.
 
 ### Verify batch (run before calling a phase done)
 

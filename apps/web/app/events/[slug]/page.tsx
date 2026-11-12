@@ -48,6 +48,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       event.venue ? ` at ${event.venue}` : ""
     }. Discover religious and community events near you.`;
 
+  // Events without a poster fall back to the generated 1200x630 card instead of
+  // shipping no og:image at all (that showed up as a blank share preview).
+  const ogImage = event.posterUrl ?? "/opengraph-image";
+
   return {
     title: event.title,
     description,
@@ -59,12 +63,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       type: "article",
       url: `/events/${event.slug}`,
-      images: event.posterUrl ? [{ url: event.posterUrl }] : undefined,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: event.title }],
     },
     twitter: {
       card: "summary_large_image",
       title: event.title,
       description,
+      images: [ogImage],
     },
   };
 }
@@ -87,6 +92,10 @@ export default async function EventDetailPage({ params }: Props) {
     posterUrl: event.posterUrl,
     venue: event.venue,
     address: event.address,
+    city: event.city?.name ?? null,
+    latitude: event.latitude,
+    longitude: event.longitude,
+    path: `/events/${event.slug}`,
     organizer: event.organizer,
   });
 

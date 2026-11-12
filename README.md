@@ -2,6 +2,8 @@
 
 A modern web platform for Pakistani, Indian, and South Asian communities to discover, publish, manage, and share religious and community events.
 
+**Live:** [islamic-event-web.vercel.app](https://islamic-event-web.vercel.app) · **API:** [islamic-event-api.vercel.app/api/v1/events](https://islamic-event-api.vercel.app/api/v1/events) · **Crawler map:** [/llms.txt](https://islamic-event-web.vercel.app/llms.txt)
+
 **Event types:** Majlis · Milad · Mehfil-e-Naat · Dars · Quran Khwani · Jashan · Urs · Seerat-un-Nabi · Muharram · Ramadan · Iftar · Charity · Community · Educational · Other
 
 ---
@@ -252,7 +254,7 @@ Please be respectful. This platform serves religious communities, so keep discus
 
 ## Development Phases
 
-The full delivered-phase checklist (1–43) lives in [`docs/PHASES.md`](docs/PHASES.md).
+The full delivered-phase checklist (1-46) lives in [`docs/PHASES.md`](docs/PHASES.md).
 
 ---
 

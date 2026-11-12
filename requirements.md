@@ -1,6 +1,6 @@
 # Requirements — Community Events Platform
 
-Last updated: 2026-11-12 · Status: Phases 1–46 delivered (see `docs/PHASES.md` phase checklist).
+Last updated: 2026-11-12 · Status: Phases 1–47 delivered (see `docs/PHASES.md` phase checklist).
 
 ## 1. Overview
 
@@ -69,6 +69,7 @@ A Pakistan-focused community events platform where organizers publish events, us
 - **FR-L1** 4 locales: `en`, `ur`, `hi`, `ar` — exact key parity enforced by test; RTL-aware layout.
 - **FR-L2** SEO: metadata, sitemaps, OG/Twitter cards, JSON-LD for events; performance budgets.
 - **FR-L3** AEO/GEO (Phase 46): `/llms.txt` plain-text site map for answer engines, `robots.txt` allow-list naming classic crawlers and AI agents (GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended, …), image sitemap entries from event posters, `googleBot` preview/snippet directives, env-driven Search Console / Bing verification, and structured `Event` data with `PostalAddress` + `GeoCoordinates`.
+- **FR-L4** Traffic analytics (Phase 47): `@vercel/analytics` page views + `@vercel/speed-insights` Core Web Vitals, both cookieless and served from the app's own domain (no third-party script, no consent banner); documented in the privacy policy.
 
 ## 4. Non-functional requirements
 

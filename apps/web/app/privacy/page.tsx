@@ -18,7 +18,7 @@ export default function PrivacyPage() {
         ])}
       />
       <h1 className="text-3xl font-bold text-slate-900 mb-2">Privacy Policy</h1>
-      <p className="text-slate-500 text-sm mb-8">Last updated: October 2026</p>
+      <p className="text-slate-500 text-sm mb-8">Last updated: November 2026</p>
 
       <div className="space-y-6 text-slate-600 text-sm leading-relaxed">
         <section>
@@ -65,7 +65,18 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className="text-slate-900 text-lg font-semibold mb-2">6. Contact</h2>
+          <h2 className="text-slate-900 text-lg font-semibold mb-2">6. Analytics</h2>
+          <p>
+            We use Vercel Analytics to count page views and Vercel Speed Insights to measure page
+            performance. Both are served from our own domain, do not set advertising cookies and do
+            not build a cross-site profile: they record aggregated page paths, referrers, country,
+            device type and Core Web Vitals. We use this only to see which events and directories
+            are useful and to keep pages fast.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-slate-900 text-lg font-semibold mb-2">7. Contact</h2>
           <p>For privacy questions, please reach out through the contact details on this site.</p>
         </section>
       </div>

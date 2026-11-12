@@ -6,6 +6,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLdScript } from "@/components/seo/JsonLd";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const notoNaskhArabic = Noto_Naskh_Arabic({
@@ -98,6 +100,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex-1">{children}</main>
           <Footer />
         </Providers>
+        {/* Cookieless page-view + Core Web Vitals reporting (Vercel's own edge
+            endpoints; no third-party script and no cookie banner needed). */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

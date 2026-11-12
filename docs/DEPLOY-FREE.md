@@ -582,3 +582,27 @@ Expect first pages in the index within 3-14 days. Verify with
 When the custom domain arrives: add it in Vercel, update `NEXT_PUBLIC_APP_URL`
 (canonical/OG/sitemap URLs are built from it), redeploy, then add a **Domain**
 property in Search Console and re-submit the sitemap.
+
+---
+
+## 16. Analytics (page views + Core Web Vitals)
+
+The web app already mounts `@vercel/analytics` and `@vercel/speed-insights`, so
+both are cookieless, served from the site's own domain, and free on Hobby
+(50k events/month for Web Analytics).
+
+| Feature | Status | What to do |
+| --- | --- | --- |
+| Speed Insights (LCP/CLS/INP) | active — `/_vercel/speed-insights/script.js` returns 200 | nothing; data appears ~1 h after real visits |
+| Web Analytics (page views, referrers, country, device) | **needs one click** | Vercel → project `islamic-event-web` → **Analytics** → **Enable**, then `npx vercel deploy --prod --archive=tgz` |
+
+Until Web Analytics is enabled, its injected script (`/<hash>/script.js`) returns
+404 and no page views are recorded — verify with:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://islamic-event-web.vercel.app/_vercel/speed-insights/script.js  # expect 200
+```
+
+There is no public Vercel API to flip that toggle (`PATCH /v9/projects` rejects
+`webAnalytics`, and `/v1/projects/<id>/analytics` is 404), so it has to be the
+dashboard button.

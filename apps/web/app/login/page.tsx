@@ -7,6 +7,9 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useLogin } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/FormField";
+import { FormError } from "@/components/ui/FormError";
+import { useRateLimitCooldown } from "@/hooks/useRateLimitCooldown";
+import { formatRetryAfter } from "@/lib/api-error";
 import { Eye, EyeOff } from "lucide-react";
 import { useState, Suspense } from "react";
 
@@ -20,6 +23,7 @@ type LoginForm = z.infer<typeof LoginSchema>;
 function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const login = useLogin();
+  const cooldown = useRateLimitCooldown(login.error);
   const searchParams = useSearchParams();
   const nextUrl = searchParams.get("next");
 
@@ -53,9 +57,7 @@ function LoginForm() {
 
           {/* Error */}
           {login.error && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 mb-5 text-red-500 text-sm">
-              {(login.error as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Login failed. Please try again."}
-            </div>
+            <FormError error={login.error} fallback="Login failed. Please try again." id="login-error" />
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
@@ -102,10 +104,14 @@ function LoginForm() {
             <button
               id="login-submit"
               type="submit"
-              disabled={isSubmitting || login.isPending}
+              disabled={isSubmitting || login.isPending || cooldown > 0}
               className="btn-primary w-full py-3"
             >
-              {login.isPending ? "Signing in…" : "Sign In"}
+              {cooldown > 0
+                ? `Try again in ${formatRetryAfter(cooldown)}`
+                : login.isPending
+                  ? "Signing in…"
+                  : "Sign In"}
             </button>
           </form>
 

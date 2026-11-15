@@ -7,6 +7,9 @@ import { useMutation } from "@tanstack/react-query";
 import { BadgeCheck, Loader2, AlertTriangle, Mail } from "lucide-react";
 import { authService } from "@/services/auth.service";
 import { Input } from "@/components/ui/FormField";
+import { FormError } from "@/components/ui/FormError";
+import { useRateLimitCooldown } from "@/hooks/useRateLimitCooldown";
+import { formatRetryAfter } from "@/lib/api-error";
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
@@ -34,6 +37,7 @@ function VerifyEmailContent() {
   const resend = useMutation({
     mutationFn: (email: string) => authService.resendVerification({ email }),
   });
+  const resendCooldown = useRateLimitCooldown(resend.error);
 
   if (result === "verifying") {
     return (
@@ -70,6 +74,7 @@ function VerifyEmailContent() {
       {resend.isSuccess ? (
         <p className="text-green-600 text-sm">{resend.data.data.message}</p>
       ) : (
+        <>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -86,11 +91,24 @@ function VerifyEmailContent() {
             className="flex-1"
             aria-label="Email address"
           />
-          <button type="submit" disabled={resend.isPending} className="btn-secondary px-4 text-sm shrink-0">
+          <button
+            type="submit"
+            disabled={resend.isPending || resendCooldown > 0}
+            className="btn-secondary px-4 text-sm shrink-0"
+          >
             {resend.isPending ? <Loader2 size={14} className="animate-spin" /> : <Mail size={14} />}
-            Resend
+            {resendCooldown > 0 ? formatRetryAfter(resendCooldown) : "Resend"}
           </button>
         </form>
+        {resend.error && (
+          <FormError
+            error={resend.error}
+            fallback="Could not send a new link. Please try again."
+            id="resend-error"
+            className="mt-3"
+          />
+        )}
+        </>
       )}
     </div>
   );
@@ -106,6 +124,14 @@ function VerifyEmailContent() {
           ? "Open the link from your email to verify your address."
           : "We couldn't verify this email address."}
       </p>
+      {verify.error && (
+        <FormError
+          error={verify.error}
+          fallback="We couldn't verify this email address."
+          id="verify-error"
+          className="mb-4"
+        />
+      )}
       {resendSection}
     </div>
   );

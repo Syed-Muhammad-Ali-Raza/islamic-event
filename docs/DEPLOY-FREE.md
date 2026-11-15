@@ -462,8 +462,8 @@ if you want uptime alerts.
 ### 11a. GitHub Actions (recommended — deploys only when CI is green)
 
 `.github/workflows/deploy.yml` deploys **both** projects to Vercel after the
-full CI suite passes (`tests` reuses `ci.yml`, so lint, typecheck, 261 API
-tests, 52 vitest tests, build and the Playwright suite must all be green).
+full CI suite passes (`tests` reuses `ci.yml`, so lint, typecheck, 262 API
+tests, 60 vitest tests, build and the Playwright suite must all be green).
 
 It needs four repository secrets — **Settings → Secrets and variables →
 Actions → New repository secret**:

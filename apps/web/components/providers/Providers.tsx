@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect, useState, type ReactNode } from "react";
 import i18n, { getStoredLanguage, applyDocumentLang } from "@/lib/i18n";
+import { isRateLimited } from "@/lib/api-error";
 
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -12,7 +13,9 @@ export function Providers({ children }: { children: ReactNode }) {
         defaultOptions: {
           queries: {
             staleTime: 60_000,
-            retry: 1,
+            // Never retry a throttled request: it burns the remaining budget and
+            // the user is already being told how long to wait.
+            retry: (failureCount, error) => !isRateLimited(error) && failureCount < 1,
             refetchOnWindowFocus: false,
           },
           mutations: {

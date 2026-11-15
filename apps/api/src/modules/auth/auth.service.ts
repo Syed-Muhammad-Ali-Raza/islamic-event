@@ -145,9 +145,14 @@ export async function login(input: LoginInput): Promise<{
 
   // Account lockout check
   if (user?.lockedUntil && user.lockedUntil > new Date()) {
+    const retryAfter = Math.max(
+      1,
+      Math.ceil((user.lockedUntil.getTime() - Date.now()) / 1000)
+    );
     throw Errors.tooManyAttempts(
       "Account temporarily locked due to too many failed login attempts. Please try again later.",
-      "ACCOUNT_LOCKED"
+      "ACCOUNT_LOCKED",
+      retryAfter
     );
   }
 

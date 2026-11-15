@@ -1,5 +1,5 @@
-import { RequestHandler } from "express";
-import rateLimit from "express-rate-limit";
+import { Request, RequestHandler } from "express";
+import rateLimit, { RateLimitInfo } from "express-rate-limit";
 import { config } from "../config";
 
 // ─── Rate limiting ────────────────────────────────────────────────────────────
@@ -46,7 +46,27 @@ export function createLimiter({
     skipSuccessfulRequests,
     standardHeaders: true,
     legacyHeaders: false,
-    message: { success: false, message, code: "RATE_LIMITED" },
+    // A bare "Too many requests" tells the user nothing actionable. Send the
+    // remaining window both as a `Retry-After` header and as `retryAfter`
+    // seconds in the body, so the web client can count down and re-enable the
+    // form exactly when the budget comes back.
+    handler: (req, res, _next, options) => {
+      // express-rate-limit attaches the window info under `requestPropertyName`
+      // ("rateLimit") without augmenting Express's Request type in v7.
+      const info = (req as Request & { rateLimit?: RateLimitInfo }).rateLimit;
+      const resetTime = info?.resetTime;
+      const retryAfter = resetTime
+        ? Math.max(1, Math.ceil((resetTime.getTime() - Date.now()) / 1000))
+        : Math.ceil(windowMs / 1000);
+
+      res.setHeader("Retry-After", String(retryAfter));
+      res.status(options.statusCode).json({
+        success: false,
+        message,
+        code: "RATE_LIMITED",
+        retryAfter,
+      });
+    },
   });
 }
 

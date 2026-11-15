@@ -6,6 +6,9 @@ import { z } from "zod";
 import Link from "next/link";
 import { useRegister } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/FormField";
+import { FormError } from "@/components/ui/FormError";
+import { useRateLimitCooldown } from "@/hooks/useRateLimitCooldown";
+import { formatRetryAfter } from "@/lib/api-error";
 import { Eye, EyeOff, CheckCircle } from "lucide-react";
 import { useState } from "react";
 
@@ -33,6 +36,7 @@ const PASSWORD_STRENGTH = [
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const register_ = useRegister();
+  const cooldown = useRateLimitCooldown(register_.error);
 
   const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<RegisterForm>({
     resolver: zodResolver(RegisterSchema),
@@ -67,9 +71,11 @@ export default function RegisterPage() {
           </div>
 
           {register_.error && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 mb-5 text-red-500 text-sm">
-              {(register_.error as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Registration failed. Please try again."}
-            </div>
+            <FormError
+              error={register_.error}
+              fallback="Registration failed. Please try again."
+              id="register-error"
+            />
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
@@ -152,10 +158,14 @@ export default function RegisterPage() {
             <button
               id="register-submit"
               type="submit"
-              disabled={isSubmitting || register_.isPending}
+              disabled={isSubmitting || register_.isPending || cooldown > 0}
               className="btn-primary w-full py-3"
             >
-              {register_.isPending ? "Creating account…" : "Create Account"}
+              {cooldown > 0
+                ? `Try again in ${formatRetryAfter(cooldown)}`
+                : register_.isPending
+                  ? "Creating account…"
+                  : "Create Account"}
             </button>
           </form>
 

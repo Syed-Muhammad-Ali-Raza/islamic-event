@@ -25,6 +25,11 @@ describe("Security: account lockout", () => {
     const locked = await api().post("/api/v1/auth/login").send({ email, password });
     expect(locked.status).toBe(429);
     expect(locked.body.code).toBe("ACCOUNT_LOCKED");
+    // The wait window is machine-readable so the UI can count down.
+    expect(typeof locked.body.retryAfter).toBe("number");
+    expect(locked.body.retryAfter).toBeGreaterThan(0);
+    expect(locked.body.retryAfter).toBeLessThanOrEqual(15 * 60);
+    expect(locked.headers["retry-after"]).toBe(String(locked.body.retryAfter));
 
     // Simulate lock expiry
     await prisma.user.update({

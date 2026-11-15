@@ -38,6 +38,19 @@ describe("Rate limiting: createLimiter", () => {
     });
   });
 
+  it("tells the client how long to wait, in the body and as Retry-After", async () => {
+    const app = buildApp({ max: 1, message });
+
+    expect((await request(app).get("/read")).status).toBe(200);
+    const blocked = await request(app).get("/read");
+
+    expect(blocked.status).toBe(429);
+    expect(typeof blocked.body.retryAfter).toBe("number");
+    expect(blocked.body.retryAfter).toBeGreaterThan(0);
+    expect(blocked.body.retryAfter).toBeLessThanOrEqual(15 * 60);
+    expect(blocked.headers["retry-after"]).toBe(String(blocked.body.retryAfter));
+  });
+
   it("exposes standard rate-limit headers and decrements the remaining count", async () => {
     const app = buildApp({ max: 5, message });
 

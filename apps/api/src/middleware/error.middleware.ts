@@ -33,10 +33,16 @@ export function errorHandler(
 
   // Our own operational errors
   if (err instanceof AppError) {
+    // 429s carry the wait window so the UI can count down instead of telling
+    // the user to "try again later".
+    if (typeof err.meta?.retryAfter === "number") {
+      res.setHeader("Retry-After", String(err.meta.retryAfter));
+    }
     res.status(err.statusCode).json({
       success: false,
       message: err.message,
       code: err.code,
+      ...err.meta,
     });
     return;
   }

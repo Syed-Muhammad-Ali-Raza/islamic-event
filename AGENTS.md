@@ -102,7 +102,7 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 
 1. `npx tsc --noEmit -p apps/api`, `-p apps/api/prisma` and `-p apps/web` (from repo root)
 2. `npm run lint --workspace apps/web`
-3. `npm run test --workspace apps/api` (expect 28 suites / 261 tests) + web vitest (52 tests)
+3. `npm run test --workspace apps/api` (expect 28 suites / 262 tests) + web vitest (60 tests)
 4. Kill servers → `npm run build` (check `$LASTEXITCODE`) → restart via full path
 5. Live smoke: `curl` API endpoint + rendered HTML contains expected markers (`-join ""` first)
 
@@ -113,3 +113,5 @@ Curated JSON in `apps/api/prisma/data/`: dastarkhwan-points, imambargahs, pakist
 ## Security baseline (already in place — don't regress)
 
 helmet, CORS allow-list, tiered rate limiting (300/15 min global, 60/15 min on `/auth`, 10 failed logins, 12 sign-ups, 5 reset emails — see `middleware/rateLimit.middleware.ts`), bcrypt, JWT, zod validation, upload allow-list (jpeg/png/webp, 10 MB), account lockout (5 fails/15 min → 429 `ACCOUNT_LOCKED`), CSRF origin guard on state-changing requests, `trust proxy` in production, Next.js security headers (Referrer-Policy, Permissions-Policy). Image storage is S3-compatible (Neon Object Storage, `public_read` bucket) with Cloudinary only as a fallback; `CLOUDINARY_*` is **not** boot-required. Uploads fail closed: `503 IMAGE_STORAGE_UNAVAILABLE` when no backend is configured.
+
+Every 429 answers `{ success: false, message, code, retryAfter }` plus a `Retry-After` header (lockout uses `code: "ACCOUNT_LOCKED"`), and the web side reads it with `lib/api-error.ts` → `FormError`/`useRateLimitCooldown` so auth forms count down and disable. Keep `retryAfter` in the **body**: cross-origin `fetch` cannot read `Retry-After` without `Access-Control-Expose-Headers`. React Query's `retry` predicate in `Providers.tsx` must keep skipping 429s.

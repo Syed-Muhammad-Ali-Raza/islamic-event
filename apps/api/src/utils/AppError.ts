@@ -4,12 +4,18 @@ export class AppError extends Error {
   public readonly statusCode: number;
   public readonly code: string;
   public readonly isOperational: boolean;
+  /**
+   * Extra fields merged into the JSON body — used for `retryAfter` on 429s so
+   * the client can count down instead of guessing. Never put internals here.
+   */
+  public readonly meta?: Record<string, unknown>;
 
-  constructor(message: string, statusCode: number, code: string) {
+  constructor(message: string, statusCode: number, code: string, meta?: Record<string, unknown>) {
     super(message);
     this.statusCode = statusCode;
     this.code = code;
     this.isOperational = true;
+    this.meta = meta;
 
     // Maintain prototype chain in TypeScript
     Object.setPrototypeOf(this, AppError.prototype);
@@ -35,8 +41,8 @@ export const Errors = {
   badRequest: (msg: string, code = "BAD_REQUEST") =>
     new AppError(msg, 400, code),
 
-  tooManyAttempts: (msg: string, code = "TOO_MANY_ATTEMPTS") =>
-    new AppError(msg, 429, code),
+  tooManyAttempts: (msg: string, code = "TOO_MANY_ATTEMPTS", retryAfter?: number) =>
+    new AppError(msg, 429, code, retryAfter ? { retryAfter } : undefined),
 
   payloadTooLarge: (msg: string, code = "PAYLOAD_TOO_LARGE") =>
     new AppError(msg, 413, code),

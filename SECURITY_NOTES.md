@@ -61,7 +61,7 @@ Configured in `apps/api/src/middleware/rateLimit.middleware.ts` and attached in 
 | `verifyEmailLimiter` | 30 | `POST /auth/verify-email` |
 | `sessionLimiter` | 120 | `POST /auth/refresh`, `POST /auth/logout`, `GET/PATCH /auth/me` |
 
-Exceeding a limit returns `429` with `{ success: false, message, code: "RATE_LIMITED" }` and `RateLimit-*` headers. Login additionally has the DB-backed account lockout (5 failures / 15 min → `429 ACCOUNT_LOCKED`), which works across instances.
+Exceeding a limit returns `429` with `{ success: false, message, code: "RATE_LIMITED", retryAfter }` and `RateLimit-*` headers. `retryAfter` (seconds, derived from the store's `resetTime`) is repeated in a standard `Retry-After` header so non-browser clients can back off too; the web client reads the body copy because cross-origin `fetch` hides `Retry-After` without `Access-Control-Expose-Headers`. Login additionally has the DB-backed account lockout (5 failures / 15 min → `429 ACCOUNT_LOCKED` with its own `retryAfter`), which works across instances.
 
 **Caveat:** `express-rate-limit`'s default store is in-memory, so on serverless each instance keeps its own counters and a cold start resets them. Treat the IP limits as best-effort abuse friction; the account lockout is the strong control. Tests bypass all limiters (`NODE_ENV=test`); `tests/rate-limit.test.ts` exercises the limiter factory directly so the 429 path stays covered.
 

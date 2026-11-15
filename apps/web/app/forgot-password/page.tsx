@@ -9,6 +9,9 @@ import { useMutation } from "@tanstack/react-query";
 import { Mail, ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
 import { authService } from "@/services/auth.service";
 import { Input } from "@/components/ui/FormField";
+import { FormError } from "@/components/ui/FormError";
+import { useRateLimitCooldown } from "@/hooks/useRateLimitCooldown";
+import { formatRetryAfter } from "@/lib/api-error";
 
 const ForgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -23,6 +26,7 @@ export default function ForgotPasswordPage() {
     mutationFn: (data: ForgotPasswordForm) => authService.forgotPassword(data),
     onSuccess: () => setSent(true),
   });
+  const cooldown = useRateLimitCooldown(mutation.error);
 
   const {
     register,
@@ -73,16 +77,17 @@ export default function ForgotPasswordPage() {
               />
 
               {mutation.isError && (
-                <p className="form-error">
-                  {(
-                    mutation.error as { response?: { data?: { message?: string } } }
-                  )?.response?.data?.message ?? "Something went wrong. Please try again."}
-                </p>
+                <FormError
+                  error={mutation.error}
+                  fallback="Something went wrong. Please try again."
+                  id="forgot-password-error"
+                  className=""
+                />
               )}
 
               <button
                 type="submit"
-                disabled={mutation.isPending}
+                disabled={mutation.isPending || cooldown > 0}
                 className="btn-primary w-full py-3 justify-center gap-2"
                 id="forgot-password-submit"
               >
@@ -91,7 +96,7 @@ export default function ForgotPasswordPage() {
                 ) : (
                   <Mail size={16} />
                 )}
-                Send Reset Link
+                {cooldown > 0 ? `Try again in ${formatRetryAfter(cooldown)}` : "Send Reset Link"}
               </button>
             </form>
           </>

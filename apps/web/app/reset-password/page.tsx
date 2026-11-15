@@ -10,6 +10,9 @@ import { useMutation } from "@tanstack/react-query";
 import { KeyRound, Loader2, CheckCircle2, AlertTriangle } from "lucide-react";
 import { authService } from "@/services/auth.service";
 import { Input } from "@/components/ui/FormField";
+import { FormError } from "@/components/ui/FormError";
+import { useRateLimitCooldown } from "@/hooks/useRateLimitCooldown";
+import { formatRetryAfter } from "@/lib/api-error";
 
 const ResetPasswordSchema = z
   .object({
@@ -44,9 +47,7 @@ function ResetPasswordContent() {
     formState: { errors },
   } = useForm<ResetPasswordForm>({ resolver: zodResolver(ResetPasswordSchema) });
 
-  const errorMessage =
-    (mutation.error as { response?: { data?: { message?: string } } })?.response?.data
-      ?.message ?? "Something went wrong. Please try again.";
+  const cooldown = useRateLimitCooldown(mutation.error);
 
   if (!token) {
     return (
@@ -101,16 +102,23 @@ function ResetPasswordContent() {
           {...register("confirmPassword")}
         />
 
-        {mutation.isError && <p className="form-error">{errorMessage}</p>}
+        {mutation.isError && (
+          <FormError
+            error={mutation.error}
+            fallback="Something went wrong. Please try again."
+            id="reset-password-error"
+            className=""
+          />
+        )}
 
         <button
           type="submit"
-          disabled={mutation.isPending}
+          disabled={mutation.isPending || cooldown > 0}
           className="btn-primary w-full py-3 justify-center gap-2"
           id="reset-password-submit"
         >
           {mutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <KeyRound size={16} />}
-          Update Password
+          {cooldown > 0 ? `Try again in ${formatRetryAfter(cooldown)}` : "Update Password"}
         </button>
       </form>
     </>

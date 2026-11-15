@@ -67,6 +67,10 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 - Public list routes use `validateQuery` + `sendPaginated`; `q` search is case-insensitive (`mode: "insensitive"`).
 - Mount in `src/app.ts`; rate-limit public GETs with the existing public limiter.
 
+### Schema changes
+
+- A `schema.prisma` edit needs a matching SQL file under `apps/api/prisma/migrations/<timestamp>_<name>/migration.sql`. CI replays the migrations on an empty database and then seeds it, so a change applied only with `db push` fails the build. Produce the SQL with `npx prisma migrate diff --from-url <db> --to-schema-datamodel apps/api/prisma/schema.prisma --script` (never `migrate dev` against Neon).
+
 ### Events & dates
 
 - `Event.date` is the first day; `Event.endDate` (nullable `@db.Date`) is the optional last day. Single-day events leave it null, and `endDate < date` is a 422 at every entry point.

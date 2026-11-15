@@ -1,0 +1,20 @@
+# Upload filter for `vercel deploy --archive=tgz` (the only deploy mode that
+# fits the Hobby upload quota, and what .github/workflows/deploy.yml uses).
+#
+# Both Vercel projects install and build on the platform, so dependencies and
+# local build output never need to travel with the source archive. Env files are
+# excluded too — Vercel injects them from the project settings.
+node_modules/
+.next/
+dist/
+build/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+logs/
+.git/
+*.log
+.env
+.env.*
+!.env.example

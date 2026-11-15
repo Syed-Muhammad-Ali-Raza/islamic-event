@@ -77,6 +77,12 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 - Date filters are overlap-based (`date <= to` AND `(endDate ?? date) >= from`), so a running multi-day event appears on every day it spans.
 - `eventJsonLd`, `EventCard`, the detail sidebar and the month calendar (`lib/calendar.ts`) all read the range, not just `date`.
 
+### Deploys
+
+- `.github/workflows/deploy.yml` deploys **both** Vercel projects (web + API) after `tests` (which reuses `ci.yml`) passes. Each job writes `.vercel/project.json` from the `VERCEL_WEB_PROJECT_ID` / `VERCEL_API_PROJECT_ID` secrets, runs `vercel deploy --prod --archive=tgz` from the **repo root** (never from `apps/api` — Vercel then looks for `apps/api/apps/api`), and smoke-tests `/` and `/api/v1/health`. Secrets are listed in the file header; without them the jobs skip with a notice.
+- `.vercelignore` keeps `node_modules/`, `.next/` and env files out of the `--archive=tgz` upload (Hobby upload quota).
+- Production Neon was baselined with `prisma migrate resolve --applied` for all five migrations, so `prisma migrate deploy` works there. A new `schema.prisma` change therefore needs a committed migration or the deploy's schema step (and CI) fails.
+
 ### Image uploads
 
 - One endpoint: `POST /api/v1/upload/poster` (auth + optional `eventId`), returning `{ url, publicId, width, height, format, bytes, provider }`.

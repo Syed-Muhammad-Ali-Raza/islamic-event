@@ -459,27 +459,74 @@ if you want uptime alerts.
 
 ## 11. Updating the deployment
 
-Auto-deploy on push requires connecting the GitHub repo to each Vercel project
-(**Settings → Git**). When it is not connected, deploy from the CLI:
+### 11a. GitHub Actions (recommended — deploys only when CI is green)
+
+`.github/workflows/deploy.yml` deploys **both** projects to Vercel after the
+full CI suite passes (`tests` reuses `ci.yml`, so lint, typecheck, 261 API
+tests, 52 vitest tests, build and the Playwright suite must all be green).
+
+It needs four repository secrets — **Settings → Secrets and variables →
+Actions → New repository secret**:
+
+| Secret | Value | Where to get it |
+| --- | --- | --- |
+| `VERCEL_TOKEN` | team-scoped token | <https://vercel.com/account/tokens> → *Create* → scope: your team → copy once |
+| `VERCEL_ORG_ID` | `team_BKDUdN2NAVI33dLrGVfWg911` | `.vercel/project.json` of either project, or `vercel teams ls` |
+| `VERCEL_WEB_PROJECT_ID` | `prj_iBqCOUZ7lzBE3VzJYBzw6s0wVDP0` | `apps/web/.vercel/project.json` |
+| `VERCEL_API_PROJECT_ID` | `prj_NXm9Iwbu76NU0D3TqoRWCRpKaXjo` | `apps/api/.vercel/project.json` |
+
+Optional: `DATABASE_URL` (+ `DATABASE_URL_UNPOOLED`) enables the
+`Apply database migrations` step (`npx prisma migrate deploy`) before the API
+deploy. Skip it and the schema step is simply skipped — Vercel's runtime env
+already carries the database URL, so the app still boots.
+
+What each job does:
+
+1. writes `.vercel/project.json` (the directory is gitignored, so the CI link
+   comes from the secrets — and it can never point the API deploy at the web
+   project by accident),
+2. runs `vercel deploy --prod --archive=tgz` from the repo root (Vercel builds
+   remotely; `--archive=tgz` keeps the upload inside the Hobby quota, and
+   `.vercelignore` keeps `node_modules/`, `.next/` and env files out of it),
+3. smoke-tests the result — `/api/v1/health` must return 200 for the API, `/`
+   must return 200 for the web — and fails the run if it does not.
+
+Trigger a deploy without a commit: **Actions → Deploy → Run workflow**.
+
+> First run needs the secrets. Until they exist both jobs skip themselves with
+> an explicit "not configured — skipping" notice, so the workflow stays green
+> on forks and fresh clones.
+
+### 11b. From the CLI (what CI does, by hand)
 
 ```powershell
 git push origin main
 
-# API (root .vercel/project.json → islamic-event-api)
+# API — root .vercel/project.json must point at islamic-event-api
 npx vercel deploy --prod --yes --archive=tgz
 
-# Web (root .vercel/project.json → islamic-event-web)
+# Web — root .vercel/project.json must point at islamic-event-web
 npx vercel deploy --prod --yes --archive=tgz
 ```
 
-Both projects share the repo root, so keep the two `.vercel/project.json` files
-handy and copy the right one to `.vercel/` before each deploy (the CLI writes
-`apps/<app>/.vercel/project.json` when you `vercel link` from that directory).
+`apps/api/.vercel/project.json` and `apps/web/.vercel/project.json` hold the two
+links; copy the right one over the repo-root `.vercel/project.json` before each
+deploy. Deploying from inside `apps/api` fails with *"The specified Root
+Directory `apps/api` does not exist"* — always run from the repo root.
 
-Schema changes: edit `apps/api/prisma/schema.prisma`, then run
-`npx prisma db push` against Neon (or commit migrations and run
-`npx prisma migrate deploy`). Never run `migrate dev` against Neon — it is
-interactive and can reset data.
+### 11c. Schema changes
+
+Edit `apps/api/prisma/schema.prisma`, **commit a migration** under
+`apps/api/prisma/migrations/` (CI replays them on an empty database and fails
+if the schema and the migrations disagree), then apply it to Neon:
+
+```powershell
+npx prisma migrate deploy --schema apps/api/prisma/schema.prisma
+```
+
+Never run `migrate dev` against Neon — it is interactive and can reset data.
+`npx prisma db push` still works for a quick throwaway branch, but a
+`db push`-only change fails CI.
 
 ---
 

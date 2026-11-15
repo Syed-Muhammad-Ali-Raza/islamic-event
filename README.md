@@ -190,7 +190,7 @@ Recommended production setup:
 ```bash
 # Schema — recommended for real deployments (migrations are committed):
 npx prisma migrate deploy --schema apps/api/prisma/schema.prisma
-# ...or keep the dev/CI fast path (see .github/workflows/deploy.yml):
+# ...or keep the dev/CI fast path for a throwaway database (see .github/workflows/ci.yml):
 npx prisma db push --skip-generate
 
 # Seed (once per environment, from a machine with dev deps installed):
@@ -221,6 +221,7 @@ Migrations are committed under `apps/api/prisma/migrations/` and ordered lexicog
 2. `20261015081210_add_super_admin_role` — `ALTER TYPE "UserRole" ADD VALUE IF NOT EXISTS 'SUPER_ADMIN'` (kept separate: Postgres cannot *use* a new enum value in the transaction that adds it)
 3. `20261015081219_org_approval_system` — new enums `OrgRole`/`ApprovalStatus`, `organization_members` table, approval columns on the 9 directory tables
 4. `20261015081220_promote_admins_to_super_admin` — data-only `UPDATE users SET role='SUPER_ADMIN' WHERE role='ADMIN'` (the legacy `ADMIN` value stays in the enum and is still treated as super admin by the code)
+5. `20261115120000_add_event_end_date` — nullable `events.endDate DATE` for multi-day events (single-day rows keep `NULL`)
 
 To upgrade an existing database:
 

@@ -1,6 +1,6 @@
 # Requirements — Community Events Platform
 
-Last updated: 2026-11-12 · Status: Phases 1–47 delivered (see `docs/PHASES.md` phase checklist).
+Last updated: 2026-11-15 · Status: Phases 1–48 delivered (see `docs/PHASES.md` phase checklist).
 
 ## 1. Overview
 
@@ -26,8 +26,8 @@ A Pakistan-focused community events platform where organizers publish events, us
 - **FR-A4** Account lockout: 5 failed logins in 15 min → `429 ACCOUNT_LOCKED` (counters reset on success; ghost emails never lock).
 
 ### 3.2 Events (Phases 4, 6, 9, 14, 16, 18, 19)
-- **FR-E1** CRUD events with slug, category, organizer, status (`DRAFT → PENDING_REVIEW → APPROVED`), date range, venue + coordinates, images (Neon Object Storage via the S3 API, Cloudinary fallback; allow-list jpeg/png/webp, 10 MB; re-encoded to WebP ≤1600 px).
-- **FR-E2** Search + filter (category, city, date range, keyword), pagination; case-insensitive `q`.
+- **FR-E1** CRUD events with slug, category, organizer, status (`DRAFT → PENDING_REVIEW → APPROVED`), date **or multi-day range** (`date` + optional `endDate`; `endDate < date` is rejected with 422, including on partial updates), venue + coordinates, images (Neon Object Storage via the S3 API, Cloudinary fallback; allow-list jpeg/png/webp, 10 MB; re-encoded to WebP ≤1600 px).
+- **FR-E2** Search + filter (category, city, date range, keyword), pagination; case-insensitive `q`. Date filters match **any day of a running event's range**, so `date=2026-11-05` finds a 4–6 November expo (and `fromDate`/`toDate` do the same).
 - **FR-E3** Views: list, **calendar** month grid, **map** (Leaflet markers from coordinates) — one toggle control.
 - **FR-E4** Share: WhatsApp / X / Facebook, copy-link, QR code on event detail.
 - **FR-E5** Organizer detail pages (`/organizers/[slug]`) with SEO metadata; multi-step create form with validation.
@@ -76,7 +76,7 @@ A Pakistan-focused community events platform where organizers publish events, us
 | Area | Requirement |
 |---|---|
 | Security | helmet, CORS allow-list, tiered rate limiting (300/15 min global; 60/15 min auth ceiling; 10 failed logins; 12 sign-ups; 5 reset/resend emails; 30 verify; 120 session — all per IP), zod validation everywhere, JWT, account lockout, CSRF origin guard (state-changing verbs), `trust proxy` in prod, Next.js security headers (Referrer-Policy, Permissions-Policy), upload allow-list |
-| Testing | API: jest + supertest (28 suites / 256 tests); web: vitest 45 tests (incl. i18n parity and JSON-LD regression cases); E2E: Playwright 16-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
+| Testing | API: jest + supertest (28 suites / 261 tests); web: vitest 52 tests (incl. i18n parity, JSON-LD and calendar-range regression cases); E2E: Playwright 16-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
 | Data integrity | Idempotent seeds, `unique()`-suffixed fixtures in tests (shared test DB), zod 422 contract |
 | Perf | Server components + `fetchPaginated` with revalidate, TanStack Query staleTime 60 s client-side |
 | Known gaps | No CDN in front of the object-storage bucket (every poster view is direct egress; 5 GB free tier); E2E is smoke-level only (no visual regression); search indexing not yet started (no Search Console property, no inbound links) and the 4 UI locales are a localStorage switch, so crawlers only see English (no `hreflang`); seeded events ship without posters, so image-sitemap entries appear only after an organizer uploads one |

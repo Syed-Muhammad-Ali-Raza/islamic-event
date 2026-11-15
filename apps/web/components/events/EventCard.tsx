@@ -12,8 +12,17 @@ interface Props {
 
 export function EventCard({ event, className }: Props) {
   const eventDate = new Date(event.date);
-  const formattedDate = format(eventDate, "dd MMM yyyy");
-  const isPast = eventDate < new Date();
+  const eventEndDate = event.endDate ? new Date(event.endDate) : null;
+  // Multi-day runs read as "04 – 06 Nov 2026" and stay on the calendar until
+  // their last day has passed, not the first.
+  const spansDays = Boolean(
+    eventEndDate && format(eventEndDate, "yyyy-MM-dd") !== format(eventDate, "yyyy-MM-dd")
+  );
+  const formattedDate =
+    spansDays && eventEndDate
+      ? `${format(eventDate, "dd MMM")} – ${format(eventEndDate, "dd MMM yyyy")}`
+      : format(eventDate, "dd MMM yyyy");
+  const isPast = (eventEndDate ?? eventDate) < new Date();
 
   return (
     <Link

@@ -275,6 +275,7 @@ model Event {
   createdById     String
   organizerId     String?
   date            DateTime    @db.Date
+  endDate         DateTime?   @db.Date
   startTime       String?
   endTime         String?
   countryId       String?

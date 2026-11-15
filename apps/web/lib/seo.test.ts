@@ -73,6 +73,26 @@ describe("eventJsonLd", () => {
     expect(ld.location).toBeUndefined();
     expect(ld.startDate).toBe("2026-12-01");
   });
+
+  it("closes a multi-day event on its last day, not its first", () => {
+    const ld = eventJsonLd({
+      ...base,
+      date: "2026-11-04T00:00:00.000Z",
+      endDate: "2026-11-06T00:00:00.000Z",
+      startTime: "10:00",
+      endTime: "18:00",
+    });
+    // Regression: the range used to collapse to the start day, so a 4–6 Nov
+    // expo claimed to end on 4 Nov and Google showed the wrong schedule.
+    expect(ld.startDate).toBe("2026-11-04T10:00:00+05:00");
+    expect(ld.endDate).toBe("2026-11-06T18:00:00+05:00");
+  });
+
+  it("ignores an endDate equal to the start date for single-day events", () => {
+    const ld = eventJsonLd({ ...base, date: "2026-11-24", endDate: "2026-11-24" });
+    expect(ld.startDate).toBe("2026-11-24");
+    expect(ld.endDate).toBeUndefined();
+  });
 });
 
 describe("breadcrumbJsonLd / itemListJsonLd", () => {

@@ -67,6 +67,12 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 - Public list routes use `validateQuery` + `sendPaginated`; `q` search is case-insensitive (`mode: "insensitive"`).
 - Mount in `src/app.ts`; rate-limit public GETs with the existing public limiter.
 
+### Events & dates
+
+- `Event.date` is the first day; `Event.endDate` (nullable `@db.Date`) is the optional last day. Single-day events leave it null, and `endDate < date` is a 422 at every entry point.
+- Date filters are overlap-based (`date <= to` AND `(endDate ?? date) >= from`), so a running multi-day event appears on every day it spans.
+- `eventJsonLd`, `EventCard`, the detail sidebar and the month calendar (`lib/calendar.ts`) all read the range, not just `date`.
+
 ### Image uploads
 
 - One endpoint: `POST /api/v1/upload/poster` (auth + optional `eventId`), returning `{ url, publicId, width, height, format, bytes, provider }`.
@@ -86,7 +92,7 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 
 1. `npx tsc --noEmit -p apps/api`, `-p apps/api/prisma` and `-p apps/web` (from repo root)
 2. `npm run lint --workspace apps/web`
-3. `npm run test --workspace apps/api` (expect 28 suites / 256 tests) + web vitest
+3. `npm run test --workspace apps/api` (expect 28 suites / 261 tests) + web vitest (52 tests)
 4. Kill servers → `npm run build` (check `$LASTEXITCODE`) → restart via full path
 5. Live smoke: `curl` API endpoint + rendered HTML contains expected markers (`-join ""` first)
 

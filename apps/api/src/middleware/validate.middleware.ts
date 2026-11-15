@@ -1,11 +1,14 @@
 import { Request, Response, NextFunction } from "express";
-import { AnyZodObject, ZodError } from "zod";
+import { ZodTypeAny, ZodError } from "zod";
 
 /**
  * Validate req.body against a Zod schema.
  * Passes ZodError to the global error handler on failure.
+ *
+ * Accepts any schema (object, refinement, transform) — cross-field rules such as
+ * "endDate must not be before date" need a ZodEffects wrapper, not a plain object.
  */
-export function validateBody(schema: AnyZodObject) {
+export function validateBody(schema: ZodTypeAny) {
   return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
     try {
       req.body = await schema.parseAsync(req.body);
@@ -23,7 +26,7 @@ export function validateBody(schema: AnyZodObject) {
 /**
  * Validate req.query against a Zod schema.
  */
-export function validateQuery(schema: AnyZodObject) {
+export function validateQuery(schema: ZodTypeAny) {
   return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
     try {
       req.query = await schema.parseAsync(req.query);

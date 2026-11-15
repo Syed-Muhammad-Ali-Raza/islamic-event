@@ -2,7 +2,7 @@ import { Prisma, UserRole } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { prisma } from "../../config/prisma";
 import { config } from "../../config";
-import { Errors } from "../../utils/AppError";
+import { Errors, AppError } from "../../utils/AppError";
 import { generateSlug, parsePagination } from "../../utils/helpers";
 import { isSuperAdmin, canSubmitForOrg, canApproveForOrg } from "../../utils/permissions";
 import { sendNewEventAdminEmail, sendRsvpOrganizerEmail } from "../../services/email.service";
@@ -18,6 +18,7 @@ const eventListSelect = {
   slug: true,
   title: true,
   date: true,
+  endDate: true,
   startTime: true,
   endTime: true,
   venue: true,
@@ -97,14 +98,25 @@ export async function listEvents(query: EventQueryInput, userId?: string) {
     where.organizer = { slug: query.organizer };
   }
 
-  if (query.date) {
-    const start = new Date(query.date);
-    const end = new Date(query.date);
-    end.setDate(end.getDate() + 1);
-    where.date = { gte: start, lt: end };
-  } else {
-    if (query.fromDate) where.date = { ...where.date as object, gte: new Date(query.fromDate) };
-    if (query.toDate) where.date = { ...where.date as object, lte: new Date(query.toDate) };
+  // Multi-day events must be found on any day they are running, not just the
+  // day they start: an 4–6 November expo belongs in the 5 November list, and in
+  // a fromDate/toDate range it belongs in whatever part overlaps that range.
+  // An event occupies [date, endDate ?? date], so it intersects the requested
+  // window when date <= to AND (endDate ?? date) >= from.
+  const from = query.date ?? query.fromDate;
+  const to = query.date ?? query.toDate;
+  if (from || to) {
+    const overlap: Prisma.EventWhereInput[] = [];
+    if (to) overlap.push({ date: { lte: new Date(to) } });
+    if (from) {
+      overlap.push({
+        OR: [
+          { endDate: { gte: new Date(from) } },
+          { endDate: null, date: { gte: new Date(from) } },
+        ],
+      });
+    }
+    where.AND = [...((where.AND as Prisma.EventWhereInput[]) ?? []), ...overlap];
   }
 
   const [events, total] = await prisma.$transaction([
@@ -177,6 +189,7 @@ export async function createEvent(input: CreateEventInput, requester: EventReque
       createdById: requester.id,
       organizerId: input.organizerId,
       date: new Date(input.date),
+      endDate: input.endDate ? new Date(input.endDate) : null,
       startTime: input.startTime,
       endTime: input.endTime,
       countryId: input.countryId,
@@ -271,6 +284,8 @@ const managementSelect = {
   createdById: true,
   organizerId: true,
   organizer: { select: { createdById: true } },
+  date: true,
+  endDate: true,
 } satisfies Prisma.EventSelect;
 
 type ManageableEvent = {
@@ -278,6 +293,9 @@ type ManageableEvent = {
   organizerId: string | null;
   organizer: { createdById: string } | null;
 };
+
+/** YYYY-MM-DD for a Prisma @db.Date column (always stored as UTC midnight). */
+const isoDay = (value: Date) => value.toISOString().slice(0, 10);
 
 /**
  * Who may manage an event — update/delete it, read its RSVP roster or export
@@ -340,6 +358,20 @@ export async function updateEvent(
     }
   }
 
+  // Updating one side of the date pair on its own can still invert the range
+  // (zod only sees the fields present in the patch), so compare the merged
+  // values — moving `date` past the stored `endDate` must fail too.
+  const nextDate = input.date ?? isoDay(event.date);
+  const nextEndDate =
+    input.endDate !== undefined
+      ? input.endDate
+      : event.endDate
+        ? isoDay(event.endDate)
+        : null;
+  if (nextEndDate && nextEndDate < nextDate) {
+    throw new AppError("End date cannot be before the start date", 422, "VALIDATION_ERROR");
+  }
+
   const updated = await prisma.event.update({
     where: { id },
     data: {
@@ -348,6 +380,9 @@ export async function updateEvent(
       ...(input.categoryId && { categoryId: input.categoryId }),
       ...(input.organizerId !== undefined && { organizerId: input.organizerId }),
       ...(input.date && { date: new Date(input.date) }),
+      ...(input.endDate !== undefined && {
+        endDate: input.endDate ? new Date(input.endDate) : null,
+      }),
       ...(input.startTime !== undefined && { startTime: input.startTime }),
       ...(input.endTime !== undefined && { endTime: input.endTime }),
       ...(input.countryId !== undefined && { countryId: input.countryId }),

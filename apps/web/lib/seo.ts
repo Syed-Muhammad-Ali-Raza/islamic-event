@@ -77,6 +77,7 @@ export function eventJsonLd(event: {
   title: string;
   description?: string | null;
   date: string;
+  endDate?: string | null;
   startTime?: string | null;
   endTime?: string | null;
   posterUrl?: string | null;
@@ -110,8 +111,20 @@ export function eventJsonLd(event: {
   // drops the event out of Google's event rich results. Times are Pakistan
   // local, so the +05:00 offset keeps them unambiguous for crawlers.
   const day = event.date.slice(0, 10);
+  // Multi-day events (an expo running 4–6 November) must close on their last
+  // day, not on the first one; a same-day event still closes at endTime when
+  // one is given. Google drops Event rich results whose endDate precedes
+  // startDate, so lastDay is only used when it actually extends the range.
+  const lastDay = (event.endDate ?? event.date).slice(0, 10);
   const startDate = event.startTime ? `${day}T${event.startTime}:00+05:00` : day;
-  const endDate = event.endTime ? `${day}T${event.endTime}:00+05:00` : undefined;
+  const endDate =
+    lastDay > day
+      ? event.endTime
+        ? `${lastDay}T${event.endTime}:00+05:00`
+        : lastDay
+      : event.endTime
+        ? `${day}T${event.endTime}:00+05:00`
+        : undefined;
 
   return {
     "@context": "https://schema.org",

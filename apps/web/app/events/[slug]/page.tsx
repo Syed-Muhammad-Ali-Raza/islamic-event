@@ -45,8 +45,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description =
     event.description?.slice(0, 160) ||
     `${event.title} — ${format(new Date(event.date), "EEEE, dd MMMM yyyy")}${
-      event.venue ? ` at ${event.venue}` : ""
-    }. Discover religious and community events near you.`;
+      event.endDate ? ` – ${format(new Date(event.endDate), "EEEE, dd MMMM yyyy")}` : ""
+    }${event.venue ? ` at ${event.venue}` : ""}. Discover religious and community events near you.`;
 
   // Events without a poster fall back to the generated 1200x630 card instead of
   // shipping no og:image at all (that showed up as a blank share preview).
@@ -81,12 +81,17 @@ export default async function EventDetailPage({ params }: Props) {
   if (!event) notFound();
 
   const eventDate = new Date(event.date);
-  const ended = isPast(new Date(`${event.date}T${event.endTime ?? "23:59"}:00`));
+  const eventEndDate = event.endDate ? new Date(event.endDate) : null;
+  // A running multi-day event is not "ended" until its last day is over.
+  const ended = isPast(
+    new Date(`${event.endDate ?? event.date}T${event.endTime ?? "23:59"}:00`)
+  );
 
   const jsonLd = eventJsonLd({
     title: event.title,
     description: event.description,
     date: event.date,
+    endDate: event.endDate,
     startTime: event.startTime,
     endTime: event.endTime,
     posterUrl: event.posterUrl,
@@ -226,8 +231,11 @@ export default async function EventDetailPage({ params }: Props) {
               <div>
                 <p className="text-slate-900 text-sm font-medium">
                   {format(eventDate, "EEEE, dd MMMM yyyy")}
+                  {eventEndDate && ` – ${format(eventEndDate, "EEEE, dd MMMM yyyy")}`}
                 </p>
-                <p className="text-slate-500 text-xs mt-0.5">Event date</p>
+                <p className="text-slate-500 text-xs mt-0.5">
+                  {eventEndDate ? "Event dates" : "Event date"}
+                </p>
               </div>
             </div>
 

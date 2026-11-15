@@ -639,6 +639,10 @@ async function main() {
               createdById: systemUser.id,
               organizerId: organizer.id,
               date: new Date(`${e.startDate}T00:00:00.000Z`),
+              endDate:
+                e.endDate && e.endDate !== e.startDate
+                  ? new Date(`${e.endDate}T00:00:00.000Z`)
+                  : null,
               startTime: e.startTime ?? null,
               endTime: e.endTime ?? null,
               countryId: pakistanCountry?.id ?? null,

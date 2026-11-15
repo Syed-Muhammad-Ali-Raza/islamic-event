@@ -9,7 +9,7 @@ const ParticipantInput = z.object({
   displayOrder: z.number().int().min(0).optional().default(0),
 });
 
-export const CreateEventSchema = z.object({
+const CreateEventObject = z.object({
   title: z
     .string({ required_error: "Event title is required" })
     .min(3, "Title must be at least 3 characters")
@@ -25,6 +25,14 @@ export const CreateEventSchema = z.object({
   date: z
     .string({ required_error: "Event date is required" })
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),
+
+  // Multi-day events (expos, conferences, Urs gatherings) keep the last day
+  // here; single-day events leave it empty. ISO date strings compare correctly
+  // lexicographically, so the ordering check needs no Date parsing.
+  endDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "End date must be in YYYY-MM-DD format")
+    .optional(),
 
   startTime: z
     .string()
@@ -50,11 +58,26 @@ export const CreateEventSchema = z.object({
   participants: z.array(ParticipantInput).max(50).optional().default([]),
 });
 
-export const UpdateEventSchema = CreateEventSchema.partial().extend({
-  status: z
-    .enum(["DRAFT", "PENDING_REVIEW"])
-    .optional(),
-});
+const endDateNotBeforeStart = (v: { date?: string; endDate?: string }) =>
+  !v.date || !v.endDate || v.endDate >= v.date;
+
+const END_DATE_ORDER_MESSAGE = {
+  message: "End date cannot be before the start date",
+  path: ["endDate"],
+};
+
+export const CreateEventSchema = CreateEventObject.refine(
+  endDateNotBeforeStart,
+  END_DATE_ORDER_MESSAGE
+);
+
+export const UpdateEventSchema = CreateEventObject.partial()
+  .extend({
+    status: z
+      .enum(["DRAFT", "PENDING_REVIEW"])
+      .optional(),
+  })
+  .refine(endDateNotBeforeStart, END_DATE_ORDER_MESSAGE);
 
 export const EventQuerySchema = z.object({
   page: z.string().optional(),

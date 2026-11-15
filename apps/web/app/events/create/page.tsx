@@ -26,25 +26,32 @@ import { clsx } from "clsx";
 
 // ─── Schema (mirrors API CreateEventSchema) ──────────────────────────────────
 
-const CreateEventFormSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters").max(200, "Title must be under 200 characters"),
-  categoryId: z.string().min(1, "Please choose a category"),
-  description: z.string().max(5000, "Description must be under 5000 characters").optional(),
-  date: z.string().min(1, "Event date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date"),
-  startTime: z.string().optional(),
-  endTime: z.string().optional(),
-  venue: z.string().max(300).optional(),
-  address: z.string().max(500).optional(),
-  cityId: z.string().optional(),
-  latitude: z.number().min(-90).max(90).optional(),
-  longitude: z.number().min(-180).max(180).optional(),
-});
+const CreateEventFormSchema = z
+  .object({
+    title: z.string().min(3, "Title must be at least 3 characters").max(200, "Title must be under 200 characters"),
+    categoryId: z.string().min(1, "Please choose a category"),
+    description: z.string().max(5000, "Description must be under 5000 characters").optional(),
+    date: z.string().min(1, "Event date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date"),
+    // Optional last day for multi-day events (expos, conferences, Urs).
+    endDate: z.string().optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional(),
+    venue: z.string().max(300).optional(),
+    address: z.string().max(500).optional(),
+    cityId: z.string().optional(),
+    latitude: z.number().min(-90).max(90).optional(),
+    longitude: z.number().min(-180).max(180).optional(),
+  })
+  .refine((v) => !v.endDate || !v.date || v.endDate >= v.date, {
+    message: "End date cannot be before the start date",
+    path: ["endDate"],
+  });
 
 type CreateEventForm = z.infer<typeof CreateEventFormSchema>;
 
 const STEPS = [
   { id: "basics", label: "Basics", icon: ClipboardList, fields: ["title", "categoryId", "description"] as const },
-  { id: "when-where", label: "When & Where", icon: CalendarDays, fields: ["date", "startTime", "endTime", "cityId", "venue", "address"] as const },
+  { id: "when-where", label: "When & Where", icon: CalendarDays, fields: ["date", "endDate", "startTime", "endTime", "cityId", "venue", "address"] as const },
   { id: "poster", label: "Poster", icon: ImagePlus, fields: [] as const },
   { id: "review", label: "Review", icon: PartyPopper, fields: [] as const },
 ];
@@ -81,6 +88,7 @@ function CreateEventContent() {
       categoryId: searchParams.get("category") ?? "",
       description: "",
       date: "",
+      endDate: "",
       startTime: "",
       endTime: "",
       venue: "",
@@ -139,6 +147,7 @@ function CreateEventContent() {
         categoryId: data.categoryId,
         description: data.description?.trim() || undefined,
         date: data.date,
+        endDate: data.endDate || undefined,
         startTime: data.startTime ? data.startTime.slice(0, 5) : undefined,
         endTime: data.endTime ? data.endTime.slice(0, 5) : undefined,
         venue: data.venue?.trim() || undefined,
@@ -314,7 +323,7 @@ function CreateEventContent() {
         {/* ── Step 2: When & Where ── */}
         {step === 1 && (
           <div className="space-y-5 animate-slide-up">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 id="event-date"
                 label="Date"
@@ -322,6 +331,15 @@ function CreateEventContent() {
                 required
                 error={errors.date?.message}
                 {...register("date")}
+              />
+              <Input
+                id="event-end-date"
+                label="End Date"
+                type="date"
+                hint="Optional — last day, for multi-day events"
+                error={errors.endDate?.message}
+                min={watchedValues.date || undefined}
+                {...register("endDate")}
               />
               <Input
                 id="event-start"
@@ -441,7 +459,14 @@ function CreateEventContent() {
                 label="Category"
                 value={categoryOptions.find((c) => c.value === watchedValues.categoryId)?.label ?? "—"}
               />
-              <ReviewRow label="Date" value={watchedValues.date} />
+              <ReviewRow
+                label="Date"
+                value={
+                  watchedValues.endDate && watchedValues.endDate !== watchedValues.date
+                    ? `${watchedValues.date} – ${watchedValues.endDate}`
+                    : watchedValues.date
+                }
+              />
               <ReviewRow
                 label="Time"
                 value={

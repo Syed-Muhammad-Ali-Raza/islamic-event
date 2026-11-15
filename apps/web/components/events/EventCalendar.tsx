@@ -17,6 +17,7 @@ import {
 } from "date-fns";
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
 import { useEvents } from "@/hooks/useEvents";
+import { eventDays } from "@/lib/calendar";
 import type { EventSummary } from "@/types";
 
 interface Props {
@@ -52,14 +53,20 @@ export function EventCalendar({ search, category, city }: Props) {
 
   const eventsByDay = useMemo(() => {
     const map = new Map<string, EventSummary[]>();
+    // Clamp a multi-day run to the visible grid so a long expo shows on every
+    // day it is open, without looping over its whole lifetime.
+    const gridStart = startOfWeek(startOfMonth(cursor), { weekStartsOn: 1 });
+    const gridEnd = endOfWeek(endOfMonth(cursor), { weekStartsOn: 1 });
     for (const event of data?.data ?? []) {
-      const key = toISODate(new Date(event.date));
-      const list = map.get(key) ?? [];
-      list.push(event);
-      map.set(key, list);
+      for (const day of eventDays(event, gridStart, gridEnd)) {
+        const key = toISODate(day);
+        const list = map.get(key) ?? [];
+        list.push(event);
+        map.set(key, list);
+      }
     }
     return map;
-  }, [data]);
+  }, [data, cursor]);
 
   const monthEventCount = data?.pagination.total ?? data?.data.length ?? 0;
 

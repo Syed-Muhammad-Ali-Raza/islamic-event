@@ -194,6 +194,7 @@ export interface EventSummary {
   slug: string;
   title: string;
   date: string;
+  endDate: string | null;
   startTime: string | null;
   endTime: string | null;
   venue: string | null;

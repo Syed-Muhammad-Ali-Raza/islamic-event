@@ -439,6 +439,10 @@ Log in at `https://islamic-event-web.vercel.app/login`.
 - [ ] Create an event with a poster → upload returns `201`, the returned
       storage URL serves the image (`200 image/webp`), and the event page shows it
 - [ ] `CORS_ORIGINS` matches the web origin exactly (no trailing slash)
+- [ ] Edge cache: `curl -I https://<api>/api/v1/dastarkhwans` twice → the second
+      answers `X-Vercel-Cache: HIT` with `Age: 1`; the same URL with
+      `-H "Authorization: Bearer x"` answers `BYPASS`; `/api/v1/events` never
+      reports `HIT`
 
 ---
 
@@ -450,6 +454,13 @@ Vercel scales functions to zero. The first request after idle costs ~1–3 s
 - **Do nothing** — fine for low traffic.
 - **Ping `/health` every 10 minutes** with [cron-job.org](https://cron-job.org)
   or UptimeRobot to keep one instance warm and get uptime alerts.
+- **Let the edge cache absorb the directories.** The public directory APIs are
+  marked `public, s-maxage=60, stale-while-revalidate=300` by
+  `apps/api/src/middleware/cache.middleware.ts`, so repeat views of
+  `/dastarkhwan`, `/places`, `/scholars`, … are answered from the CDN in ~0.5 s
+  instead of paying function boot + Neon wake (measured 0.94 s median on a miss
+  vs 0.51 s on a hit). The event pages still hit the function on every view, but
+  they only fetch uncached `/events*` data, which needs the function anyway.
 
 Background jobs do not run on serverless; the only scheduled work is the daily
 reminder cron in §5e (Hobby allows one run per day). Ping `/health` separately
@@ -462,7 +473,7 @@ if you want uptime alerts.
 ### 11a. GitHub Actions (recommended — deploys only when CI is green)
 
 `.github/workflows/deploy.yml` deploys **both** projects to Vercel after the
-full CI suite passes (`tests` reuses `ci.yml`, so lint, typecheck, 262 API
+full CI suite passes (`tests` reuses `ci.yml`, so lint, typecheck, 269 API
 tests, 60 vitest tests, build and the Playwright suite must all be green).
 
 It needs four repository secrets — **Settings → Secrets and variables →

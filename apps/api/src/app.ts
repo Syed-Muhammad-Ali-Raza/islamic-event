@@ -8,6 +8,7 @@ import morgan from "morgan";
 import { config } from "./config";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 import { authLimiter, generalLimiter } from "./middleware/rateLimit.middleware";
+import { cachePublicReads } from "./middleware/cache.middleware";
 import { requireAuth } from "./middleware/auth.middleware";
 import { prisma } from "./config/prisma";
 
@@ -101,6 +102,9 @@ app.use(compression());
 if (config.nodeEnv !== "test") {
   app.use(morgan(config.nodeEnv === "development" ? "dev" : "combined"));
 }
+
+// Public, non-personalised GETs can be answered by the CDN (see the middleware).
+app.use(cachePublicReads);
 
 // â”€â”€â”€ Health check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const healthHandler = async (_req: express.Request, res: express.Response) => {

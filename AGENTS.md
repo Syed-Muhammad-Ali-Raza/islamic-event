@@ -67,6 +67,13 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 - Public list routes use `validateQuery` + `sendPaginated`; `q` search is case-insensitive (`mode: "insensitive"`).
 - Mount in `src/app.ts`; rate-limit public GETs with the existing public limiter.
 
+### Edge caching
+
+- `apps/api/src/middleware/cache.middleware.ts` sets `public, s-maxage=60, stale-while-revalidate=300` on the non-personalised directory prefixes only (`CACHEABLE_PREFIXES`). Add a new public read-only module there; **never** add `/events*` (its payloads embed `myRsvp`/`isSaved` for the caller) or any auth/admin/user route.
+- The middleware skips every request carrying `Authorization` and all non-GET/HEAD methods, so personalised behaviour stays correct even if a prefix is added by mistake. Vercel additionally bypasses its cache for `Authorization` requests.
+- Next.js forces `private, no-store` on any route that reads `searchParams` (the events/directory pages), so `next.config.js` `headers()` cache rules only take effect on prerendered routes (`/`, `/privacy`, `/terms`, `/organizers`). Cache the data, not the HTML.
+- `apps/api/tests/cache.test.ts` pins the public/private split; any new prefix needs a case there. Fixtures created by a suite that shares the jest DB must be deleted in the same test (`places.test.ts` asserts on the total count).
+
 ### Schema changes
 
 - A `schema.prisma` edit needs a matching SQL file under `apps/api/prisma/migrations/<timestamp>_<name>/migration.sql`. CI replays the migrations on an empty database and then seeds it, so a change applied only with `db push` fails the build. Produce the SQL with `npx prisma migrate diff --from-url <db> --to-schema-datamodel apps/api/prisma/schema.prisma --script` (never `migrate dev` against Neon).
@@ -102,7 +109,7 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 
 1. `npx tsc --noEmit -p apps/api`, `-p apps/api/prisma` and `-p apps/web` (from repo root)
 2. `npm run lint --workspace apps/web`
-3. `npm run test --workspace apps/api` (expect 28 suites / 262 tests) + web vitest (60 tests)
+3. `npm run test --workspace apps/api` (expect 29 suites / 269 tests) + web vitest (60 tests)
 4. Kill servers → `npm run build` (check `$LASTEXITCODE`) → restart via full path
 5. Live smoke: `curl` API endpoint + rendered HTML contains expected markers (`-join ""` first)
 

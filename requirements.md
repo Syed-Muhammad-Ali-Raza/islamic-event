@@ -1,6 +1,6 @@
 # Requirements — Community Events Platform
 
-Last updated: 2026-11-15 · Status: Phases 1–49 delivered (see `docs/PHASES.md` phase checklist).
+Last updated: 2026-11-16 · Status: Phases 1–50 delivered (see `docs/PHASES.md` phase checklist).
 
 ## 1. Overview
 
@@ -71,16 +71,17 @@ A Pakistan-focused community events platform where organizers publish events, us
 - **FR-L2** SEO: metadata, sitemaps, OG/Twitter cards, JSON-LD for events; performance budgets.
 - **FR-L3** AEO/GEO (Phase 46): `/llms.txt` plain-text site map for answer engines, `robots.txt` allow-list naming classic crawlers and AI agents (GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended, …), image sitemap entries from event posters, `googleBot` preview/snippet directives, env-driven Search Console / Bing verification, and structured `Event` data with `PostalAddress` + `GeoCoordinates`.
 - **FR-L4** Traffic analytics (Phase 47): `@vercel/analytics` page views + `@vercel/speed-insights` Core Web Vitals, both cookieless and served from the app's own domain (no third-party script, no consent banner); documented in the privacy policy.
+- **FR-L5** Edge caching (Phase 50): the CDN may answer repeat reads of the non-personalised directory APIs for 60 s (`public, s-maxage=60, stale-while-revalidate=300`), while every user-specific or write route stays uncached; any request carrying an `Authorization` header bypasses the cache entirely.
 
 ## 4. Non-functional requirements
 
 | Area | Requirement |
 |---|---|
 | Security | helmet, CORS allow-list, tiered rate limiting (300/15 min global; 60/15 min auth ceiling; 10 failed logins; 12 sign-ups; 5 reset/resend emails; 30 verify; 120 session — all per IP), zod validation everywhere, JWT, account lockout, CSRF origin guard (state-changing verbs), `trust proxy` in prod, Next.js security headers (Referrer-Policy, Permissions-Policy), upload allow-list |
-| Testing | API: jest + supertest (28 suites / 262 tests); web: vitest 60 tests (incl. i18n parity, JSON-LD, calendar-range and 429 retry-window regression cases); E2E: Playwright 16-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
-| Data integrity | Idempotent seeds, `unique()`-suffixed fixtures in tests (shared test DB), zod 422 contract |
-| Perf | Server components + `fetchPaginated` with revalidate, TanStack Query staleTime 60 s client-side |
-| Known gaps | No CDN in front of the object-storage bucket (every poster view is direct egress; 5 GB free tier); E2E is smoke-level only (no visual regression); search indexing not yet started (no Search Console property, no inbound links) and the 4 UI locales are a localStorage switch, so crawlers only see English (no `hreflang`); seeded events ship without posters, so image-sitemap entries appear only after an organizer uploads one |
+| Testing | API: jest + supertest (29 suites / 269 tests); web: vitest 60 tests (incl. i18n parity, JSON-LD, calendar-range, 429 retry-window and cache-header regression cases); E2E: Playwright 16-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
+| Data integrity | Idempotent seeds, `unique()`-suffixed fixtures in tests (shared test DB, fixtures cleaned up in the suite that creates them), zod 422 contract |
+| Perf | Server components + `fetchPaginated` with revalidate, TanStack Query staleTime 60 s client-side; Vercel edge cache in front of the non-personalised directory APIs (`s-maxage=60, stale-while-revalidate=300`) — measured 0.94 s median TTFB on a miss vs 0.51 s on a hit |
+| Known gaps | No CDN in front of the object-storage bucket (every poster view is direct egress; 5 GB free tier); dynamic pages that read `searchParams` (events/directory lists) are answered `private, no-store` by Next.js, so their HTML is not edge-cached — only their API calls are; E2E is smoke-level only (no visual regression); search indexing not yet started (no Search Console property, no inbound links) and the 4 UI locales are a localStorage switch, so crawlers only see English (no `hreflang`); seeded events ship without posters, so image-sitemap entries appear only after an organizer uploads one |
 
 ## 5. Out of scope / backlog candidates
 

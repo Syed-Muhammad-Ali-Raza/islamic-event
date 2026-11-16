@@ -65,6 +65,19 @@ Exceeding a limit returns `429` with `{ success: false, message, code: "RATE_LIM
 
 **Caveat:** `express-rate-limit`'s default store is in-memory, so on serverless each instance keeps its own counters and a cold start resets them. Treat the IP limits as best-effort abuse friction; the account lockout is the strong control. Tests bypass all limiters (`NODE_ENV=test`); `tests/rate-limit.test.ts` exercises the limiter factory directly so the 429 path stays covered.
 
-## 5. Reporting
+## 5. Response caching
+
+`apps/api/src/middleware/cache.middleware.ts` lets the Vercel edge cache answer repeat reads of the **non-personalised** directory APIs (`/categories`, `/cities`, `/organizers`, `/people`, `/dastarkhwans`, `/imambargahs`, `/places`, `/darbars`, `/urs-dates`, `/processions`, `/charities`, `/melas`, `/auqaf-urs-dates`, `/scholars`) with `Cache-Control: public, s-maxage=60, stale-while-revalidate=300`.
+
+The dangerous direction of a shared cache is serving one user's data to another, so the allow-list is fail-closed:
+
+- **Excluded by design:** `/events*` (list and detail payloads embed `isSaved`/`myRsvp` for the caller), `/auth*`, `/admin`, `/approvals`, `/notifications`, `/users`, `/internal`, `/upload`.
+- **Any request with an `Authorization` header is skipped** by the middleware, and Vercel bypasses its own cache for those requests (`X-Vercel-Cache: BYPASS`) — verified in production.
+- **Only `GET`/`HEAD`** get the header; write methods are never marked shared.
+- None of the cached routes set cookies, so a shared copy cannot carry session state.
+
+`tests/cache.test.ts` pins this split (public directory → cached, `Authorization` → not, events/auth/admin → not, writes → not). When adding a public read-only module, add its prefix **and** a test case; if it ever returns per-user fields, keep it out of the list.
+
+## 6. Reporting
 
 Found a secret that this file misses? Open a GitHub issue (without pasting the value) or contact the maintainer privately.

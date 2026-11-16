@@ -76,4 +76,11 @@ describe("Edge cache headers", () => {
 
     expect(res.headers["cache-control"]).toBeUndefined();
   });
+
+  it("does not let an error response be cached", async () => {
+    const res = await api().get(`/api/v1/places/${unique("missing-place")}`);
+
+    expect(res.status).toBe(404);
+    expect(res.headers["cache-control"]).toBeUndefined();
+  });
 });

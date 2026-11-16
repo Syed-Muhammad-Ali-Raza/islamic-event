@@ -57,8 +57,18 @@ export function cachePublicReads(
     return next();
   }
 
+  // Only successful reads may be cached. Setting the header eagerly would also
+  // mark a 404 (unknown sourceId), a 429 (throttled) or a 5xx as shared-cacheable,
+  // and a cached error keeps failing after the function has recovered — so the
+  // header is applied when the response head is written, once the status is known.
   // `private` would disable the shared cache; the value must be public. Nothing
   // on these routes sets cookies, so a shared copy cannot carry session state.
-  res.setHeader("Cache-Control", PUBLIC_CACHE_CONTROL);
+  const writeHead = res.writeHead.bind(res) as (...args: unknown[]) => Response;
+  res.writeHead = function (this: Response, statusCode: number, ...rest: unknown[]) {
+    if (statusCode >= 200 && statusCode < 300) {
+      res.setHeader("Cache-Control", PUBLIC_CACHE_CONTROL);
+    }
+    return writeHead(statusCode, ...rest) as unknown as Response;
+  } as Response["writeHead"];
   next();
 }

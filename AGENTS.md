@@ -70,7 +70,7 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 ### Edge caching
 
 - `apps/api/src/middleware/cache.middleware.ts` sets `public, s-maxage=60, stale-while-revalidate=300` on the non-personalised directory prefixes only (`CACHEABLE_PREFIXES`). Add a new public read-only module there; **never** add `/events*` (its payloads embed `myRsvp`/`isSaved` for the caller) or any auth/admin/user route.
-- The middleware skips every request carrying `Authorization` and all non-GET/HEAD methods, so personalised behaviour stays correct even if a prefix is added by mistake. Vercel additionally bypasses its cache for `Authorization` requests.
+- The middleware skips every request carrying `Authorization` and all non-GET/HEAD methods, and only writes the header when the response head is flushed with a 2xx status (a 404/429/5xx must never be pinned at the edge). Vercel additionally bypasses its cache for `Authorization` requests.
 - Next.js forces `private, no-store` on any route that reads `searchParams` (the events/directory pages), so `next.config.js` `headers()` cache rules only take effect on prerendered routes (`/`, `/privacy`, `/terms`, `/organizers`). Cache the data, not the HTML.
 - `apps/api/tests/cache.test.ts` pins the public/private split; any new prefix needs a case there. Fixtures created by a suite that shares the jest DB must be deleted in the same test (`places.test.ts` asserts on the total count).
 
@@ -109,7 +109,7 @@ src/modules/<name>/        # <name>.validation.ts, .service.ts, .controller.ts, 
 
 1. `npx tsc --noEmit -p apps/api`, `-p apps/api/prisma` and `-p apps/web` (from repo root)
 2. `npm run lint --workspace apps/web`
-3. `npm run test --workspace apps/api` (expect 29 suites / 269 tests) + web vitest (60 tests)
+3. `npm run test --workspace apps/api` (expect 29 suites / 270 tests) + web vitest (60 tests)
 4. Kill servers → `npm run build` (check `$LASTEXITCODE`) → restart via full path
 5. Live smoke: `curl` API endpoint + rendered HTML contains expected markers (`-join ""` first)
 

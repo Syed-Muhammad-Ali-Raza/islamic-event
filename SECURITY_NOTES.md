@@ -73,7 +73,7 @@ The dangerous direction of a shared cache is serving one user's data to another,
 
 - **Excluded by design:** `/events*` (list and detail payloads embed `isSaved`/`myRsvp` for the caller), `/auth*`, `/admin`, `/approvals`, `/notifications`, `/users`, `/internal`, `/upload`.
 - **Any request with an `Authorization` header is skipped** by the middleware, and Vercel bypasses its own cache for those requests (`X-Vercel-Cache: BYPASS`) — verified in production.
-- **Only `GET`/`HEAD`** get the header; write methods are never marked shared.
+- **Only `GET`/`HEAD`** get the header, and only when the response head is written with a **2xx** status — a 404 (unknown `sourceId`), a 429 (throttled) or a 5xx is never marked shared-cacheable, so an error cannot be pinned at the edge after the function recovers.
 - None of the cached routes set cookies, so a shared copy cannot carry session state.
 
 `tests/cache.test.ts` pins this split (public directory → cached, `Authorization` → not, events/auth/admin → not, writes → not). When adding a public read-only module, add its prefix **and** a test case; if it ever returns per-user fields, keep it out of the list.

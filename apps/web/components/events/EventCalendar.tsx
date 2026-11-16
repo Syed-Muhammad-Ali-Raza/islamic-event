@@ -129,6 +129,7 @@ export function EventCalendar({ search, category, city }: Props) {
           return (
             <div
               key={key}
+              data-date={key}
               className={`min-h-[84px] sm:min-h-[100px] rounded-xl border p-1.5 transition-colors ${
                 inMonth ? "border-slate-200 bg-white" : "border-slate-100 bg-slate-50"
               } ${today ? "ring-2 ring-brand-600 border-brand-600" : ""}`}

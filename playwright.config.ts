@@ -11,6 +11,13 @@ const REPO_ROOT = __dirname;
 dotenv.config({ path: path.join(REPO_ROOT, "apps", "api", ".env") });
 dotenv.config({ path: path.join(REPO_ROOT, ".env") });
 
+// The repo-root .env exists for docker-compose and carries `PORT=4000` (the
+// host port of the api service). Playwright passes its own environment to the
+// webServer children and Next.js reads PORT, so without this the web dev server
+// would try to bind 4000 and die with EADDRINUSE next to the API. Both dev
+// servers keep their defaults (web 3000, api 4000).
+delete process.env.PORT;
+
 // Full-path npm on Windows dodges the rogue Node v26 shadowing bug
 // (see AGENTS.md). On other platforms, plain `npm` is fine.
 const NPM =
@@ -43,7 +50,16 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        // Local escape hatch: when `npx playwright install` cannot reach the
+        // browser CDN (30 s request timeout, endless retry), point the suite at
+        // an installed browser instead, e.g. E2E_BROWSER_CHANNEL=chrome (or
+        // msedge). CI never sets it, so it keeps using its cached download.
+        ...(process.env.E2E_BROWSER_CHANNEL
+          ? { channel: process.env.E2E_BROWSER_CHANNEL }
+          : {}),
+      },
     },
   ],
   webServer: [

@@ -10,6 +10,9 @@ export interface AuthTokens {
 }
 
 const API = process.env.E2E_API_URL ?? "http://localhost:4000";
+// Registering sends a verification email; a locally configured SMTP (Gmail)
+// can take >10 s, so API helpers get a longer budget than UI actions.
+const API_TIMEOUT = 30_000;
 // Super-admin credentials must match what the database was seeded with.
 // Read from the same env vars the seed uses (CI sets them at job level;
 // locally playwright.config.ts loads apps/api/.env and the repo-root .env).
@@ -34,6 +37,7 @@ export async function registerViaApi(
 
   const res = await request.post(`${API}/api/v1/auth/register`, {
     data: { name, email, password },
+    timeout: API_TIMEOUT,
   });
   if (!res.ok()) {
     throw new Error(`registerViaApi failed: ${res.status()} ${await res.text()}`);
@@ -50,6 +54,7 @@ export async function loginViaApi(
 ): Promise<AuthTokens> {
   const res = await request.post(`${API}/api/v1/auth/login`, {
     data: { email, password },
+    timeout: API_TIMEOUT,
   });
   if (!res.ok()) {
     throw new Error(`loginViaApi failed: ${res.status()} ${await res.text()}`);
@@ -98,23 +103,25 @@ export interface CreatedEvent {
 export async function createEventViaApi(
   request: APIRequestContext,
   tokens: AuthTokens,
-  overrides: { title?: string; date?: string } = {}
+  overrides: { title?: string; date?: string; endDate?: string } = {}
 ): Promise<CreatedEvent> {
   const catsRes = await request.get(`${API}/api/v1/categories?limit=1`);
   const catsBody = await catsRes.json();
   const categoryId = catsBody?.data?.[0]?.id;
-  if (!categoryId) throw new Error("No categories seeded — run db:seed first");
+  if (!categoryId) throw new Error("No categories seeded – run db:seed first");
 
   const title = overrides.title ?? `E2E Event ${unique("t")}`;
   const date = overrides.date ?? "2027-01-15";
 
   const res = await request.post(`${API}/api/v1/events`, {
     headers: { Authorization: `Bearer ${tokens.accessToken}` },
+    timeout: API_TIMEOUT,
     data: {
       title,
       categoryId,
       description: "Created by Playwright E2E suite",
       date,
+      ...(overrides.endDate ? { endDate: overrides.endDate } : {}),
       startTime: "18:00",
       endTime: "20:00",
       venue: "E2E Test Venue",
@@ -137,6 +144,7 @@ export async function approveEventViaApi(
   const admin = await loginAdminViaApi(request);
   const res = await request.patch(`${API}/api/v1/admin/events/${eventId}/approve`, {
     headers: { Authorization: `Bearer ${admin.accessToken}` },
+    timeout: API_TIMEOUT,
   });
   if (!res.ok()) {
     throw new Error(`approveEventViaApi failed: ${res.status()} ${await res.text()}`);

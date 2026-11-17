@@ -11,7 +11,8 @@
 # apps/api) relative to the directory the CLI runs in.
 #
 # ── Required repository secrets (Settings → Secrets and variables → Actions) ─
-#   VERCEL_TOKEN            https://vercel.com/account/tokens (team-scoped)
+#   VERCEL_TOKEN            https://vercel.com/account/tokens — Full Account token
+#                           (a team-scoped one can only see one of the two projects)
 #   VERCEL_ORG_ID           team_BKDUdN2NAVI33dLrGVfWg911
 #   VERCEL_WEB_PROJECT_ID   prj_iBqCOUZ7lzBE3VzJYBzw6s0wVDP0
 #   VERCEL_API_PROJECT_ID   prj_NXm9Iwbu76NU0D3TqoRWCRpKaXjo
@@ -56,6 +57,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: production # optional: add environment protection rules in GitHub
     env:
+      # Vercel CLI 65+ requires PROJECT_ID whenever ORG_ID is set globally,
+      # even when .vercel/project.json exists. Without this the deploy fails
+      # with "You specified VERCEL_ORG_ID but forgot VERCEL_PROJECT_ID".
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       # Direct (non-pooler) URL for the Prisma CLI. Falls back to DATABASE_URL
       # when the repo has no pooler (e.g. plain Postgres).
@@ -155,6 +160,9 @@ jobs:
     needs: tests
     runs-on: ubuntu-latest
     environment: production
+    env:
+      # See deploy-api: CLI 65+ needs both ORG_ID and PROJECT_ID in the env.
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_WEB_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
 

@@ -481,7 +481,7 @@ Actions → New repository secret**:
 
 | Secret | Value | Where to get it |
 | --- | --- | --- |
-| `VERCEL_TOKEN` | team-scoped token | <https://vercel.com/account/tokens> → *Create* → scope: your team → copy once |
+| `VERCEL_TOKEN` | **Full Account** token | <https://vercel.com/account/tokens> → *Add Token* → scope: **Full Account** → copy once. A team/project-scoped token can only see one of the two projects, so the other deploy fails with `Project not found`. Never use the `team_…` org ID here. |
 | `VERCEL_ORG_ID` | `team_BKDUdN2NAVI33dLrGVfWg911` | `.vercel/project.json` of either project, or `vercel teams ls` |
 | `VERCEL_WEB_PROJECT_ID` | `prj_iBqCOUZ7lzBE3VzJYBzw6s0wVDP0` | `apps/web/.vercel/project.json` |
 | `VERCEL_API_PROJECT_ID` | `prj_NXm9Iwbu76NU0D3TqoRWCRpKaXjo` | `apps/api/.vercel/project.json` |

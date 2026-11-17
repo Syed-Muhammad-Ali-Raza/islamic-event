@@ -1,6 +1,6 @@
 # Requirements — Community Events Platform
 
-Last updated: 2026-11-17 · Status: Phases 1–52 delivered (see `docs/PHASES.md` phase checklist).
+Last updated: 2026-11-17 · Status: Phases 1–53 delivered (see `docs/PHASES.md` phase checklist).
 
 ## 1. Overview
 
@@ -73,12 +73,17 @@ A Pakistan-focused community events platform where organizers publish events, us
 - **FR-L4** Traffic analytics (Phase 47): `@vercel/analytics` page views + `@vercel/speed-insights` Core Web Vitals, both cookieless and served from the app's own domain (no third-party script, no consent banner); documented in the privacy policy.
 - **FR-L5** Edge caching (Phase 50): the CDN may answer repeat reads of the non-personalised directory APIs for 60 s (`public, s-maxage=60, stale-while-revalidate=300`), while every user-specific or write route stays uncached; any request carrying an `Authorization` header bypasses the cache entirely.
 
+### 3.8 Community assistant (Phase 53)
+- **FR-C1** A floating, rule-based assistant is available on every page (root layout); it is explicitly a guided helper, not an LLM — no API key or per-message cost.
+- **FR-C2** Event recommendations understand city, keyword and simple date phrases (`today`, `tomorrow`, `weekend`, `next month`) in en/ur/hi/ar, query the existing `/events` API and render clickable event cards; identical questions are React Query cache hits.
+- **FR-C3** Support questions (register, RSVP, verify email, reset password, create event, report, directories, saved events) get curated answers with deep links. The assistant is read-only: no messages are stored, no emails sent, no account actions performed.
+
 ## 4. Non-functional requirements
 
 | Area | Requirement |
 |---|---|
 | Security | helmet, CORS allow-list, tiered rate limiting (300/15 min global; 60/15 min auth ceiling; 10 failed logins; 12 sign-ups; 5 reset/resend emails; 30 verify; 120 session — all per IP), zod validation everywhere, JWT, account lockout, CSRF origin guard (state-changing verbs), `trust proxy` in prod, Next.js security headers (Referrer-Policy, Permissions-Policy), upload allow-list |
-| Testing | API: jest + supertest (29 suites / 273 tests); web: vitest 69 tests (incl. i18n parity, JSON-LD, calendar-range, 429 retry-window, cache-header and city-ranking regression cases); E2E: Playwright 18-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests; includes a multi-day event whose range must paint every day it runs in the month calendar and a city-picker test asserting one request for a six-keystroke burst); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
+| Testing | API: jest + supertest (29 suites / 273 tests); web: vitest 81 tests (incl. i18n parity, JSON-LD, calendar-range, 429 retry-window, cache-header, city-ranking and assistant-intent regression cases); E2E: Playwright 19-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests; includes a multi-day event whose range must paint every day it runs in the month calendar, a city-picker test asserting one request for a six-keystroke burst, and an assistant test covering FAQ deep links, event cards, cache reuse and RTL locale switching); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
 | Data integrity | Idempotent seeds, `unique()`-suffixed fixtures in tests (shared test DB, fixtures cleaned up in the suite that creates them), zod 422 contract |
 | Perf | Server components + `fetchPaginated` with revalidate, TanStack Query staleTime 60 s client-side; Vercel edge cache in front of the non-personalised directory APIs (`s-maxage=60, stale-while-revalidate=300`) — measured 0.94 s median TTFB on a miss vs 0.51 s on a hit |
 | Known gaps | No CDN in front of the object-storage bucket (every poster view is direct egress; 5 GB free tier); dynamic pages that read `searchParams` (events/directory lists) are answered `private, no-store` by Next.js, so their HTML is not edge-cached — only their API calls are; E2E is smoke-level only (no visual regression); search indexing not yet started (no Search Console property, no inbound links) and the 4 UI locales are a localStorage switch, so crawlers only see English (no `hreflang`); seeded events ship without posters, so image-sitemap entries appear only after an organizer uploads one |

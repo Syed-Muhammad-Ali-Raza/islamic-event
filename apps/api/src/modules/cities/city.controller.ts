@@ -4,7 +4,8 @@ import { sendSuccess } from "../../utils/response";
 
 export async function listCities(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const cities = await CityService.listCitiesWithEvents();
+    const q = typeof req.query.q === "string" ? req.query.q : undefined;
+    const cities = await CityService.listCitiesWithEvents(q);
     sendSuccess({ res, data: cities });
   } catch (err) {
     next(err);

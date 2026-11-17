@@ -3,9 +3,22 @@ import { Errors } from "../../utils/AppError";
 
 // ─── List active cities with approved event counts (desc, zeros included) ────
 
-export async function listCitiesWithEvents() {
+export async function listCitiesWithEvents(q?: string) {
+  const search = q?.trim();
   const cities = await prisma.city.findMany({
-    where: { isActive: true },
+    where: {
+      isActive: true,
+      // `q` backs the type-ahead city picker: match the city or its state, so
+      // "punjab" still finds Lahore. Case-insensitive, like every directory.
+      ...(search
+        ? {
+            OR: [
+              { name: { contains: search, mode: "insensitive" as const } },
+              { state: { name: { contains: search, mode: "insensitive" as const } } },
+            ],
+          }
+        : {}),
+    },
     select: {
       id: true,
       name: true,

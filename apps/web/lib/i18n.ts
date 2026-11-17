@@ -462,6 +462,8 @@ const resources = {
         subtitle:
           "Find Majlis, Milad, Mehfil-e-Naat, Dars and more — connecting communities across Pakistan, India, UK, USA and worldwide.",
         searchPlaceholder: "Search Milad, Majlis, Mehfil-e-Naat…",
+        citySearch: "Search city…",
+        noCities: "No matching cities",
         searchButton: "Search Events",
         quick: "Quick:",
         eventsListed: "Events Listed",
@@ -924,6 +926,8 @@ const resources = {
         subtitle:
           "مجلس، میلاد، محفلِ نعت، درس وغیرہ تلاش کریں — پاکستان، بھارت، برطانیہ، امریکہ اور دنیا بھر میں کمیونٹیوں کو جوڑتے ہوئے۔",
         searchPlaceholder: "میلاد، مجلس، محفلِ نعت تلاش کریں…",
+        citySearch: "شہر تلاش کریں…",
+        noCities: "کوئی شہر نہیں ملا",
         searchButton: "واقعات تلاش کریں",
         quick: "فوری:",
         eventsListed: "فہرست میں واقعات",
@@ -1386,6 +1390,8 @@ const resources = {
         subtitle:
           "मजलिस, मीलाद, मेहफ़िल-ए-नात, दर्स और बहुत कुछ खोजें — पाकिस्तान, भारत, UK, USA और दुनिया भर में समुदायों को जोड़ते हुए।",
         searchPlaceholder: "मीलाद, मजलिस, मेहफ़िल-ए-नात खोजें…",
+        citySearch: "शहर खोजें…",
+        noCities: "कोई शहर नहीं मिला",
         searchButton: "इवेंट्स खोजें",
         quick: "त्वरित:",
         eventsListed: "सूचीबद्ध इवेंट्स",
@@ -1848,6 +1854,8 @@ const resources = {
         subtitle:
           "اعثر على مجلس ومولّد ومحيط نعت ودرس والمزيد — نربط المجتمعات في باكستان والهند وبريطانيا وأمريكا وحول العالم.",
         searchPlaceholder: "ابحث عن مولّد، مجلس، محيط نعت…",
+        citySearch: "ابحث عن مدينة…",
+        noCities: "لا توجد مدن مطابقة",
         searchButton: "ابحث عن الفعاليات",
         quick: "سريع:",
         eventsListed: "فعاليات مُدرجة",

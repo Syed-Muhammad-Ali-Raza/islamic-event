@@ -1,6 +1,6 @@
 # Requirements — Community Events Platform
 
-Last updated: 2026-11-16 · Status: Phases 1–50 delivered (see `docs/PHASES.md` phase checklist).
+Last updated: 2026-11-17 · Status: Phases 1–52 delivered (see `docs/PHASES.md` phase checklist).
 
 ## 1. Overview
 
@@ -28,7 +28,7 @@ A Pakistan-focused community events platform where organizers publish events, us
 
 ### 3.2 Events (Phases 4, 6, 9, 14, 16, 18, 19)
 - **FR-E1** CRUD events with slug, category, organizer, status (`DRAFT → PENDING_REVIEW → APPROVED`), date **or multi-day range** (`date` + optional `endDate`; `endDate < date` is rejected with 422, including on partial updates), venue + coordinates, images (Neon Object Storage via the S3 API, Cloudinary fallback; allow-list jpeg/png/webp, 10 MB; re-encoded to WebP ≤1600 px).
-- **FR-E2** Search + filter (category, city, date range, keyword), pagination; case-insensitive `q`. Date filters match **any day of a running event's range**, so `date=2026-11-05` finds a 4–6 November expo (and `fromDate`/`toDate` do the same).
+- **FR-E2** Search + filter (category, city, date range, keyword), pagination; case-insensitive `q`. Date filters match **any day of a running event's range**, so `date=2026-11-05` finds a 4–6 November expo (and `fromDate`/`toDate` do the same). The homepage city picker is an accessible type-ahead combobox backed by `GET /cities?q=` (case-insensitive on city/state): a 250 ms debounce plus a per-term React Query cache keeps repeated typing off the API, while local ranking of the cached city list paints results instantly.
 - **FR-E3** Views: list, **calendar** month grid, **map** (Leaflet markers from coordinates) — one toggle control.
 - **FR-E4** Share: WhatsApp / X / Facebook, copy-link, QR code on event detail.
 - **FR-E5** Organizer detail pages (`/organizers/[slug]`) with SEO metadata; multi-step create form with validation.
@@ -78,7 +78,7 @@ A Pakistan-focused community events platform where organizers publish events, us
 | Area | Requirement |
 |---|---|
 | Security | helmet, CORS allow-list, tiered rate limiting (300/15 min global; 60/15 min auth ceiling; 10 failed logins; 12 sign-ups; 5 reset/resend emails; 30 verify; 120 session — all per IP), zod validation everywhere, JWT, account lockout, CSRF origin guard (state-changing verbs), `trust proxy` in prod, Next.js security headers (Referrer-Policy, Permissions-Policy), upload allow-list |
-| Testing | API: jest + supertest (29 suites / 270 tests); web: vitest 60 tests (incl. i18n parity, JSON-LD, calendar-range, 429 retry-window and cache-header regression cases); E2E: Playwright 17-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests; includes a multi-day event whose range must paint every day it runs in the month calendar); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
+| Testing | API: jest + supertest (29 suites / 273 tests); web: vitest 69 tests (incl. i18n parity, JSON-LD, calendar-range, 429 retry-window, cache-header and city-ranking regression cases); E2E: Playwright 18-test smoke suite (root `e2e/`, `npm run test:e2e`, runs in CI after unit tests; includes a multi-day event whose range must paint every day it runs in the month calendar and a city-picker test asserting one request for a six-keystroke burst); single-suite runs via `npx jest tests/<file>.test.ts` from `apps/api`; tests never load a developer `.env` (no real email or bucket writes) |
 | Data integrity | Idempotent seeds, `unique()`-suffixed fixtures in tests (shared test DB, fixtures cleaned up in the suite that creates them), zod 422 contract |
 | Perf | Server components + `fetchPaginated` with revalidate, TanStack Query staleTime 60 s client-side; Vercel edge cache in front of the non-personalised directory APIs (`s-maxage=60, stale-while-revalidate=300`) — measured 0.94 s median TTFB on a miss vs 0.51 s on a hit |
 | Known gaps | No CDN in front of the object-storage bucket (every poster view is direct egress; 5 GB free tier); dynamic pages that read `searchParams` (events/directory lists) are answered `private, no-store` by Next.js, so their HTML is not edge-cached — only their API calls are; E2E is smoke-level only (no visual regression); search indexing not yet started (no Search Console property, no inbound links) and the 4 UI locales are a localStorage switch, so crawlers only see English (no `hreflang`); seeded events ship without posters, so image-sitemap entries appear only after an organizer uploads one |

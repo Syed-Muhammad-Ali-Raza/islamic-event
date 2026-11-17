@@ -90,4 +90,37 @@ describe("City directory", () => {
     expect(res.status).toBe(404);
     expect(res.body.code).toBe("CITY_NOT_FOUND");
   });
+
+  it("filters by q against the city name, case-insensitively", async () => {
+    const token = unique("qcity");
+    const match = await makeCity(token);
+    const other = await makeCity("QcityOther");
+
+    const res = await api().get(`/api/v1/cities?q=${encodeURIComponent(token.toUpperCase())}`);
+    expect(res.status).toBe(200);
+
+    const slugs = res.body.data.map((c: { slug: string }) => c.slug);
+    expect(slugs).toContain(match.slug);
+    expect(slugs).not.toContain(other.slug);
+  });
+
+  it("filters by q against the state name too", async () => {
+    const city = await makeCity("StateMatch");
+    const state = await prisma.state.findUnique({ where: { id: city.stateId } });
+
+    const res = await api().get(
+      `/api/v1/cities?q=${encodeURIComponent((state?.name ?? "").toUpperCase())}`
+    );
+    expect(res.status).toBe(200);
+    expect(res.body.data.map((c: { slug: string }) => c.slug)).toContain(city.slug);
+  });
+
+  it("returns no cities when q matches nothing, and 422s an over-long q", async () => {
+    const empty = await api().get(`/api/v1/cities?q=${unique("nomatch")}`);
+    expect(empty.status).toBe(200);
+    expect(empty.body.data).toEqual([]);
+
+    const tooLong = await api().get(`/api/v1/cities?q=${"x".repeat(101)}`);
+    expect(tooLong.status).toBe(422);
+  });
 });

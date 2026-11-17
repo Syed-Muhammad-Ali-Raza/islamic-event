@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Search, MapPin, Star, Calendar, Users, Soup, ArrowRight } from "lucide-react";
 import { useCities } from "@/hooks/useCities";
+import { CityCombobox } from "@/components/ui/CityCombobox";
 
 const QUICK_SEARCHES = ["Milad", "Majlis", "Mehfil-e-Naat", "Dars", "Iftar", "Quran Khwani"];
 
@@ -84,21 +85,8 @@ export function HeroSection() {
               <div className="hidden sm:block h-7 w-px bg-emerald-700/50" />
 
               {/* City selector */}
-              <div className="flex items-center gap-2 px-3 py-2 sm:py-0 sm:w-44">
-                <MapPin size={16} className="text-amber-400 shrink-0" />
-                <select
-                  aria-label="Select City"
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
-                  className="w-full bg-transparent text-emerald-100 text-xs sm:text-sm focus:outline-none cursor-pointer [&>option]:bg-emerald-950 [&>option]:text-white"
-                >
-                  <option value="">{t("directories.allCities")}</option>
-                  {(cities ?? []).map((c) => (
-                    <option key={c.id} value={c.slug}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+              <div className="flex items-center gap-2 px-3 py-2 sm:py-0 sm:w-52">
+                <CityCombobox value={selectedCity} onChange={setSelectedCity} />
               </div>
 
               {/* Submit Button */}

@@ -63,6 +63,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Validate Vercel secrets
+        if: ${{ env.VERCEL_TOKEN != '' && env.VERCEL_API_PROJECT_ID != '' }}
+        run: |
+          case "$VERCEL_TOKEN" in
+            team_*)
+              echo "::error::VERCEL_TOKEN is an org ID (starts with team_), not a Vercel access token. Create one at https://vercel.com/account/tokens and replace the repository secret."
+              exit 1
+              ;;
+          esac
+          echo "Vercel token format looks valid; org and API project ID are set."
+
       - name: Skip notice (no Vercel token / API project id)
         if: ${{ env.VERCEL_TOKEN == '' || env.VERCEL_API_PROJECT_ID == '' }}
         run: |
@@ -104,9 +115,18 @@ jobs:
       - name: Deploy API to Vercel
         if: ${{ env.VERCEL_TOKEN != '' && env.VERCEL_API_PROJECT_ID != '' }}
         run: |
-          set -o pipefail
-          vercel deploy --prod --archive=tgz --yes --token "$VERCEL_TOKEN" 2>&1 | tee vercel-api.log
-          echo "### API — https://islamic-event-api.vercel.app" >> "$GITHUB_STEP_SUMMARY"
+          set +e
+          vercel deploy --prod --archive=tgz --yes --token "$VERCEL_TOKEN" > vercel-api.log 2>&1
+          code=$?
+          sed "s/$VERCEL_TOKEN/***/g" vercel-api.log
+          {
+            echo "### API deploy output (exit $code)"
+            echo '```'
+            sed "s/$VERCEL_TOKEN/***/g" vercel-api.log | tail -n 40
+            echo '```'
+            echo "### API — https://islamic-event-api.vercel.app"
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit $code
 
       - name: Smoke-test the deployed API
         if: ${{ env.VERCEL_TOKEN != '' && env.VERCEL_API_PROJECT_ID != '' }}
@@ -138,6 +158,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Validate Vercel secrets
+        if: ${{ env.VERCEL_TOKEN != '' && env.VERCEL_WEB_PROJECT_ID != '' }}
+        run: |
+          case "$VERCEL_TOKEN" in
+            team_*)
+              echo "::error::VERCEL_TOKEN is an org ID (starts with team_), not a Vercel access token. Create one at https://vercel.com/account/tokens and replace the repository secret."
+              exit 1
+              ;;
+          esac
+          echo "Vercel token format looks valid; org and web project ID are set."
+
       - name: Skip notice (no Vercel token / web project id)
         if: ${{ env.VERCEL_TOKEN == '' || env.VERCEL_WEB_PROJECT_ID == '' }}
         run: |
@@ -162,9 +193,18 @@ jobs:
       - name: Deploy web to Vercel
         if: ${{ env.VERCEL_TOKEN != '' && env.VERCEL_WEB_PROJECT_ID != '' }}
         run: |
-          set -o pipefail
-          vercel deploy --prod --archive=tgz --yes --token "$VERCEL_TOKEN" 2>&1 | tee vercel-web.log
-          echo "### Web — https://islamic-event-web.vercel.app" >> "$GITHUB_STEP_SUMMARY"
+          set +e
+          vercel deploy --prod --archive=tgz --yes --token "$VERCEL_TOKEN" > vercel-web.log 2>&1
+          code=$?
+          sed "s/$VERCEL_TOKEN/***/g" vercel-web.log
+          {
+            echo "### Web deploy output (exit $code)"
+            echo '```'
+            sed "s/$VERCEL_TOKEN/***/g" vercel-web.log | tail -n 40
+            echo '```'
+            echo "### Web — https://islamic-event-web.vercel.app"
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit $code
 
       - name: Smoke-test the deployed site
         if: ${{ env.VERCEL_TOKEN != '' && env.VERCEL_WEB_PROJECT_ID != '' }}

@@ -12,6 +12,9 @@ interface Props {
 
 const PAKISTAN_CENTER: L.LatLngExpression = [30.3753, 69.3451];
 
+const esc = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
 export function EventMap({ events }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -34,35 +37,74 @@ export function EventMap({ events }: Props) {
       maxZoom: 19,
     }).addTo(map);
 
-    const points: L.LatLngExpression[] = [];
-
+    // Several curated events share the exact same venue coordinate, so draw
+    // one marker per point with a count badge instead of stacking invisible
+    // markers on top of each other.
+    const groups = new Map<string, { point: L.LatLng; events: (EventSummary & { latitude: number; longitude: number })[] }>();
     for (const event of located) {
-      const point = L.latLng(event.latitude, event.longitude);
-      points.push(point);
+      const key = `${event.latitude.toFixed(6)},${event.longitude.toFixed(6)}`;
+      const group = groups.get(key);
+      if (group) group.events.push(event);
+      else groups.set(key, { point: L.latLng(event.latitude, event.longitude), events: [event] });
+    }
 
-      const dateLabel = new Date(event.date).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      });
+    for (const { point, events: atPoint } of groups.values()) {
+      const zoomToVenue = () => map.flyTo(point, 15, { duration: 0.6 });
 
-      L.circleMarker(point, {
-        radius: 9,
-        color: "#ffffff",
-        weight: 2,
-        fillColor: "#059669",
-        fillOpacity: 1,
+      if (atPoint.length === 1) {
+        const event = atPoint[0];
+        const dateLabel = new Date(event.date).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+        L.circleMarker(point, {
+          radius: 9,
+          color: "#ffffff",
+          weight: 2,
+          fillColor: "#059669",
+          fillOpacity: 1,
+        })
+          .addTo(map)
+          .bindPopup(
+            `<div style="min-width:160px">
+              <p style="font-weight:600;font-size:13px;margin:0 0 4px;color:#0f172a">${esc(event.title)}</p>
+              <p style="font-size:11px;margin:0 0 6px;color:#64748b">${dateLabel}${event.venue ? ` · ${esc(event.venue)}` : ""}</p>
+              <a href="/events/${encodeURIComponent(event.slug)}" style="font-size:12px;color:#047857;font-weight:500">View event →</a>
+            </div>`
+          )
+          .on("click", zoomToVenue);
+        continue;
+      }
+
+      const venue = atPoint.find((e) => e.venue)?.venue ?? "This venue";
+      const items = atPoint
+        .map(
+          (e) =>
+            `<li style="margin:0 0 4px"><a href="/events/${encodeURIComponent(e.slug)}" style="color:#047857;text-decoration:none">${esc(e.title)}</a></li>`
+        )
+        .join("");
+
+      L.marker(point, {
+        icon: L.divIcon({
+          className: "venue-cluster",
+          html: `<div style="width:36px;height:36px;border-radius:9999px;background:#047857;border:2px solid #ffffff;box-shadow:0 2px 8px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;color:#ffffff;font-size:13px;font-weight:700">${atPoint.length}</div>`,
+          iconSize: [36, 36],
+          iconAnchor: [18, 18],
+        }),
       })
         .addTo(map)
         .bindPopup(
-          `<div style="min-width:160px">
-            <p style="font-weight:600;font-size:13px;margin:0 0 4px;color:#0f172a">${event.title.replace(/</g, "&lt;")}</p>
-            <p style="font-size:11px;margin:0 0 6px;color:#64748b">${dateLabel}${event.venue ? ` · ${event.venue.replace(/</g, "&lt;")}` : ""}</p>
-            <a href="/events/${encodeURIComponent(event.slug)}" style="font-size:12px;color:#047857;font-weight:500">View event →</a>
+          `<div style="min-width:220px;max-height:260px;overflow:auto">
+            <p style="font-weight:600;font-size:13px;margin:0 0 2px;color:#0f172a">${esc(venue)}</p>
+            <p style="font-size:11px;margin:0 0 8px;color:#64748b">${atPoint.length} events at this venue</p>
+            <ul style="margin:0;padding-left:16px;font-size:12px;color:#0f172a">${items}</ul>
           </div>`
-        );
+        )
+        .on("click", zoomToVenue);
     }
 
+    const points = [...groups.values()].map((g) => g.point);
     if (points.length > 0) {
       map.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 12 });
     }
@@ -71,7 +113,7 @@ export function EventMap({ events }: Props) {
       map.remove();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [located.map((e) => e.id).join(",")]);
+  }, [located.map((e) => `${e.id}:${e.latitude}:${e.longitude}`).join(",")]);
 
   const hidden = events.length - located.length;
 
@@ -82,6 +124,11 @@ export function EventMap({ events }: Props) {
         ref={containerRef}
         className="card-glass overflow-hidden h-[480px] sm:h-[560px] rounded-2xl"
       />
+      {located.length > 0 && (
+        <p className="text-slate-500 text-xs mt-3 text-center sm:text-left">
+          Click a numbered marker to zoom to the venue and see every event there.
+        </p>
+      )}
       {(located.length === 0 || hidden > 0) && (
         <p className="text-slate-500 text-xs mt-3 text-center sm:text-left">
           {located.length === 0

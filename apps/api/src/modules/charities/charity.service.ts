@@ -9,6 +9,7 @@ const select = {
   id: true,
   sourceId: true,
   name: true,
+  imageUrl: true,
   country: true,
   province: true,
   city: true,

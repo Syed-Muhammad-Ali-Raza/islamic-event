@@ -234,6 +234,7 @@ export interface Dastarkhwan {
   id: string;
   sourceId: string;
   name: string;
+  imageUrl: string | null;
   city: string;
   area: string | null;
   address: string;
@@ -253,6 +254,7 @@ export interface Imambargah {
   id: string;
   sourceId: string;
   name: string;
+  imageUrl: string | null;
   city: string;
   area: string | null;
   address: string;
@@ -273,6 +275,7 @@ export interface Place {
   id: string;
   sourceId: string;
   name: string;
+  imageUrl: string | null;
   category: string;
   type: string;
   city: string;
@@ -294,6 +297,7 @@ export interface Darbar {
   id: string;
   sourceId: string;
   name: string;
+  imageUrl: string | null;
   saint: string;
   saintDeathYear: string | null;
   ursDate: string | null;
@@ -312,6 +316,7 @@ export interface UrsDate {
   id: string;
   sourceId: string;
   name: string;
+  imageUrl: string | null;
   saint: string;
   saintDeathYear: string | null;
   city: string;
@@ -332,6 +337,7 @@ export interface Mela {
   id: string;
   sourceId: string;
   name: string;
+  imageUrl: string | null;
   type: string | null;
   city: string;
   province: string;
@@ -389,6 +395,7 @@ export interface Charity {
   id: string;
   sourceId: string;
   name: string;
+  imageUrl: string | null;
   country: string;
   province: string;
   city: string;
@@ -423,6 +430,7 @@ export interface Scholar {
   sourceId: string;
   slug: string;
   name: string;
+  imageUrl: string | null;
   nameUrdu: string | null;
   honorific: string | null;
   sect: string;

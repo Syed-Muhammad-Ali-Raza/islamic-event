@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as AdminController from "./admin.controller";
+import imageRoutes from "../images/directory-image.routes";
 import { requireAuth, requireSuperAdmin } from "../../middleware/auth.middleware";
 
 const router = Router();
@@ -19,5 +20,7 @@ router.patch("/users/:id/status", AdminController.updateUserStatus);
 
 router.get("/reports", AdminController.listReports);
 router.patch("/reports/:id", AdminController.resolveReport);
+
+router.use("/images", imageRoutes);
 
 export default router;

@@ -9,6 +9,7 @@ import {
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { useMelas, useAuqafUrsDates } from "@/hooks/useMelas";
+import { DirectoryPhoto } from "@/components/ui/DirectoryPhoto";
 import type { Mela, AuqafUrsDate, PaginatedResponse } from "@/types";
 
 const CITIES = [
@@ -241,6 +242,12 @@ export function MelaExplorer({
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {data.data.map((mela) => (
                 <div key={mela.id} className="card-glass p-5 flex flex-col gap-2.5">
+                  <DirectoryPhoto
+                    src={mela.imageUrl}
+                    alt={mela.name}
+                    icon={Tent}
+                    variant="banner"
+                  />
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="font-semibold text-slate-900 leading-snug">{mela.name}</h3>
                     {mela.verified ? (

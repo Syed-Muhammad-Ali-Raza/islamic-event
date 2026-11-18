@@ -11,6 +11,7 @@ const select = {
   sourceId: true,
   slug: true,
   name: true,
+  imageUrl: true,
   nameUrdu: true,
   honorific: true,
   sect: true,

@@ -9,6 +9,7 @@ import {
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { useScholars } from "@/hooks/useScholars";
+import { DirectoryPhoto } from "@/components/ui/DirectoryPhoto";
 import type { Scholar, PaginatedResponse } from "@/types";
 
 const SECTS = [
@@ -256,34 +257,37 @@ export function ScholarsExplorer({
               )}
             >
               <div>
-                <div className="flex items-start justify-between gap-2 mb-3">
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200/70">
-                    <MapPin size={11} className="text-amber-600" />
-                    <span>
-                      {clean(scholar.city) ?? clean(scholar.country) ?? t("scholars.unknownPlace")}
-                    </span>
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={clsx(
-                        "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold shrink-0",
-                        SECT_CHIP[scholar.sect] ?? "bg-slate-50 text-slate-600 border-slate-200"
-                      )}
-                    >
-                      {t(SECT_LABEL[scholar.sect] ?? "scholars.sectSunni")}
-                    </span>
+                <div className="flex items-start gap-3 mb-3">
+                  <DirectoryPhoto src={scholar.imageUrl} alt={scholar.name} icon={User} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200/70">
+                        <MapPin size={11} className="text-amber-600" />
+                        <span>
+                          {clean(scholar.city) ?? clean(scholar.country) ?? t("scholars.unknownPlace")}
+                        </span>
+                      </span>
+                      <span
+                        className={clsx(
+                          "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold shrink-0",
+                          SECT_CHIP[scholar.sect] ?? "bg-slate-50 text-slate-600 border-slate-200"
+                        )}
+                      >
+                        {t(SECT_LABEL[scholar.sect] ?? "scholars.sectSunni")}
+                      </span>
+                    </div>
+
+                    <h3 className="font-bold text-slate-900 text-lg leading-snug tracking-tight mb-1 group-hover:text-brand-700 transition-colors">
+                      {scholar.name}
+                    </h3>
+
+                    {scholar.nameUrdu && (
+                      <p className="text-sm text-slate-500 mb-2 font-medium" dir="rtl">
+                        {scholar.nameUrdu}
+                      </p>
+                    )}
                   </div>
                 </div>
-
-                <h3 className="font-bold text-slate-900 text-lg leading-snug tracking-tight mb-1 group-hover:text-brand-700 transition-colors">
-                  {scholar.name}
-                </h3>
-
-                {scholar.nameUrdu && (
-                  <p className="text-sm text-slate-500 mb-2 font-medium" dir="rtl">
-                    {scholar.nameUrdu}
-                  </p>
-                )}
 
                 <div className="flex flex-wrap items-center gap-1.5 mb-3">
                   {scholar.category && CATEGORY_CHIP[scholar.category] && (

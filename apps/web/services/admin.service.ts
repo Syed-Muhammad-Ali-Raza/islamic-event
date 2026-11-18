@@ -54,6 +54,38 @@ export interface AdminReport {
   user: { id: string; name: string; email: string } | null;
 }
 
+export type DirectoryImageEntityType =
+  | "scholar"
+  | "place"
+  | "dastarkhwan"
+  | "imambargah"
+  | "darbar"
+  | "ursDate"
+  | "charity"
+  | "mela"
+  | "event";
+
+export interface DirectoryImageItem {
+  entityType: DirectoryImageEntityType;
+  id: string;
+  name: string;
+  subtitle: string;
+  imageUrl: string | null;
+  hasImage: boolean;
+}
+
+export interface DirectoryImageUploadResult {
+  url: string;
+  publicId: string;
+  width: number;
+  height: number;
+  format: string;
+  bytes: number;
+  provider: string;
+  entityType: DirectoryImageEntityType;
+  entityId: string;
+}
+
 // ─── Service ──────────────────────────────────────────────────────────────────
 
 export const adminService = {
@@ -128,6 +160,34 @@ export const adminService = {
 
   async deleteCategory(id: string) {
     const res = await apiClient.delete<ApiSuccess<null>>(`/categories/${id}`);
+    return res.data.data;
+  },
+
+  async listDirectoryImages(entityType: DirectoryImageEntityType, q: string) {
+    const res = await apiClient.get<ApiSuccess<DirectoryImageItem[]>>("/admin/images", {
+      params: { entityType, q: q || undefined },
+    });
+    return res.data.data;
+  },
+
+  async uploadDirectoryImage(
+    entityType: DirectoryImageEntityType,
+    entityId: string,
+    file: File
+  ) {
+    const form = new FormData();
+    form.append("image", file);
+    form.append("entityType", entityType);
+    form.append("entityId", entityId);
+
+    const res = await apiClient.post<ApiSuccess<DirectoryImageUploadResult>>("/admin/images", form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data.data;
+  },
+
+  async removeDirectoryImage(entityType: DirectoryImageEntityType, entityId: string) {
+    const res = await apiClient.delete<ApiSuccess<null>>(`/admin/images/${entityType}/${entityId}`);
     return res.data.data;
   },
 };

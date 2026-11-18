@@ -10,6 +10,7 @@ import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { useDarbars } from "@/hooks/useDarbars";
 import { useUrsDates } from "@/hooks/useUrsDates";
+import { DirectoryPhoto } from "@/components/ui/DirectoryPhoto";
 import type { Darbar, PaginatedResponse, UrsDate } from "@/types";
 
 const PROVINCES = [
@@ -259,6 +260,14 @@ export function DarbarsExplorer({
                   )}
                 >
                   <div>
+                    <DirectoryPhoto
+                      src={darbar.imageUrl}
+                      alt={darbar.name}
+                      icon={Sparkles}
+                      variant="banner"
+                      className="mb-4"
+                    />
+
                     {/* Top Region Badge */}
                     <div className="flex items-start justify-between gap-2 mb-3">
                       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200/70">

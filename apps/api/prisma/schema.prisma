@@ -404,6 +404,8 @@ model Dastarkhwan {
   id            String   @id @default(cuid())
   sourceId      String   @unique
   name          String
+  imageUrl      String?
+  imagePublicId String?
   city          String
   area          String?
   address       String
@@ -440,6 +442,8 @@ model Imambargah {
   id                 String   @id @default(cuid())
   sourceId           String   @unique
   name               String
+  imageUrl           String?
+  imagePublicId      String?
   city               String
   area               String?
   address            String
@@ -477,6 +481,8 @@ model Place {
   id           String   @id @default(cuid())
   sourceId     String   @unique
   name         String
+  imageUrl     String?
+  imagePublicId String?
   category     String // Historical | Religious | Cultural | Natural / Tourist
   type         String
   city         String
@@ -517,6 +523,8 @@ model Darbar {
   id             String   @id @default(cuid())
   sourceId       String   @unique
   name           String
+  imageUrl       String?
+  imagePublicId  String?
   saint          String
   saintDeathYear String?
   ursDate        String?
@@ -553,6 +561,8 @@ model UrsDate {
   id              String   @id @default(cuid())
   sourceId        String   @unique
   name            String
+  imageUrl        String?
+  imagePublicId   String?
   saint           String
   saintDeathYear  String?
   city            String
@@ -632,6 +642,8 @@ model Charity {
   id              String   @id @default(cuid())
   sourceId        String   @unique
   name            String
+  imageUrl        String?
+  imagePublicId   String?
   country         String
   province        String
   city            String
@@ -673,6 +685,8 @@ model Mela {
   id             String   @id @default(cuid())
   sourceId       String   @unique
   name           String
+  imageUrl       String?
+  imagePublicId  String?
   type           String?
   city           String
   province       String
@@ -757,6 +771,8 @@ model Scholar {
   sourceId      String   @unique
   slug          String   @unique
   name          String
+  imageUrl      String?
+  imagePublicId String?
   nameUrdu      String?
   honorific     String?
   sect          String // SUNNI | SHIA

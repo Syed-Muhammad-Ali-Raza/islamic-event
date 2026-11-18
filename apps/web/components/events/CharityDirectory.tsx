@@ -12,6 +12,7 @@ import {
   Phone,
   User,
 } from "lucide-react";
+import { DirectoryPhoto } from "@/components/ui/DirectoryPhoto";
 import type { Charity } from "@/types";
 
 function CharityCard({ c }: { c: Charity }) {
@@ -21,6 +22,13 @@ function CharityCard({ c }: { c: Charity }) {
 
   return (
     <div className="card-glass p-5 flex flex-col">
+      <DirectoryPhoto
+        src={c.imageUrl}
+        alt={c.name}
+        icon={HeartHandshake}
+        variant="banner"
+        className="mb-4"
+      />
       <div className="flex items-start justify-between gap-3 mb-1">
         <h3 className="font-semibold text-slate-900 leading-snug">{c.name}</h3>
         {hundred && (

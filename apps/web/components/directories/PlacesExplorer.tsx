@@ -6,6 +6,7 @@ import { Search, MapPin, ExternalLink, AlertTriangle, Landmark, Clock, Ticket, B
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { usePlaces } from "@/hooks/usePlaces";
+import { DirectoryPhoto } from "@/components/ui/DirectoryPhoto";
 import type { PaginatedResponse, Place } from "@/types";
 
 const CATEGORIES = [
@@ -283,6 +284,14 @@ export function PlacesExplorer({
                 )}
               >
                 <div>
+                  <DirectoryPhoto
+                    src={place.imageUrl}
+                    alt={place.name}
+                    icon={Landmark}
+                    variant="banner"
+                    className="mb-4"
+                  />
+
                   {/* Location + UNESCO badge */}
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200/70 min-w-0">

@@ -1,5 +1,9 @@
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
-import { adminService, type AdminCategory } from "@/services/admin.service";
+import {
+  adminService,
+  type AdminCategory,
+  type DirectoryImageEntityType,
+} from "@/services/admin.service";
 import type { EventStatus } from "@/types";
 
 export const adminKeys = {
@@ -9,6 +13,8 @@ export const adminKeys = {
   users: (page: number) => ["admin", "users", page] as const,
   reports: (page: number) => ["admin", "reports", page] as const,
   categories: ["admin", "categories"] as const,
+  images: (entityType: DirectoryImageEntityType, q: string) =>
+    ["admin", "images", entityType, q] as const,
 };
 
 export function useAdminDashboard() {
@@ -106,6 +112,47 @@ export function useCategoryAction() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: adminKeys.categories });
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
+}
+
+export function useDirectoryImages(entityType: DirectoryImageEntityType, q: string) {
+  return useQuery({
+    queryKey: adminKeys.images(entityType, q),
+    queryFn: () => adminService.listDirectoryImages(entityType, q),
+    staleTime: 30_000,
+    placeholderData: keepPreviousData,
+  });
+}
+
+export type DirectoryImageAction =
+  | { type: "upload"; entityType: DirectoryImageEntityType; entityId: string; file: File }
+  | { type: "remove"; entityType: DirectoryImageEntityType; entityId: string };
+
+export function useDirectoryImageAction() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (action: DirectoryImageAction) => {
+      if (action.type === "upload") {
+        return adminService.uploadDirectoryImage(action.entityType, action.entityId, action.file);
+      }
+      return adminService.removeDirectoryImage(action.entityType, action.entityId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "images"] });
+      for (const root of [
+        "scholars",
+        "places",
+        "dastarkhwans",
+        "imambargahs",
+        "darbars",
+        "urs-dates",
+        "charities",
+        "melas",
+        "events",
+      ]) {
+        queryClient.invalidateQueries({ queryKey: [root] });
+      }
     },
   });
 }

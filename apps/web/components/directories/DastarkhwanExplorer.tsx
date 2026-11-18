@@ -6,6 +6,7 @@ import { Search, MapPin, Clock, ExternalLink, BadgeCheck, AlertTriangle, Soup } 
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { useDastarkhwans } from "@/hooks/useDastarkhwans";
+import { DirectoryPhoto } from "@/components/ui/DirectoryPhoto";
 import type { Dastarkhwan, PaginatedResponse } from "@/types";
 
 const CITIES = [
@@ -196,6 +197,14 @@ export function DastarkhwanExplorer({
                 )}
               >
                 <div>
+                  <DirectoryPhoto
+                    src={point.imageUrl}
+                    alt={point.name}
+                    icon={Soup}
+                    variant="banner"
+                    className="mb-4"
+                  />
+
                   {/* Location + trust badge */}
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200/70 min-w-0">

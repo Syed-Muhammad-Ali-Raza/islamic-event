@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { CalendarDays, ArrowRight, MapPin, Sparkles } from "lucide-react";
+import { DirectoryPhoto } from "@/components/ui/DirectoryPhoto";
 import type { UrsDate } from "@/types";
 
 const CONFIDENCE_CHIP: Record<string, { labelKey: string; className: string }> = {
@@ -64,6 +65,12 @@ export function UpcomingUrs({ dates }: { dates: UrsDate[] }) {
             <span className="inline-flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-tr from-brand-700 to-emerald-600 text-white text-base font-bold shrink-0 shadow-xs">
               #{u.upcomingOrder}
             </span>
+            <DirectoryPhoto
+              src={u.imageUrl}
+              alt={u.name}
+              icon={Sparkles}
+              variant="compact"
+            />
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="font-bold text-slate-900 text-base">{u.name}</p>

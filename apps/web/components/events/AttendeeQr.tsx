@@ -41,7 +41,7 @@ export function AttendeeQr({ eventId }: { eventId: string }) {
         </span>
       ) : (
         <span className="text-[11px] text-slate-500 text-center max-w-[240px]">
-          Show this code at the entrance — organizers will scan it to check you in.
+          Show this code at the entrance, organizers will scan it to check you in.
         </span>
       )}
     </div>

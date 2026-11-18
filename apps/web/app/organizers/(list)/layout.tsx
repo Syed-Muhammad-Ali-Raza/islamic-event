@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Event Organizers",
   description:
-    "Browse the organizations publishing Majlis, Milad, Dars, Urs and community events on Community Events — verified organizers across Pakistan and worldwide.",
+    "Browse the organizations publishing Majlis, Milad, Dars, Urs and community events on Community Events, verified organizers across Pakistan and worldwide.",
   alternates: { canonical: "/organizers" },
   openGraph: {
     title: "Event Organizers | Community Events",

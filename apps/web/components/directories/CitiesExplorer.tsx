@@ -73,7 +73,7 @@ export function CitiesExplorer({ cities }: { cities: CitySummary[] }) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search a city — Lahore, Abbottabad, Gilgit…"
+          placeholder="Search a city, Lahore, Abbottabad, Gilgit…"
           aria-label="Search cities"
           className="input pl-10 pr-9"
         />

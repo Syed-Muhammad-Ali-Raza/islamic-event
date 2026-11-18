@@ -57,8 +57,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const city = await getCity(slug);
   if (!city) return { title: "City not found" };
 
-  const title = `${city.name} — Events, Places & Community`;
-  const description = `Discover religious and community events in ${city.name}, ${city.state} — Majlis, Milad, Dars and more, plus free food points, imambargahs and places. ${city.eventCount} event${city.eventCount === 1 ? "" : "s"} listed.`;
+  const title = `${city.name}, Events, Places & Community`;
+  const description = `Discover religious and community events in ${city.name}, ${city.state}, Majlis, Milad, Dars and more, plus free food points, imambargahs and places. ${city.eventCount} event${city.eventCount === 1 ? "" : "s"} listed.`;
 
   return {
     title,
@@ -205,7 +205,7 @@ async function CityHub({ slug }: { slug: string }) {
             <CalendarDays className="mx-auto mb-4 h-12 w-12 text-slate-300" aria-hidden="true" />
             <p className="text-lg font-medium text-slate-900">No events in {city.name} yet</p>
             <p className="text-slate-500 text-sm mt-1">
-              Be the first — publish an event for your community.
+              Be the first, publish an event for your community.
             </p>
             <Link href="/events/create" className="btn-primary mt-5 inline-flex">
               Create Event
@@ -326,7 +326,7 @@ async function CityHub({ slug }: { slug: string }) {
 
         {!hasDirectoryData && (
           <p className="text-xs text-slate-400 mt-4">
-            Directory data for {city.name} is being curated — check back soon.
+            Directory data for {city.name} is being curated, check back soon.
           </p>
         )}
       </section>

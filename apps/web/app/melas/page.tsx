@@ -9,7 +9,7 @@ import type { Mela, AuqafUrsDate } from "@/types";
 
 const title = "Melas & Festivals of Pakistan";
 const description =
-  "Traditional melas, festivals and fairs across Pakistan — Lahore, Karachi, Multan and more, with the Punjab Auqaf urs calendar, built from public sources.";
+  "Traditional melas, festivals and fairs across Pakistan, Lahore, Karachi, Multan and more, with the Punjab Auqaf urs calendar, built from public sources.";
 
 export const metadata: Metadata = {
   title,

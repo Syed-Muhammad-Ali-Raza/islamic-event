@@ -35,18 +35,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const location = [organizer.city?.name, organizer.country?.name].filter(Boolean).join(", ");
 
   return {
-    title: `${organizer.name} — Organizer`,
+    title: `${organizer.name}, Organizer`,
     description:
       organizer.description ??
-      `${organizer.name}${location ? ` — events in ${location}` : ""}. Discover upcoming events published by this organizer.`,
+      `${organizer.name}${location ? `, events in ${location}` : ""}. Discover upcoming events published by this organizer.`,
     alternates: {
       canonical: `/organizers/${slug}`,
     },
     openGraph: {
-      title: `${organizer.name} — Organizer | Community Events`,
+      title: `${organizer.name}, Organizer | Community Events`,
       description:
         organizer.description ??
-        `${organizer.name}${location ? ` — events in ${location}` : ""}. Discover upcoming events published by this organizer.`,
+        `${organizer.name}${location ? `, events in ${location}` : ""}. Discover upcoming events published by this organizer.`,
       url: `/organizers/${slug}`,
     },
   };

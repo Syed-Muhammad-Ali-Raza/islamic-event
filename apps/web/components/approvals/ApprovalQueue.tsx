@@ -150,7 +150,7 @@ export function ApprovalQueue({
                 </div>
                 <p className="mt-0.5 text-xs text-slate-500">
                   {t("approvals.submittedOn", { date: new Date(row.createdAt).toLocaleDateString() })}
-                  {row.rejectionReason ? ` — ${row.rejectionReason}` : ""}
+                  {row.rejectionReason ? `, ${row.rejectionReason}` : ""}
                 </p>
               </div>
 

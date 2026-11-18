@@ -9,7 +9,7 @@ import type { Imambargah } from "@/types";
 
 const title = "Imambargahs";
 const description =
-  "Historic and notable imambargahs / karbalas of Pakistan — Lahore, Karachi, Rawalpindi, Islamabad, Peshawar, Quetta and Hyderabad, built from public news, heritage and map sources.";
+  "Historic and notable imambargahs / karbalas of Pakistan, Lahore, Karachi, Rawalpindi, Islamabad, Peshawar, Quetta and Hyderabad, built from public news, heritage and map sources.";
 
 export const metadata: Metadata = {
   title,

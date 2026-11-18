@@ -318,7 +318,7 @@ export function PlacesExplorer({
                       <Building2 size={12} className="text-slate-400 shrink-0" aria-hidden />
                       <span>
                         {t("places.built")}: {place.builtYear}
-                        {clean(place.builtBuilder) ? ` — ${place.builtBuilder}` : ""}
+                        {clean(place.builtBuilder) ? `, ${place.builtBuilder}` : ""}
                       </span>
                     </p>
                   )}

@@ -24,13 +24,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     : city
       ? `Events in ${city}`
       : category
-        ? `Events — ${category}`
+        ? `Events, ${category}`
         : "Discover Events";
   const description = search
-    ? `Browse religious and community events matching “${search}” — Majlis, Milad, Dars and more.`
+    ? `Browse religious and community events matching “${search}”, Majlis, Milad, Dars and more.`
     : city
-      ? `Browse upcoming religious and community events in ${city} — Majlis, Milad, Dars, Urs and more.`
-      : "Search and filter religious and community events — Majlis, Milad, Dars, Quran Khwani, Iftar, Urs and more, near you.";
+      ? `Browse upcoming religious and community events in ${city}, Majlis, Milad, Dars, Urs and more.`
+      : "Search and filter religious and community events, Majlis, Milad, Dars, Quran Khwani, Iftar, Urs and more, near you.";
 
   return {
     title,

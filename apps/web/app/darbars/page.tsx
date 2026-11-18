@@ -9,7 +9,7 @@ import type { Darbar, UrsDate } from "@/types";
 
 const title = "Darbars & Urs Calendar";
 const description =
-  "Shrines (darbars) of Pakistan and the upcoming Urs calendar — saints, cities, provinces and researched urs dates, built from public heritage sources.";
+  "Shrines (darbars) of Pakistan and the upcoming Urs calendar, saints, cities, provinces and researched urs dates, built from public heritage sources.";
 
 export const metadata: Metadata = {
   title,

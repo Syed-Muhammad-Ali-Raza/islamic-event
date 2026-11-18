@@ -125,7 +125,7 @@ export function CategoryEvents({
           <p className="text-sm mt-1">
             {isFiltered
               ? "Try different search terms or clear the search."
-              : "Check back soon — or be the first to publish one."}
+              : "Check back soon, or be the first to publish one."}
           </p>
           {isFiltered ? (
             <button type="button" onClick={clearSearch} className="btn-secondary mt-5">

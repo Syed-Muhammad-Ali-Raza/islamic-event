@@ -28,7 +28,7 @@ const bingVerification = process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION;
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: "Community Events — Religious & Community Events Platform",
+    default: "Community Events, Religious & Community Events Platform",
     template: "%s | Community Events",
   },
   description:
@@ -46,14 +46,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Community Events",
-    title: "Community Events — Religious & Community Events Platform",
+    title: "Community Events, Religious & Community Events Platform",
     description: "Discover religious and community events near you.",
     url: "/",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Community Events — Religious & Community Events Platform",
+    title: "Community Events, Religious & Community Events Platform",
     description: "Discover religious and community events near you.",
   },
   robots: {

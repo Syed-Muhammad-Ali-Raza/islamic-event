@@ -94,7 +94,7 @@ export function EventLocationPicker({ address, venue, cityName, latitude, longit
   const geocode = async () => {
     const q = [address || venue, cityName, "Pakistan"].filter(Boolean).join(", ").trim();
     if (!q || q === "Pakistan") {
-      setGeoMsg("Add an address, venue or city first — or click the map to drop a pin.");
+      setGeoMsg("Add an address, venue or city first, or click the map to drop a pin.");
       return;
     }
     setGeocoding(true);
@@ -111,10 +111,10 @@ export function EventLocationPicker({ address, venue, cityName, latitude, longit
         );
         setGeoMsg("");
       } else {
-        setGeoMsg("Location not found — click the map to place the pin manually.");
+        setGeoMsg("Location not found, click the map to place the pin manually.");
       }
     } catch {
-      setGeoMsg("Geocoding failed — click the map to place the pin manually.");
+      setGeoMsg("Geocoding failed, click the map to place the pin manually.");
     } finally {
       setGeocoding(false);
     }
@@ -151,7 +151,7 @@ export function EventLocationPicker({ address, venue, cityName, latitude, longit
         </div>
       </div>
       <p className="text-slate-500 text-xs mb-2">
-        Optional — pins your event on city maps. Auto-fill from your address, or click the map / drag the pin to set
+        Optional, pins your event on city maps. Auto-fill from your address, or click the map / drag the pin to set
         it exactly.
       </p>
 
@@ -163,7 +163,7 @@ export function EventLocationPicker({ address, venue, cityName, latitude, longit
             <MapPin size={12} /> {latitude?.toFixed(5)}, {longitude?.toFixed(5)}
           </span>
         ) : (
-          <span className="text-xs text-slate-400">No location set — click the map to drop a pin.</span>
+          <span className="text-xs text-slate-400">No location set, click the map to drop a pin.</span>
         )}
         {geoMsg && <span className="text-xs text-amber-600">{geoMsg}</span>}
       </div>

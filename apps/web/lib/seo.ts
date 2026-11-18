@@ -14,7 +14,7 @@ export function organizationJsonLd(): JsonLd {
     url: APP_URL,
     logo: `${APP_URL}/icon`,
     description:
-      "Discover and share religious and community events — Majlis, Milad, Mehfil-e-Naat, Dars, Urs and more.",
+      "Discover and share religious and community events, Majlis, Milad, Mehfil-e-Naat, Dars, Urs and more.",
   };
 }
 

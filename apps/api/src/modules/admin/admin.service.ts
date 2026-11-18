@@ -69,7 +69,7 @@ async function notifyCreatorOfStatus(
     userId: event.createdById,
     type: `EVENT_${status}` as "EVENT_APPROVED" | "EVENT_REJECTED" | "EVENT_CANCELLED",
     title: titles[status],
-    body: reason ? `"${event.title}" — ${reason}` : `"${event.title}"`,
+    body: reason ? `"${event.title}", ${reason}` : `"${event.title}"`,
     link: `/events/${event.slug}`,
   });
 

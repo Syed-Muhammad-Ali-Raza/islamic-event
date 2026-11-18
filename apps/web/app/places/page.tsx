@@ -9,7 +9,7 @@ import type { Place } from "@/types";
 
 const title = "Pakistan Places";
 const description =
-  "Historical, religious, cultural and natural places across Pakistan — forts, shrines, museums, valleys and more, with UNESCO status, timings and map links.";
+  "Historical, religious, cultural and natural places across Pakistan, forts, shrines, museums, valleys and more, with UNESCO status, timings and map links.";
 
 export const metadata: Metadata = {
   title,

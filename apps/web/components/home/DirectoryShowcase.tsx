@@ -52,7 +52,7 @@ export function DirectoryShowcase() {
     {
       title: "Shia & Sunni Scholars",
       subtitle: "96 Biographies & Works",
-      description: "Marja, khateebs, writers and teachers with bios, works and source links — both sects in one directory.",
+      description: "Marja, khateebs, writers and teachers with bios, works and source links, both sects in one directory.",
       href: "/scholars",
       icon: BookOpen,
       tag: "Directory",

@@ -162,7 +162,7 @@ export function CharityDirectory({
   const groups = useMemo(() => {
     const map = new Map<string, Charity[]>();
     for (const c of filtered) {
-      const key = `${c.province} — ${c.city}`;
+      const key = `${c.province}, ${c.city}`;
       if (!map.has(key)) map.set(key, []);
       map.get(key)!.push(c);
     }

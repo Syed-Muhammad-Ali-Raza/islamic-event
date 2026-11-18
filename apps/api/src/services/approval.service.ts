@@ -663,7 +663,7 @@ async function announcePendingSubmission(
       title:
         kind === "created"
           ? "New submission to review"
-          : "Submission updated — review requested",
+          : "Submission updated, review requested",
       body: `"${row.name}" (${entry.label}) is awaiting approval.`,
       link: "/approvals",
     })

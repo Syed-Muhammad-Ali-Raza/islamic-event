@@ -252,7 +252,7 @@ export async function createEvent(input: CreateEventInput, requester: EventReque
       userId: member.id,
       type: "NEW_EVENT",
       title: "New event submitted for your organization",
-      body: `"${event.title}" by ${submitter?.name ?? "a member"} — awaiting platform review.`,
+      body: `"${event.title}" by ${submitter?.name ?? "a member"}, awaiting platform review.`,
       link: "/profile/events",
     });
   }
@@ -699,7 +699,7 @@ export async function checkInAttendee(
 
   if (rsvp.type !== "ATTENDING") {
     throw Errors.conflict(
-      "This person RSVP'd as Interested only — ask them to switch to Attending first.",
+      "This person RSVP'd as Interested only, ask them to switch to Attending first.",
       "RSVP_NOT_ATTENDING"
     );
   }

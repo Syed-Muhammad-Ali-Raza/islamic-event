@@ -63,7 +63,7 @@ export async function runEventReminders(now = new Date()): Promise<{ sent: numbe
         userId: rsvp.user.id,
         type: "EVENT_REMINDER",
         title: "Event reminder",
-        body: `"${event.title}" is coming up — ${label}`,
+        body: `"${event.title}" is coming up, ${label}`,
         link: `/events/${event.slug}`,
       });
       await sendEventReminderEmail({

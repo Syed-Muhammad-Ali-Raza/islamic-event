@@ -8,7 +8,7 @@ import type { CitySummary } from "@/types";
 
 const title = "Events by City";
 const description =
-  "Browse religious and community events by city across Pakistan and beyond — Lahore, Karachi, Islamabad, Rawalpindi, Multan and more.";
+  "Browse religious and community events by city across Pakistan and beyond, Lahore, Karachi, Islamabad, Rawalpindi, Multan and more.";
 
 export const metadata: Metadata = {
   title,
@@ -49,7 +49,7 @@ export default async function CitiesIndexPage() {
           <MapPinned size={26} className="text-brand-600" /> Events by City
         </h1>
         <p className="text-slate-500 text-sm">
-          {cities.length} cities across Pakistan — search or pick a province to find events, free
+          {cities.length} cities across Pakistan, search or pick a province to find events, free
           food points, imambargahs and places near you
           {withEvents > 0 ? ` · ${withEvents} with upcoming events` : ""}.
         </p>

@@ -19,7 +19,7 @@ export default function Error({
       <AlertTriangle className="mx-auto mb-4 h-12 w-12 text-amber-500" aria-hidden="true" />
       <h1 className="text-2xl font-bold text-slate-900 mb-2">Something went wrong</h1>
       <p className="text-slate-500 text-sm max-w-md mx-auto">
-        An unexpected error occurred. Please try again — if the problem persists, come back later.
+        An unexpected error occurred. Please try again, if the problem persists, come back later.
       </p>
       <button onClick={reset} className="btn-primary mt-6">
         Try Again

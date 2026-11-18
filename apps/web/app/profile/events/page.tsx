@@ -106,7 +106,7 @@ function RsvpPanel({ eventId, eventTitle }: { eventId: string; eventTitle: strin
       setScanning(true);
     } catch {
       setScanning(false);
-      setScanMsg({ kind: "error", text: "Camera unavailable — paste the code instead." });
+      setScanMsg({ kind: "error", text: "Camera unavailable, paste the code instead." });
     }
   };
 
@@ -205,7 +205,7 @@ function RsvpPanel({ eventId, eventTitle }: { eventId: string; eventTitle: strin
       )}
 
       {rsvps.length === 0 ? (
-        <p className="text-slate-500 text-xs mt-2">No RSVPs yet — share this event to spread the word.</p>
+        <p className="text-slate-500 text-xs mt-2">No RSVPs yet, share this event to spread the word.</p>
       ) : (
         <ul className="mt-2 divide-y divide-slate-200/70">
           {rsvps.map((rsvp) => (
@@ -362,7 +362,7 @@ function MyEventsContent() {
 
                   {event.status === "PENDING_REVIEW" && (
                     <p className="text-yellow-700 text-xs mt-2">
-                      Awaiting admin approval — this event is not publicly visible yet.
+                      Awaiting admin approval, this event is not publicly visible yet.
                     </p>
                   )}
                   {event.status === "REJECTED" && (

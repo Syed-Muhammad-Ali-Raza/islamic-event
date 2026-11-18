@@ -7,9 +7,9 @@ import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
 import { fetchList, buildQuery, sanitizePage } from "@/lib/server-api";
 import type { Scholar } from "@/types";
 
-const title = "Scholars — Shia & Sunni";
+const title = "Scholars, Shia & Sunni";
 const description =
-  "Directory of notable Shia and Sunni scholars — marja, khateebs and writers with bios, works and source links, built from public encyclopaedia sources.";
+  "Directory of notable Shia and Sunni scholars, marja, khateebs and writers with bios, works and source links, built from public encyclopaedia sources.";
 
 export const metadata: Metadata = {
   title,

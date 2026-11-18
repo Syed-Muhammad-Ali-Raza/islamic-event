@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description =
     event.description?.slice(0, 160) ||
-    `${event.title} — ${format(new Date(event.date), "EEEE, dd MMMM yyyy")}${
+    `${event.title}, ${format(new Date(event.date), "EEEE, dd MMMM yyyy")}${
       event.endDate ? ` – ${format(new Date(event.endDate), "EEEE, dd MMMM yyyy")}` : ""
     }${event.venue ? ` at ${event.venue}` : ""}. Discover religious and community events near you.`;
 

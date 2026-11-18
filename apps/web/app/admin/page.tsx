@@ -15,7 +15,7 @@ export default function AdminDashboardPage() {
     { label: "Total Users", value: data?.totalUsers, icon: Users, color: "text-brand-600", bg: "bg-brand-500/10", href: "/admin/users" },
     { label: "Organizers", value: data?.totalOrganizers, icon: Building2, color: "text-blue-600", bg: "bg-blue-500/10", href: "/admin" },
     { label: "Pending Reports", value: data?.pendingReports, icon: Flag, color: "text-orange-600", bg: "bg-orange-500/10", href: "/admin/reports" },
-    { label: "Approval Rate", value: data && data.totalEvents > 0 ? `${Math.round((data.approvedEvents / data.totalEvents) * 100)}%` : "—", icon: TrendingUp, color: "text-gold-400", bg: "bg-yellow-500/10", href: "/admin/events" },
+    { label: "Approval Rate", value: data && data.totalEvents > 0 ? `${Math.round((data.approvedEvents / data.totalEvents) * 100)}%` : "N/A", icon: TrendingUp, color: "text-gold-400", bg: "bg-yellow-500/10", href: "/admin/events" },
   ];
 
   return (
@@ -41,7 +41,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
               <p className="text-2xl font-bold text-slate-900">
-                {isLoading ? "—" : stat.value ?? "—"}
+                {isLoading ? "N/A" : stat.value ?? "N/A"}
               </p>
               <p className="text-slate-500 text-xs mt-1 group-hover:text-slate-600 transition-colors">
                 {stat.label}

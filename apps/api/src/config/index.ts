@@ -84,13 +84,13 @@ const EnvSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: [key],
-          message: `must be at least 32 characters in production (got ${value.length}) — generate a random secret, e.g. "openssl rand -hex 32"`,
+          message: `must be at least 32 characters in production (got ${value.length}), generate a random secret, e.g. "openssl rand -hex 32"`,
         });
       } else if (looksLikePlaceholder(value)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: [key],
-          message: "is a placeholder value in production — generate a random secret",
+          message: "is a placeholder value in production, generate a random secret",
         });
       }
     }
@@ -115,7 +115,7 @@ function loadEnv(): z.infer<typeof EnvSchema> {
   if (parsed.data.NODE_ENV === "development") {
     if (looksLikePlaceholder(parsed.data.JWT_ACCESS_SECRET) || looksLikePlaceholder(parsed.data.JWT_REFRESH_SECRET)) {
       console.warn(
-        "[config] JWT secrets look like placeholders — fine for local dev, rejected when NODE_ENV=production"
+        "[config] JWT secrets look like placeholders, fine for local dev, rejected when NODE_ENV=production"
       );
     }
   }

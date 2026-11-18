@@ -118,7 +118,7 @@ function ProfileContent() {
           <div>
             <dt className="text-slate-500 text-xs uppercase tracking-wider mb-1">Member Since</dt>
             <dd className="text-slate-800">
-              {user?.createdAt ? format(new Date(user.createdAt), "MMMM yyyy") : "—"}
+              {user?.createdAt ? format(new Date(user.createdAt), "MMMM yyyy") : "N/A"}
             </dd>
           </div>
         </dl>

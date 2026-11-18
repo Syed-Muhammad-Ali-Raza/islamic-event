@@ -9,7 +9,7 @@ import type { Dastarkhwan } from "@/types";
 
 const title = "Free Dastarkhwan";
 const description =
-  "Free food points (dastarkhwan / langar) for the poor and needy across Lahore, Karachi, Faisalabad and Multan — community-sourced directory with map links.";
+  "Free food points (dastarkhwan / langar) for the poor and needy across Lahore, Karachi, Faisalabad and Multan, community-sourced directory with map links.";
 
 export const metadata: Metadata = {
   title,

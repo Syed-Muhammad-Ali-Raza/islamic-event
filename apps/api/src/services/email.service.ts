@@ -29,12 +29,12 @@ export function emailProvider(): EmailProvider {
 // lost, and nothing in the logs says so at boot.
 if (config.nodeEnv === "production" && emailProvider() === "outbox") {
   console.warn(
-    "[email] No email transport configured — outbound email is disabled. " +
+    "[email] No email transport configured, outbound email is disabled. " +
       "Set BREVO_API_KEY (preferred) or SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS, plus EMAIL_FROM."
   );
 } else if (config.nodeEnv === "production" && config.smtp.host && !config.smtp.pass) {
   console.warn(
-    "[email] SMTP_HOST is set but SMTP_PASS is empty — falling back to the outbox (no delivery)."
+    "[email] SMTP_HOST is set but SMTP_PASS is empty, falling back to the outbox (no delivery)."
   );
 }
 
@@ -159,7 +159,7 @@ export async function sendEmailStrict(email: RawEmail): Promise<EmailProvider> {
     return "smtp";
   }
   throw new Error(
-    "No email transport configured — set BREVO_API_KEY or SMTP_HOST/SMTP_USER/SMTP_PASS before sending."
+    "No email transport configured, set BREVO_API_KEY or SMTP_HOST/SMTP_USER/SMTP_PASS before sending."
   );
 }
 
@@ -192,7 +192,7 @@ export async function sendEmail(email: RawEmail): Promise<void> {
     // delivered, so make it loud in the logs instead of failing silently.
     if (config.nodeEnv === "production") {
       console.error(
-        `[email] No email transport configured — "${email.subject}" to ${email.to} was NOT sent. ` +
+        `[email] No email transport configured, "${email.subject}" to ${email.to} was NOT sent. ` +
           "Set BREVO_API_KEY (preferred) or SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS."
       );
     }
@@ -264,7 +264,7 @@ export async function sendVerificationEmail(opts: {
   const link = `${config.app.url}/verify-email?token=${encodeURIComponent(opts.token)}`;
   await sendEmail({
     to: opts.to,
-    subject: "Verify your email — Community Events",
+    subject: "Verify your email, Community Events",
     html: layout(
       "Verify your email address",
       paragraph(`Assalamu Alaikum ${opts.name},`) +
@@ -284,13 +284,13 @@ export async function sendPasswordResetEmail(opts: {
   const link = `${config.app.url}/reset-password?token=${encodeURIComponent(opts.token)}`;
   await sendEmail({
     to: opts.to,
-    subject: "Reset your password — Community Events",
+    subject: "Reset your password, Community Events",
     html: layout(
       "Reset your password",
       paragraph(`Assalamu Alaikum ${opts.name},`) +
         paragraph("We received a request to reset your password. Click the button below to choose a new one.") +
         button(link, "Reset Password") +
-        smallNote(`This link expires in 1 hour. If you didn't request this, you can safely ignore this email — your password will not change.`)
+        smallNote(`This link expires in 1 hour. If you didn't request this, you can safely ignore this email, your password will not change.`)
     ),
     text: `Reset your password: ${link}`,
   });
@@ -316,7 +316,7 @@ export async function sendEventStatusEmail(opts: {
   };
   await sendEmail({
     to: opts.to,
-    subject: `${titles[opts.status]} — ${opts.eventTitle}`,
+    subject: `${titles[opts.status]}, ${opts.eventTitle}`,
     html: layout(
       titles[opts.status],
       paragraph(`Assalamu Alaikum ${opts.name},`) +
@@ -338,7 +338,7 @@ export async function sendNewEventAdminEmail(opts: {
 }): Promise<void> {
   await sendEmail({
     to: opts.to,
-    subject: `New event awaiting review — ${opts.eventTitle}`,
+    subject: `New event awaiting review, ${opts.eventTitle}`,
     html: layout(
       "New event awaiting review",
       paragraph(`Assalamu Alaikum ${opts.adminName},`) +
@@ -392,6 +392,6 @@ export async function sendEventReminderEmail(opts: {
         button(opts.eventUrl, "View Event") +
         smallNote(`Please show the QR code on the event page at the entrance for quick check-in.`)
     ),
-    text: `Reminder: ${opts.eventTitle} — ${opts.whenLabel}`,
+    text: `Reminder: ${opts.eventTitle}, ${opts.whenLabel}`,
   });
 }

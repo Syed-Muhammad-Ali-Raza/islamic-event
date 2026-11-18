@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${category.name} Events`,
     description:
       category.description ??
-      `Discover ${category.name} events — gatherings, community programmes and more.`,
+      `Discover ${category.name} events, gatherings, community programmes and more.`,
     alternates: {
       canonical: `/categories/${category.slug}`,
     },
@@ -78,7 +78,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${category.name} Events | Community Events`,
       description:
         category.description ??
-        `Discover ${category.name} events — gatherings, community programmes and more.`,
+        `Discover ${category.name} events, gatherings, community programmes and more.`,
       url: `/categories/${category.slug}`,
     },
   };

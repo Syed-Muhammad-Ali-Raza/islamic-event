@@ -43,7 +43,7 @@ export default async function CategoriesPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-900 mb-2">Categories</h1>
         <p className="text-slate-500 text-sm">
-          Find events by type — from weekly Majlis to annual Urs celebrations
+          Find events by type, from weekly Majlis to annual Urs celebrations
         </p>
       </div>
 

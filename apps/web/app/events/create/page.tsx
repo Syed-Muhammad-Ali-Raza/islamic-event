@@ -312,7 +312,7 @@ function CreateEventContent() {
               id="event-description"
               label="Description"
               rows={6}
-              placeholder="Describe the event — schedule, speakers, who it's for, any special arrangements…"
+              placeholder="Describe the event, schedule, speakers, who it's for, any special arrangements…"
               hint="Optional but recommended. Up to 5000 characters."
               error={errors.description?.message}
               {...register("description")}
@@ -336,7 +336,7 @@ function CreateEventContent() {
                 id="event-end-date"
                 label="End Date"
                 type="date"
-                hint="Optional — last day, for multi-day events"
+                hint="Optional, last day, for multi-day events"
                 error={errors.endDate?.message}
                 min={watchedValues.date || undefined}
                 {...register("endDate")}
@@ -361,7 +361,7 @@ function CreateEventContent() {
               id="event-venue"
               label="Venue"
               placeholder="e.g. Masjid-e-Noor, Block C, Gulberg"
-              hint="Optional — the venue name and landmark"
+              hint="Optional, the venue name and landmark"
               error={errors.venue?.message}
               {...register("venue")}
             />
@@ -371,7 +371,7 @@ function CreateEventContent() {
               label="City"
               options={cityOptions}
               placeholder={cityOptions.length ? "Choose your city (optional)" : "Loading cities…"}
-              hint="Recommended — lists your event on city pages and the map"
+              hint="Recommended, lists your event on city pages and the map"
               error={errors.cityId?.message}
               {...register("cityId")}
             />
@@ -381,7 +381,7 @@ function CreateEventContent() {
               label="Full Address"
               rows={3}
               placeholder="Street, area, city…"
-              hint="Optional — helps attendees find the location"
+              hint="Optional, helps attendees find the location"
               error={errors.address?.message}
               {...register("address")}
             />
@@ -429,7 +429,7 @@ function CreateEventContent() {
               >
                 <ImagePlus size={32} />
                 <span className="text-sm font-medium">Click to upload a poster</span>
-                <span className="text-xs">JPG, PNG or WebP — up to 10MB</span>
+                <span className="text-xs">JPG, PNG or WebP, up to 10MB</span>
               </button>
             )}
 
@@ -457,7 +457,7 @@ function CreateEventContent() {
               <ReviewRow label="Title" value={watchedValues.title} />
               <ReviewRow
                 label="Category"
-                value={categoryOptions.find((c) => c.value === watchedValues.categoryId)?.label ?? "—"}
+                value={categoryOptions.find((c) => c.value === watchedValues.categoryId)?.label ?? "N/A"}
               />
               <ReviewRow
                 label="Date"
@@ -498,7 +498,7 @@ function CreateEventContent() {
               />
               <ReviewRow
                 label="Poster"
-                value={posterFile ? posterFile.name : "No poster — a default will be shown"}
+                value={posterFile ? posterFile.name : "No poster, a default will be shown"}
               />
             </div>
 
@@ -549,7 +549,7 @@ function ReviewRow({ label, value, multiline }: { label: string; value?: string;
   return (
     <div className={clsx("flex gap-3", multiline && "flex-col")}>
       <span className="text-slate-500 w-28 shrink-0">{label}</span>
-      <span className={clsx("text-slate-800", multiline && "whitespace-pre-line")}>{value || "—"}</span>
+      <span className={clsx("text-slate-800", multiline && "whitespace-pre-line")}>{value || "N/A"}</span>
     </div>
   );
 }

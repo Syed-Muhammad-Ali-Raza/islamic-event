@@ -1,4 +1,4 @@
-import { api, unique, registerUser, createSuperAdmin } from "./helpers";
+import { api, unique, registerUser, createSuperAdmin, authHeader } from "./helpers";
 import { prisma } from "../src/config/prisma";
 import bcrypt from "bcryptjs";
 
@@ -79,5 +79,66 @@ describe("Security: origin guard", () => {
       .send({ name: `Org ${unique("org")}` });
     expect(res.status).toBe(201);
     expect(res.body.code).not.toBe("ORIGIN_REJECTED");
+  });
+});
+
+describe("Security: admin-only writes", () => {
+  it("blocks non-admins from creating or editing people", async () => {
+    const user = await registerUser("peopleuser");
+    const name = `Person ${unique("person")}`;
+
+    const create = await api()
+      .post("/api/v1/people")
+      .set(authHeader(user.token))
+      .send({ name });
+    expect(create.status).toBe(403);
+
+    const person = await prisma.person.create({ data: { name, slug: unique("personslug") } });
+    try {
+      const patch = await api()
+        .patch(`/api/v1/people/${person.id}`)
+        .set(authHeader(user.token))
+        .send({ description: "unauthorized edit" });
+      expect(patch.status).toBe(403);
+    } finally {
+      await prisma.person.delete({ where: { id: person.id } });
+    }
+  });
+
+  it("allows a super admin to create a person", async () => {
+    const admin = await createSuperAdmin("peopleadmin");
+    const res = await api()
+      .post("/api/v1/people")
+      .set(authHeader(admin.token))
+      .send({ name: `Person ${unique("person")}` });
+    expect(res.status).toBe(201);
+    await prisma.person.delete({ where: { id: res.body.data.id } });
+  });
+});
+
+describe("Security: email token hygiene", () => {
+  it("never returns verification or reset tokens in auth responses", async () => {
+    const user = await registerUser("tokenhygiene");
+    const row = await prisma.user.findUnique({ where: { email: user.email } });
+    expect(row?.verificationToken).toBeTruthy();
+
+    const me = await api().get("/api/v1/auth/me").set(authHeader(user.token));
+    expect(me.body.data.verificationToken).toBeUndefined();
+
+    const forgot = await api().post("/api/v1/auth/forgot-password").send({ email: user.email });
+    expect(forgot.status).toBe(200);
+    expect(JSON.stringify(forgot.body).toLowerCase()).not.toContain("token");
+
+    const badVerify = await api()
+      .post("/api/v1/auth/verify-email")
+      .send({ token: "not-a-real-token" });
+    expect(badVerify.status).toBe(400);
+    expect(badVerify.body.data).toBeUndefined();
+
+    const badReset = await api()
+      .post("/api/v1/auth/reset-password")
+      .send({ token: "not-a-real-token", password: "NewPass123!" });
+    expect(badReset.status).toBe(400);
+    expect(badReset.body.data).toBeUndefined();
   });
 });

@@ -160,8 +160,14 @@ describe("Password reset flow", () => {
     expect(res.body.message.toLowerCase()).toContain("if an account exists");
   });
 
-  it("sends a reset email, resets the password, and invalidates the token", async () => {
+  it("sends a reset email, resets the password, and revokes existing sessions", async () => {
     const user = await registerUser("reset");
+    const session = await api()
+      .post("/api/v1/auth/login")
+      .send({ email: user.email, password: user.password });
+    expect(session.status).toBe(200);
+    const oldRefreshToken = session.body.data.refreshToken;
+
     const forgot = await api()
       .post("/api/v1/auth/forgot-password")
       .send({ email: user.email });
@@ -174,6 +180,13 @@ describe("Password reset flow", () => {
       .send({ token, password: "BrandNewPass123!" });
     expect(reset.status).toBe(200);
 
+    const staleAccess = await api().get("/api/v1/auth/me").set(authHeader(user.token));
+    expect(staleAccess.status).toBe(401);
+    const staleRefresh = await api()
+      .post("/api/v1/auth/refresh")
+      .send({ refreshToken: oldRefreshToken });
+    expect(staleRefresh.status).toBe(401);
+
     const oldLogin = await api()
       .post("/api/v1/auth/login")
       .send({ email: user.email, password: user.password });
@@ -183,6 +196,10 @@ describe("Password reset flow", () => {
       .post("/api/v1/auth/login")
       .send({ email: user.email, password: "BrandNewPass123!" });
     expect(newLogin.status).toBe(200);
+    const freshMe = await api()
+      .get("/api/v1/auth/me")
+      .set(authHeader(newLogin.body.data.accessToken));
+    expect(freshMe.status).toBe(200);
 
     const reuse = await api()
       .post("/api/v1/auth/reset-password")
@@ -247,8 +264,14 @@ describe("PATCH /api/v1/auth/me (profile settings)", () => {
 });
 
 describe("POST /api/v1/auth/change-password", () => {
-  it("changes the password and notifies the user", async () => {
+  it("changes the password, revokes old sessions, and notifies the user", async () => {
     const user = await registerUser("changepw");
+    const session = await api()
+      .post("/api/v1/auth/login")
+      .send({ email: user.email, password: user.password });
+    expect(session.status).toBe(200);
+    const oldRefreshToken = session.body.data.refreshToken;
+
     const res = await api()
       .post("/api/v1/auth/change-password")
       .set(authHeader(user.token))
@@ -256,6 +279,13 @@ describe("POST /api/v1/auth/change-password", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.data.success).toBe(true);
+
+    const staleAccess = await api().get("/api/v1/auth/me").set(authHeader(user.token));
+    expect(staleAccess.status).toBe(401);
+    const staleRefresh = await api()
+      .post("/api/v1/auth/refresh")
+      .send({ refreshToken: oldRefreshToken });
+    expect(staleRefresh.status).toBe(401);
 
     const oldLogin = await api()
       .post("/api/v1/auth/login")
@@ -269,7 +299,7 @@ describe("POST /api/v1/auth/change-password", () => {
 
     const notifications = await api()
       .get("/api/v1/notifications")
-      .set(authHeader(user.token));
+      .set(authHeader(newLogin.body.data.accessToken));
     const titles = notifications.body.data.map((n: { title: string }) => n.title);
     expect(titles).toContain("Your password was changed");
   });

@@ -107,6 +107,10 @@ describe("Admin moderation & management", () => {
         .set(authHeader(admin.token))
         .send({ isActive: false });
       expect(res.status).toBe(200);
+      // The status endpoint must never echo credential material, even to an admin.
+      expect(res.body.data.passwordHash).toBeUndefined();
+      expect(res.body.data.verificationToken).toBeUndefined();
+      expect(res.body.data.resetToken).toBeUndefined();
 
       const login = await api()
         .post("/api/v1/auth/login")

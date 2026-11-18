@@ -197,7 +197,10 @@ export async function sendEmail(email: RawEmail): Promise<void> {
       );
     }
 
-    // Dev outbox — inspectable HTML on disk.
+    // Dev/test outbox — inspectable HTML on disk. Verification and reset
+    // emails carry raw tokens, so production must never persist them locally.
+    if (config.nodeEnv === "production") return;
+
     const safeName = email.to.replace(/[^a-z0-9@._-]/gi, "_");
     const file = path.join(outboxDir(), `${Date.now()}-${safeName}.html`);
     const content = `<!-- To: ${email.to} | Subject: ${email.subject} -->\n${email.html}`;

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { uploadEventPoster } from "./upload.service";
 import { prisma } from "../../config/prisma";
 import { Errors } from "../../utils/AppError";
+import { isSuperAdmin } from "../../utils/permissions";
 import { sendSuccess } from "../../utils/response";
 
 export async function uploadPoster(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -17,7 +18,7 @@ export async function uploadPoster(req: Request, res: Response, next: NextFuncti
     if (eventId) {
       const event = await prisma.event.findUnique({ where: { id: eventId } });
       if (!event) throw Errors.notFound("Event");
-      if (event.createdById !== req.user!.id && req.user!.role !== "ADMIN") {
+      if (event.createdById !== req.user!.id && !isSuperAdmin(req.user)) {
         throw Errors.forbidden();
       }
 

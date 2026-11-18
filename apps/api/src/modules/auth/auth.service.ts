@@ -19,17 +19,17 @@ import type {
 
 // ─── Token helpers ────────────────────────────────────────────────────────────
 
-function signAccessToken(userId: string, email: string, role: string): string {
+function signAccessToken(userId: string, email: string, role: string, tokenVersion: number): string {
   return jwt.sign(
-    { sub: userId, email, role },
+    { sub: userId, email, role, ver: tokenVersion },
     config.jwt.accessSecret,
     { expiresIn: config.jwt.accessExpiresIn as jwt.SignOptions["expiresIn"] }
   );
 }
 
-function signRefreshToken(userId: string): string {
+function signRefreshToken(userId: string, tokenVersion: number): string {
   return jwt.sign(
-    { sub: userId },
+    { sub: userId, ver: tokenVersion },
     config.jwt.refreshSecret,
     { expiresIn: config.jwt.refreshExpiresIn as jwt.SignOptions["expiresIn"] }
   );
@@ -85,6 +85,7 @@ export async function register(input: RegisterInput): Promise<{
       phone: true,
       profileImage: true,
       role: true,
+      tokenVersion: true,
       emailVerifiedAt: true,
       createdAt: true,
     },
@@ -109,10 +110,11 @@ export async function register(input: RegisterInput): Promise<{
     link: "/events",
   });
 
-  const accessToken = signAccessToken(user.id, user.email, user.role);
-  const refreshToken = signRefreshToken(user.id);
+  const accessToken = signAccessToken(user.id, user.email, user.role, user.tokenVersion);
+  const refreshToken = signRefreshToken(user.id, user.tokenVersion);
 
-  return { user, accessToken, refreshToken };
+  const { tokenVersion: _, ...safeUser } = user;
+  return { user: safeUser, accessToken, refreshToken };
 }
 
 // ─── Account lockout ──────────────────────────────────────────────────────────
@@ -136,6 +138,7 @@ export async function login(input: LoginInput): Promise<{
       role: true,
       passwordHash: true,
       isActive: true,
+      tokenVersion: true,
       emailVerifiedAt: true,
       createdAt: true,
       failedLoginAttempts: true,
@@ -183,15 +186,16 @@ export async function login(input: LoginInput): Promise<{
     });
   }
 
-  const accessToken = signAccessToken(user.id, user.email, user.role);
-  const refreshToken = signRefreshToken(user.id);
+  const accessToken = signAccessToken(user.id, user.email, user.role, user.tokenVersion);
+  const refreshToken = signRefreshToken(user.id, user.tokenVersion);
 
-  // Return without passwordHash / lockout fields
+  // Return without passwordHash / lockout fields / session version
   const {
     passwordHash: _,
     isActive: __,
-    failedLoginAttempts: ___,
-    lockedUntil: ____,
+    tokenVersion: ___,
+    failedLoginAttempts: ____,
+    lockedUntil: _____,
     ...safeUser
   } = user;
 
@@ -202,24 +206,24 @@ export async function refreshTokens(token: string): Promise<{
   accessToken: string;
   refreshToken: string;
 }> {
-  let payload: { sub: string };
+  let payload: { sub: string; ver?: number };
   try {
-    payload = jwt.verify(token, config.jwt.refreshSecret) as { sub: string };
+    payload = jwt.verify(token, config.jwt.refreshSecret) as { sub: string; ver?: number };
   } catch {
     throw Errors.unauthorized("Invalid or expired refresh token.");
   }
 
   const user = await prisma.user.findUnique({
     where: { id: payload.sub },
-    select: { id: true, email: true, role: true, isActive: true },
+    select: { id: true, email: true, role: true, isActive: true, tokenVersion: true },
   });
 
-  if (!user || !user.isActive) {
+  if (!user || !user.isActive || (payload.ver ?? 0) !== user.tokenVersion) {
     throw Errors.unauthorized("Account not found or has been deactivated.");
   }
 
-  const accessToken = signAccessToken(user.id, user.email, user.role);
-  const refreshToken = signRefreshToken(user.id);
+  const accessToken = signAccessToken(user.id, user.email, user.role, user.tokenVersion);
+  const refreshToken = signRefreshToken(user.id, user.tokenVersion);
 
   return { accessToken, refreshToken };
 }
@@ -293,6 +297,7 @@ export async function changePassword(
       passwordHash,
       resetToken: null,
       resetExpires: null,
+      tokenVersion: { increment: 1 },
     },
   });
 
@@ -391,6 +396,7 @@ export async function resetPassword(input: ResetPasswordInput): Promise<{ succes
       passwordHash,
       resetToken: null,
       resetExpires: null,
+      tokenVersion: { increment: 1 },
     },
   });
 

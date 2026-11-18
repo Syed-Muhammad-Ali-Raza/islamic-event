@@ -25,6 +25,7 @@ interface JwtPayload {
   sub: string;
   email: string;
   role: UserRole;
+  ver?: number;
   iat: number;
   exp: number;
 }
@@ -52,10 +53,10 @@ export async function requireAuth(
     // Load fresh user from DB to catch disabled accounts
     const user = await prisma.user.findUnique({
       where: { id: payload.sub },
-      select: { id: true, email: true, name: true, role: true, isActive: true },
+      select: { id: true, email: true, name: true, role: true, isActive: true, tokenVersion: true },
     });
 
-    if (!user || !user.isActive) {
+    if (!user || !user.isActive || (payload.ver ?? 0) !== user.tokenVersion) {
       throw Errors.unauthorized("Account not found or has been deactivated.");
     }
 
@@ -92,10 +93,10 @@ export async function optionalAuth(
 
     const user = await prisma.user.findUnique({
       where: { id: payload.sub },
-      select: { id: true, email: true, name: true, role: true, isActive: true },
+      select: { id: true, email: true, name: true, role: true, isActive: true, tokenVersion: true },
     });
 
-    if (user && user.isActive) {
+    if (user && user.isActive && (payload.ver ?? 0) === user.tokenVersion) {
       req.user = { id: user.id, email: user.email, name: user.name, role: user.role };
     }
   } catch {

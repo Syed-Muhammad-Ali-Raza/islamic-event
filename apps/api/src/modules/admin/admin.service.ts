@@ -177,10 +177,16 @@ export async function adminListUsers(page: number, limit: number) {
 }
 
 export async function updateUserStatus(id: string, isActive: boolean) {
-  const user = await prisma.user.findUnique({ where: { id } });
+  const user = await prisma.user.findUnique({ where: { id }, select: { id: true } });
   if (!user) throw Errors.notFound("User");
 
-  return prisma.user.update({ where: { id }, data: { isActive } });
+  // Never return the full row: it contains passwordHash and the hashed
+  // verification/reset tokens, which must not leave the database.
+  return prisma.user.update({
+    where: { id },
+    data: { isActive },
+    select: { id: true, name: true, email: true, role: true, isActive: true, createdAt: true },
+  });
 }
 
 // ─── Reports ──────────────────────────────────────────────────────────────────

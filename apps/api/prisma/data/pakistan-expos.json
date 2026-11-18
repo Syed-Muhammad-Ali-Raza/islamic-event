@@ -174,7 +174,7 @@
     {
       "id": "EXPO-LHR-011",
       "slug": "lahore-education-careers-expo-2027",
-      "title": "Pakistan Education & Careers Expo — Lahore",
+      "title": "Pakistan Education & Careers Expo, Lahore",
       "city": "Lahore",
       "venue": "Lahore International Expo Centre",
       "address": "Johar Town, Lahore",
@@ -344,7 +344,7 @@
     {
       "id": "EXPO-KHI-010",
       "slug": "karachi-education-expo-2026",
-      "title": "Pakistan Education Expo — Karachi",
+      "title": "Pakistan Education Expo, Karachi",
       "city": "Karachi",
       "venue": "Karachi Expo Centre",
       "address": "University Road, Gulshan-e-Iqbal, Karachi",
@@ -390,7 +390,7 @@
       "endTime": "17:00",
       "industry": "Academic & Technology",
       "featured": false,
-      "description": "A five-week run of linked academic and technology conferences — AI, renewable energy, public health and social sciences — hosted across convention venues with paper presentations and workshops."
+      "description": "A five-week run of linked academic and technology conferences, AI, renewable energy, public health and social sciences, hosted across convention venues with paper presentations and workshops."
     },
     {
       "id": "EXPO-ISB-002",
@@ -662,7 +662,7 @@
       "endTime": "18:00",
       "industry": "Trade & Exports",
       "featured": false,
-      "description": "International trade fair showcasing Sialkot's export clusters — sports goods, surgical instruments, leather, gloves and packaging — with B2B matchmaking."
+      "description": "International trade fair showcasing Sialkot's export clusters, sports goods, surgical instruments, leather, gloves and packaging, with B2B matchmaking."
     },
     {
       "id": "EXPO-RWP-001",

@@ -625,7 +625,7 @@ async function main() {
             `Sector: ${e.industry}.`,
             e.description,
             `Runs ${schedule} at ${e.venue}, ${e.city}.`,
-            "Dates and timings are indicative — confirm with the organiser before travelling.",
+            "Dates and timings are indicative, confirm with the organiser before travelling.",
           ].join("\n\n");
 
           await prisma.event.upsert({

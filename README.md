@@ -173,6 +173,10 @@ See `.env.example` for all required variables (`DATABASE_URL`, JWT secrets, `S3_
 > with the free-tier gotchas spelled out (Neon needs the direct URL for the
 > Prisma CLI, seeding runs from your machine, keeping the API warm).
 
+> **Recording a promo?** The 60-second guided script is at
+> [`apps/web/public/guided-video.html`](apps/web/public/guided-video.html) and is
+> served at `/guided-video.html` after deploy.
+
 Recommended production setup:
 
 | Piece | Recommended | Notes |
